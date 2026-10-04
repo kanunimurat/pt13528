@@ -47,6 +47,8 @@ def z_score(x: float, x_pt: float, sigma_pt: float) -> float:
 
 def z_prime_score(x: float, x_pt: float, sigma_pt: float, u_x_pt: float) -> float:
     """9.5.1, Formula (15)."""
+    if sigma_pt < 0 or u_x_pt < 0:
+        raise ValueError("sigma_pt and u(x_pt) cannot be negative")
     den = math.hypot(sigma_pt, u_x_pt)
     if den <= 0:
         raise ValueError("sigma_pt and u(x_pt) cannot both be zero")
@@ -60,6 +62,8 @@ def z_reduction_factor(sigma_pt: float, u_x_pt: float) -> float:
 
 def zeta_score(x: float, x_pt: float, u_x: float, u_x_pt: float) -> float:
     """9.6.1, Formula (19) - standard uncertainties."""
+    if u_x < 0 or u_x_pt < 0:
+        raise ValueError("uncertainties cannot be negative")
     den = math.hypot(u_x, u_x_pt)
     if den <= 0:
         raise ValueError("u(x) and u(x_pt) cannot both be zero")
@@ -75,6 +79,8 @@ def en_score(x: float, x_pt: float, big_u_x: float, big_u_x_pt: float) -> float:
     and ``big_u_x_pt``; the library has no separate laboratory-to-laboratory
     scoring mode.
     """
+    if big_u_x < 0 or big_u_x_pt < 0:
+        raise ValueError("uncertainties cannot be negative")
     den = math.hypot(big_u_x, big_u_x_pt)
     if den <= 0:
         raise ValueError("U(x) and U(x_pt) cannot both be zero")
@@ -117,10 +123,10 @@ def classify_d(d: float, delta_e: float) -> str:
 def uncertainty_negligible(u_x_pt: float, sigma_pt: Optional[float] = None,
                            delta_e: Optional[float] = None) -> bool:
     """9.2.1, Formula (10) - u(x_pt) < 0,3 sigma_pt or u(x_pt) < 0,1 delta_E."""
-    if sigma_pt is None and delta_e is None:
-        raise ValueError("give sigma_pt or delta_E")
-    if u_x_pt < 0:
-        raise ValueError("u(x_pt) cannot be negative")
+    if (sigma_pt is None) == (delta_e is None):
+        raise ValueError("give either sigma_pt or delta_E")
+    if not u_x_pt >= 0:
+        raise ValueError("u(x_pt) must be a number and cannot be negative")
     limit = 0.3 * sigma_pt if sigma_pt is not None else 0.1 * delta_e
     return u_x_pt < limit
 

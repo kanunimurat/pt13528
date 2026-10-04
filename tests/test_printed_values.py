@@ -16,12 +16,12 @@ def test_all_listed_printed_values_are_reproduced_to_half_a_unit():
 
 def test_inconsistent_items():
     items = P.inconsistent()
-    assert len(items) == 4
+    assert len(items) == 3
     assert [i[1] for i in items].count("not reproduced") == 1
     rule, full = items[0][2]
     assert round(rule, 2) == round(full, 2) == 23.96 and items[0][3] == 23.95   # neither rule gives 23,95
     assert items[1][4] == pytest.approx(-37, abs=1)               # Table E.10: Algorithm A is 0,37 lower
-    assert items[2][4] == pytest.approx(-3, abs=1)                # Table E.5: MADe gives 0,0083
+    assert items[2][2:4] == (9, 21)                               # Table E.6: flags follow U_lab
 
 
 def test_notes():
@@ -30,5 +30,7 @@ def test_notes():
     assert round(full, 2) == printed and round(rule, 2) != printed
     printed, rule, full = n["E.1 first column s*: printed, three-figure rule, convergence"]
     assert round(rule, 2) == printed and round(full, 2) != printed
+    printed, niqr, made = n["E.3 Table E.5 u(x_pt) of the median row: printed, with nIQR, with MADe"]
+    assert round(niqr, 4) == printed and round(made, 4) == 0.0083
     printed, plain, adjusted = n["E.8 coefficient of determination: printed, plain, adjusted"]
     assert round(adjusted, 2) == printed and round(plain, 2) == 0.83

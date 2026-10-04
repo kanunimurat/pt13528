@@ -72,13 +72,15 @@ pytest
 - `tests/printed_values.py` lists 255 values printed in ISO 13528:2022 (227
   from the worked examples of Annex E, 28 from Table B.1) that the functions
   of the library reproduce to half a unit of the last printed digit, and the
-  four printed items that do not follow from the text.
+  three printed items that do not follow from the text.
 - `tests/test_external.py` compares Algorithm A, Qn, MADe and nIQR with
   statsmodels, which was written independently of the standard, and the
   Hampel estimator with a separate root search.
+- `tests/test_by_hand.py` checks the remaining public functions against
+  values worked by hand.
 - `tests/test_inputs.py` covers degenerate and invalid input and the
   independence of Algorithm A, Algorithm S, the Q method and the Hampel
-  estimator from the unit of the data.
+  estimator from the unit and the origin of the data.
 - `tests/test_real_round.py` recomputes a real round from its formal report.
 - `figures/` holds the scripts and seeds of the simulated examples shown in the article.
 - `crosscheck/compare.py` repeats the comparison with the PHP engine of the

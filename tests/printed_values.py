@@ -31,7 +31,10 @@ def reproduced():
         dat, xs, ss = E.E1[k]
         r = robust.algorithm_a(dat)
         add("E.1", f"x* ({k})", xs, r.location, 2)
-        add("E.1", f"s* ({k})", ss, r.scale, 2)
+        if k == "ignored":       # printed 7,23 is the value of the three-figure rule; convergence gives 7,24 (see notes())
+            add("E.1", f"s* ({k}), three-figure rule", ss, robust.algorithm_a(dat, tol="sig3").scale, 2)
+        else:
+            add("E.1", f"s* ({k})", ss, r.scale, 2)
     h = hm.homogeneity(E.E2_HOMOGENEITY)
     for name, pr, c in (("mean", 0.18715, h.mean), ("s_x", 0.00398, h.s_x), ("s_w", 0.00556, h.s_w), ("s_s", 0.00060, h.s_s)):
         add("E.2", name, pr, c, 5)
@@ -102,21 +105,26 @@ def inconsistent():
     Each entry: (item, kind, what the text gives, what is printed, deviation in
     units of the last printed digit or None). ``kind`` is "not reproduced"
     for a number that no reading of the text yields, and "text and table" where
-    the table follows a rule other than the one the text names.
+    the table follows a rule other than the one the text names. For Table E.6
+    the two entries are the numbers of printed flags (of 21) matched when the
+    limits of 9.8.3 and 9.8.4 are applied to the standard uncertainty u_lab,
+    as 9.8 words them, and to the expanded uncertainty U_lab.
     """
     dat, xs, ss = E.E1["half"]
-    rule = robust.algorithm_a(dat)
+    rule = robust.algorithm_a(dat, tol="sig3")
     full = robust.algorithm_a(dat, tol=1e-12)
     a12 = robust.algorithm_a(E.E12_A)
+    u_min, u_max = E.E4_BIG_U / 2, 1.5 * robust.algorithm_a([r[1] for r in E.E4]).scale
+    printed = [r[4] for r in E.E4]
+    flags_u = sum(scores.uncertainty_flag(r[2] / r[3], u_min, u_max) == f for r, f in zip(E.E4, printed))
+    flags_U = sum(scores.uncertainty_flag(r[2], u_min, u_max) == f for r, f in zip(E.E4, printed))
     return [
         ("E.1, Table E.1, third column, x*: neither stopping rule gives the printed value", "not reproduced",
          (round(rule.location, 4), round(full.location, 4)), xs, (rule.location - xs) * 100),
         ("E.12, Table E.10: text names Algorithm A, table uses the arithmetic mean and SD", "text and table",
          round(a12.location, 2), 11.54, (a12.location - 11.54) * 100),
-        ("E.3, Table E.5: row labelled with nIQR and MADe, printed u follows nIQR", "text and table",
-         round(av.consensus(E.E3, "median", median_scale="made").u_x_pt, 4), 0.0086,
-         (av.consensus(E.E3, "median", median_scale="made").u_x_pt - 0.0086) * 1e4),
-        ("E.4, Table E.6: flags do not follow the limits of 9.8", "text and table", None, None, None),
+        ("E.4, Table E.6: flags follow the limits of 9.8 applied to U_lab, not to u_lab", "text and table",
+         flags_u, flags_U, None),
     ]
 
 
@@ -125,9 +133,10 @@ def notes():
 
     E.1: the printed s* of the third column (8,60) is the converged value, the
     printed s* of the first column (7,23) is the value of the three-figure
-    rule, so Table E.1 follows no single stopping rule. E.8: the printed
-    coefficient 0,82 equals the adjusted coefficient of determination; the
-    plain coefficient is 0,83.
+    rule, so Table E.1 follows no single stopping rule. E.3, Table E.5: the
+    row "Median, nIQR (MADe)" prints one u(x_pt), which follows nIQR (MADe
+    gives 0,0083). E.8: the text prints r^2 = 0,82, which equals the adjusted
+    coefficient of determination; the plain coefficient is 0,83.
     """
     dat, xs, ss = E.E1["half"]
     d1, _x1, s1 = E.E1["ignored"]
@@ -135,9 +144,11 @@ def notes():
     n = len(E.E8_AV)
     return {
         "E.1 third column s*: printed, three-figure rule, convergence":
-            (ss, robust.algorithm_a(dat).scale, robust.algorithm_a(dat, tol=1e-12).scale),
+            (ss, robust.algorithm_a(dat, tol="sig3").scale, robust.algorithm_a(dat, tol=1e-12).scale),
         "E.1 first column s*: printed, three-figure rule, convergence":
-            (s1, robust.algorithm_a(d1).scale, robust.algorithm_a(d1, tol=1e-12).scale),
+            (s1, robust.algorithm_a(d1, tol="sig3").scale, robust.algorithm_a(d1, tol=1e-12).scale),
+        "E.3 Table E.5 u(x_pt) of the median row: printed, with nIQR, with MADe":
+            (0.0086, av.consensus(E.E3, "median").u_x_pt, av.consensus(E.E3, "median", median_scale="made").u_x_pt),
         "E.8 coefficient of determination: printed, plain, adjusted":
             (0.82, fit.r_squared, 1 - (1 - fit.r_squared) * (n - 1) / (n - 2)),
     }

@@ -16,8 +16,7 @@ for g, _ in dev:
     if g not in groups: groups.append(g)
 inc = P.inconsistent()
 dat, xs, ss = E.E1["half"]; a12 = robust.algorithm_a(E.E12_A)
-open_cases = [("Table E.1\ncol. 3\n$x^*$", inc[0][4]), ("Table E.5\n$u$ with\nMADe", inc[2][4]),
-              ("Table E.10\nmean by\nAlg. A", inc[1][4]), ("Table E.10\nSD by\nAlg. A", (a12.scale - 3.29) * 100)]
+open_cases = [("Table E.1\ncol. 3\n$x^*$", inc[0][4]), ("Table E.10\nmean by\nAlg. A", inc[1][4]), ("Table E.10\nSD by\nAlg. A", (a12.scale - 3.29) * 100)]
 print(len(rows), "comparisons; max |dev| =", max(abs(v) for _, v in dev)); print(open_cases)
 
 # ---------- (b) Python against PHP ----------
@@ -82,8 +81,7 @@ ax.set_xlim(-0.7, xa + len(ties_) - 0.3); ax.set_ylabel("largest |difference|", 
 ptitle(2, 26.3, "c", "Printed results that do not follow from the text, and the 2026 amendment", "status after ISO 13528:2022/Amd 1:2026")
 tab = [("Table E.1, third column, $x^*$", "printed 23.95; both stopping rules give 23.96", "open", ORANGE),
        ("Table E.10, $z$ scores", "text names Algorithm A, numbers are arithmetic", "open", ORANGE),
-       ("Table E.5, $u$(median)", "follows nIQR; the row names nIQR and MADe", "open", ORANGE),
-       ("Table E.6, flags", "not reproduced by the limits of Clause 9.8", "open", ORANGE),
+       ("Table E.6, flags", "follow the limits of Clause 9.8 for $U$, not for $u$ as worded", "open", ORANGE),
        ("Formula (C.18), $h$", "undefined for $p$ = 2, 3; now $\\lfloor p/2 \\rfloor + 1$", "corrected", GREEN),
        ("Formula (C.19), factor", "2.2219; now 2.2191", "corrected", GREEN),
        ("Table E.12", "one assigned value corrected; footnote on rounding added", "corrected", GREEN)]
@@ -93,6 +91,6 @@ for nm, why, stt, col in tab:
     bg.text(8.25, y, stt, fontsize=7, color="white", ha="center", va="center", fontweight="bold")
     bg.text(16, y, nm, fontsize=7.8, color=DARK, va="center", fontweight="bold")
     bg.text(46, y, why, fontsize=7.6, color=DARK, va="center")
-    y -= 2.75
+    y -= 3.2
 for ext in ("png", "pdf"):
     fig.savefig(os.path.join(HERE, f"Figure_4.{ext}"), dpi=300, facecolor="white")

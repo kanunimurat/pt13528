@@ -25,11 +25,43 @@ def test_convergence_does_not_depend_on_the_unit():
         robust.algorithm_s(w, 1, tol=1e-10).location, rel=1e-12)
 
 
-def test_three_figure_rule_does_not_depend_on_the_unit():
+def test_default_depends_neither_on_the_unit_nor_on_the_origin():
     rng = np.random.default_rng(6)
-    x = rng.normal(10, 1, 20)
-    a, b = robust.algorithm_a(x), robust.algorithm_a(x * 1e-6)
-    assert a.iterations == b.iterations and b.scale / 1e-6 == pytest.approx(a.scale, rel=1e-9)
+    for _ in range(200):
+        p = int(rng.integers(6, 41))
+        x = np.round(rng.normal(rng.uniform(1, 100), rng.uniform(0.1, 5), p), 1)
+        a = robust.algorithm_a(x)
+        if a.degenerate:
+            continue
+        for unit in (25.4, 1e-6, 3.7):
+            b = robust.algorithm_a(x * unit)
+            assert b.scale / unit == pytest.approx(a.scale, rel=1e-8)
+            assert b.location / unit == pytest.approx(a.location, abs=1e-8 * a.scale)
+        c = robust.algorithm_a(x + 273.15)
+        assert c.scale == pytest.approx(a.scale, rel=1e-8)
+        assert c.location - 273.15 == pytest.approx(a.location, abs=1e-8 * a.scale)
+        r1, r2 = record.round_record(list(x)), record.round_record(list(x + 273.15))
+        assert [q.signal for q in r1.participants] == [q.signal for q in r2.participants]
+
+
+def test_three_figure_rule_depends_on_the_origin():
+    """The criterion of C.3.1 on the same eleven results in degrees Celsius and in kelvin.
+
+    In kelvin the third significant figure of x* is the units digit, which no iterate changes, and
+    s* happens to keep its third figure in the first step: the iteration stops at once with an s*
+    that is 78 % too small, and four results get an action signal. See docs/coverage.md.
+    """
+    x = [18.2, 18.2, 18.4, 18.4, 18.4, 18.4, 18.6, 19.8, 20.5, 20.9, 22.3]
+    k = [v + 273.15 for v in x]
+    full = robust.algorithm_a(x)
+    assert full.scale == pytest.approx(1.3299, abs=5e-5)
+    assert robust.algorithm_a(k).scale == pytest.approx(full.scale, rel=1e-9)
+    celsius, kelvin = robust.algorithm_a(x, tol="sig3"), robust.algorithm_a(k, tol="sig3")
+    assert celsius.scale == pytest.approx(1.328, abs=5e-4)
+    assert kelvin.iterations == 1 and kelvin.scale == pytest.approx(0.297, abs=5e-4)
+    assert record.round_record(k, tol="sig3").counts["action"] == 4
+    assert record.round_record(k).counts["action"] == 0
+    assert record.round_record(x, tol="sig3").counts["action"] == 0
 
 
 @pytest.mark.parametrize("tol", ["sig3", 1e-12])

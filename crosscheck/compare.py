@@ -64,12 +64,12 @@ def sets_5000():
 def python_200():
     out = []
     for x, hom, w, (xi, xpt, s, u, upt) in sets_200():
-        a = robust.algorithm_a(x)
+        a = robust.algorithm_a(x, tol="sig3")          # the PHP engine uses the three-figure rule
         qh = robust.q_hampel(x)
         h = homogeneity.homogeneity(hom, sigma_pt=s)
         out.append({"median": robust.median(x), "MADe": robust.made(x), "nIQR": robust.niqr(x),
                     "Algorithm A x*": a.location, "Algorithm A s*": a.scale,
-                    "Algorithm S": robust.algorithm_s(w, 1).location, "Qn": robust.qn(x),
+                    "Algorithm S": robust.algorithm_s(w, 1, tol="sig3").location, "Qn": robust.qn(x),
                     "Q method": float(robust.q_method(x)), "Q/Hampel x*": qh.location,
                     "s_s": h.s_s, "s_w": h.s_w, "expanded criterion": h.expanded_criterion,
                     "z": scores.z_score(xi, xpt, s), "z'": scores.z_prime_score(xi, xpt, s, upt),
@@ -92,7 +92,7 @@ def main():
     q_rel_0 = [abs(a["Q method"] - b["Q method"]) / a["Q method"] for a, b in zip(py[0::2], before[0::2])]
     differing_200 = [i for i, (a, b) in enumerate(zip(py, php)) if abs(a["Algorithm A s*"] - b["Algorithm A s*"]) > 1e-9]
     xs = list(sets_5000())
-    py5 = [robust.algorithm_a(x) for x in xs]
+    py5 = [robust.algorithm_a(x, tol="sig3") for x in xs]
     php5 = json.load(open(os.path.join(HERE, "php_5000.json")))
     differing_5000 = [i for i, (a, b) in enumerate(zip(py5, php5)) if abs(a.location - b[0]) > 1e-9 or abs(a.scale - b[1]) > 1e-9]
     all_x = [s[0] for s in sets_200()] + xs
@@ -101,7 +101,7 @@ def main():
     iters = []
     results = signals = sets_with_signal_change = 0
     for x in all_x:
-        a = robust.algorithm_a(x)
+        a = robust.algorithm_a(x, tol="sig3")
         c = robust.algorithm_a(x, tol=1e-12)
         # z scores with x_pt = x* and sigma_pt = s* (8.6) under the two stopping rules
         ca = [scores.classify_z(scores.z_score(v, a.location, a.scale)) for v in x]
@@ -115,6 +115,27 @@ def main():
         rel.append(abs(a.scale - c.scale) / c.scale)
         iters.append((a.iterations, c.iterations))
     n = len(all_x)
+    # the three-figure rule under a change of unit (inch to millimetre) and of origin (degree Celsius to kelvin)
+    unit_changed = origin_changed = unit_sig = origin_sig = 0
+    unit_worst = origin_worst = 0.0
+    for x in all_x:
+        x = np.asarray(x)
+        a = robust.algorithm_a(x, tol="sig3")
+        c = robust.algorithm_a(x, tol=1e-12)
+        if c.degenerate:
+            continue
+        za = [scores.classify_z(scores.z_score(v, a.location, a.scale)) for v in x]
+        for kind, y, back in (("unit", x * 25.4, lambda r: (r.location / 25.4, r.scale / 25.4)),
+                              ("origin", x + 273.15, lambda r: (r.location - 273.15, r.scale))):
+            loc, sc = back(robust.algorithm_a(y, tol="sig3"))
+            changed = abs(sc - a.scale) > 1e-9 * a.scale
+            zb = [scores.classify_z(scores.z_score(v, loc, sc)) for v in x]
+            nsig = sum(u != v for u, v in zip(za, zb))
+            err = abs(sc - c.scale) / c.scale
+            if kind == "unit":
+                unit_changed += changed; unit_sig += nsig; unit_worst = max(unit_worst, err)
+            else:
+                origin_changed += changed; origin_sig += nsig; origin_worst = max(origin_worst, err)
     res = {
         "largest absolute difference, Python - PHP, 100 sets without ties": largest,
         "largest absolute difference, Python - PHP, 100 sets with ties": largest_ties,
@@ -132,6 +153,11 @@ def main():
             "median iterations: rule, convergence": [float(np.median([i[0] for i in iters])), float(np.median([i[1] for i in iters]))],
             "z signals (acceptable, warning, action) that change: results, of results, sets":
                 [int(signals), int(results), int(sets_with_signal_change)],
+        },
+        "three-figure rule after a change of unit (x 25,4) or of origin (+ 273,15)": {
+            "sets in which s* changes: unit, origin": [int(unit_changed), int(origin_changed)],
+            "z signals that change: unit, origin": [int(unit_sig), int(origin_sig)],
+            "largest relative error of s* against convergence: unit, origin": [float(unit_worst), float(origin_worst)],
         },
     }
     json.dump(res, open(os.path.join(HERE, "result.json"), "w"), indent=1)

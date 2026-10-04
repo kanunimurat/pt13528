@@ -63,5 +63,19 @@
    120754,
    34
   ]
+ },
+ "three-figure rule after a change of unit (x 25,4) or of origin (+ 273,15)": {
+  "sets in which s* changes: unit, origin": [
+   4172,
+   134
+  ],
+  "z signals that change: unit, origin": [
+   45,
+   5
+  ],
+  "largest relative error of s* against convergence: unit, origin": [
+   0.1758857346036717,
+   0.32295082801838065
+  ]
  }
 }

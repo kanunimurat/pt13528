@@ -35,12 +35,22 @@ _EPS = 8 * np.finfo(float).eps     # floor of the relative stopping criterion
 _COLLAPSE = 1e-9                    # s* below this fraction of its starting value is reported as zero
 
 
+DEFAULT_TOL = 1e-10                 # relative stopping tolerance of the iterative estimators
+
+
 class RobustResult(dict):
-    """Dictionary with attribute access (location, scale, iterations, converged)."""
-    __getattr__ = dict.__getitem__
+    """Dictionary with attribute access (location, scale, iterations, converged, degenerate)."""
+
+    def __getattr__(self, name):
+        try:
+            return self[name]
+        except KeyError:
+            raise AttributeError(name) from None
 
 
 def _arr(x: Iterable[float]) -> np.ndarray:
+    if isinstance(x, (str, bytes, dict)):
+        raise TypeError("a sequence of numbers is required")
     a = np.asarray(list(x), dtype=float)
     if a.ndim != 1 or a.size == 0:
         raise ValueError("a non-empty one-dimensional sequence is required")
@@ -78,16 +88,20 @@ def niqr(x: Iterable[float], quantile_method: str = "linear") -> float:
     return float(NIQR_FACTOR * (q3 - q1))
 
 
-def algorithm_a(x: Iterable[float], tol: str | float = "sig3", max_iter: int = 1000,
+def algorithm_a(x: Iterable[float], tol: str | float = DEFAULT_TOL, max_iter: int = 1000,
                 update_scale: bool = True, scale: float | None = None) -> RobustResult:
     """C.3.1 - Algorithm A with iterated scale (Formulae C.5 to C.10).
 
     tol
+        A float (default 1e-10) stops when the changes of x* and s* both
+        fall below ``tol`` times s*. This criterion is relative, so the
+        result depends neither on the unit nor on the origin of the data.
         ``"sig3"`` stops when the third significant figures of x* and s* no
-        longer change (the criterion stated in C.3.1). A float stops when the
-        changes of x* and s* both fall below ``tol`` times s* ("alternative
-        convergence criteria"); the criterion is relative, so the result
-        does not depend on the unit of the data.
+        longer change, the criterion stated in C.3.1, which also allows
+        "alternative convergence criteria". The three-figure criterion stops
+        before convergence and its result changes with the unit and with the
+        origin of the data (see docs/coverage.md); it is kept to reproduce
+        the worked examples of Annex E.
 
     When a large majority of the results is identical (from about two
     thirds, depending on the other results), the iteration drives s* towards
@@ -132,7 +146,7 @@ def algorithm_a(x: Iterable[float], tol: str | float = "sig3", max_iter: int = 1
     return RobustResult(location=c + x_star, scale=s_star, iterations=max_iter, converged=False, degenerate=False)
 
 
-def algorithm_s(w: Iterable[float], nu: int, tol: str | float = "sig3", max_iter: int = 1000) -> RobustResult:
+def algorithm_s(w: Iterable[float], nu: int, tol: str | float = DEFAULT_TOL, max_iter: int = 1000) -> RobustResult:
     """C.4 - Algorithm S: robust pooled standard deviation (or range).
 
     nu is the degrees of freedom of each w_i (1 for ranges of duplicates,
@@ -228,10 +242,16 @@ def q_method(results: Sequence[float] | Sequence[Sequence[float]]) -> float:
     d, w = d[order], w[order]
     # Differences that are equal in exact arithmetic (results reported to a fixed number of
     # decimals) differ by rounding noise in binary; they are merged so that H1 has one
-    # discontinuity per distinct difference, whatever the unit of the data.
-    tie = 16 * np.finfo(float).eps * max(float(np.max(np.abs(g))) for g in groups)
+    # discontinuity per distinct difference, whatever the unit of the data. Two such
+    # differences are at most 2 eps max|x| apart; the tolerance is twice that. A group
+    # extends from its first member only, so that close but distinct differences do not chain.
+    tie = 4 * np.finfo(float).eps * max(float(np.max(np.abs(g))) for g in groups)
     d = np.where(d <= tie, 0.0, d)
-    idx = np.concatenate([[0], np.flatnonzero(np.diff(d) > tie) + 1])
+    starts = [0]
+    for k in range(1, d.size):
+        if d[k] - d[starts[-1]] > tie:
+            starts.append(k)
+    idx = np.asarray(starts)
     pts = d[idx]
     h = np.add.reduceat(w, idx).cumsum()          # H1 at each discontinuity point
     h0 = float(h[0]) if pts[0] == 0.0 else 0.0
@@ -308,7 +328,8 @@ def q_hampel(results: Sequence[float] | Sequence[Sequence[float]]) -> RobustResu
     """C.5.4 - Q/Hampel: Q-method scale with the finite-step Hampel location."""
     s = q_method(results)
     means = [float(np.mean(g)) for g in results]
-    return RobustResult(location=hampel(means, s, "finite"), scale=s, iterations=0, converged=True)
+    return RobustResult(location=hampel(means, s, "finite"), scale=float(s), iterations=0, converged=True,
+                        degenerate=not s > 0)
 
 
 def mean_abs_dev_sd(x: Iterable[float]) -> float:

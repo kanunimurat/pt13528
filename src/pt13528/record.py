@@ -16,7 +16,7 @@ from typing import Iterable, NamedTuple, Optional, Sequence
 
 import numpy as np
 
-from . import assigned_value, scores
+from . import assigned_value, robust, scores
 
 __all__ = ["ParticipantRecord", "RoundRecord", "round_record"]
 
@@ -74,7 +74,8 @@ def round_record(x: Iterable[float], *, method: str = "algorithm_a",
                  x_pt: Optional[float] = None, u_x_pt: Optional[float] = None,
                  sigma_pt: Optional[float] = None, u_x: Optional[Sequence[Optional[float]]] = None,
                  labels: Optional[Sequence[str]] = None, statistic: str = "auto",
-                 action: float = 3.0, warning: Optional[float] = 2.0) -> RoundRecord:
+                 action: float = 3.0, warning: Optional[float] = 2.0,
+                 tol: str | float = robust.DEFAULT_TOL) -> RoundRecord:
     """Assemble the record of one measurand from participant results.
 
     Assigned value (Clause 7): the consensus of ``x`` by ``method`` (see
@@ -92,7 +93,8 @@ def round_record(x: Iterable[float], *, method: str = "algorithm_a",
     uncertainties ``u_x`` are given, zeta (9.6) is added for every
     participant that reported one (use ``None`` for those that did not).
 
-    ``action`` and ``warning`` are the limits of 9.4.2. The choice of method,
+    ``tol`` is the stopping criterion of Algorithm A (see
+    :func:`robust.algorithm_a`). ``action`` and ``warning`` are the limits of 9.4.2. The choice of method,
     of sigma_pt and of the limits remains with the provider; the function
     records the choices next to the numbers so that they can be reported.
     """
@@ -112,7 +114,7 @@ def round_record(x: Iterable[float], *, method: str = "algorithm_a",
     if x_pt is None:
         if u_x_pt is not None:
             raise ValueError("u_x_pt is given without x_pt")
-        av = assigned_value.consensus(a, method)
+        av = assigned_value.consensus(a, method, tol=tol)
         x_pt, u_x_pt, scale = av.x_pt, av.u_x_pt, av.scale
     else:
         if u_x_pt is None:

@@ -24,7 +24,9 @@ def grubbs(x: Iterable[float], alpha: float = 0.01):
 
     Returns (G_high, G_low, critical)."""
     a = np.asarray(list(x), dtype=float)
-    s = a.std(ddof=1)
+    if not np.all(np.isfinite(a)):
+        raise ValueError("values must be finite")
+    s = a.std(ddof=1) if a.size > 1 else 0.0
     if a.size < 3 or s == 0:
         raise ValueError("Grubbs' test needs at least three non-identical results")
     return float((a.max() - a.mean()) / s), float((a.mean() - a.min()) / s), grubbs_critical(a.size, alpha)
@@ -41,6 +43,8 @@ def cochran(variances: Iterable[float], n: int, alpha: float = 0.01):
 
     Returns (C, critical, index of the largest variance)."""
     v = np.asarray(list(variances), dtype=float)
+    if not np.all(np.isfinite(v)) or np.any(v < 0):
+        raise ValueError("variances must be finite and not negative")
     if v.sum() <= 0:
         raise ValueError("all variances are zero")
     i = int(np.argmax(v))

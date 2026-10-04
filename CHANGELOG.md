@@ -1,5 +1,32 @@
 # Changelog
 
+## 0.1.5 (2026-10-04)
+
+Results of Algorithm A and Algorithm S change in the third significant figure for about half of the data
+sets, because the default stopping rule changes.
+
+- `algorithm_a`, `algorithm_s`, `consensus` and `round_record` iterate to convergence by default
+  (`tol=robust.DEFAULT_TOL`, 1e-10). The three-figure rule of C.3.1 remains available as `tol="sig3"`;
+  `consensus` and `round_record` gain the `tol` argument. The rule depends on the unit and on the origin of
+  the results: eleven results in degrees Celsius give s* = 1,328, the same results in kelvin stop after one
+  iteration at s* = 0,297 (`tests/test_inputs.py`). `crosscheck/compare.py` measures this on 5200 sets.
+- Table E.6 was described wrongly. Its flags are reproduced (21 of 21) when the limits of 9.8.3 and 9.8.4
+  are compared with the expanded uncertainty U_lab; 9.8 words the limits for the standard uncertainty, for
+  which 9 of 21 agree. The earlier statement that the limits of 9.8 do not reproduce the flags is withdrawn.
+  The ledger now lists three inconsistent items and three notes; the u(x_pt) of the median row of
+  Table E.5 moves to the notes.
+- The Q method treats differences as tied when closer than 4 machine epsilons of the largest absolute
+  result, and a group of ties extends from its first member (no chaining).
+- `RobustResult` raises `AttributeError` for unknown attributes (`hasattr`, `copy.deepcopy` work);
+  strings and mappings are rejected as data; negative uncertainties are rejected by z', zeta and E_n;
+  `uncertainty_negligible` takes exactly one of `sigma_pt` and `delta_e`; homogeneity, stability and
+  outlier functions check for non-finite values and non-positive criteria; `consensus` and `q_hampel`
+  report `degenerate`.
+- `tests/test_by_hand.py`: 21 tests with values worked by hand for functions that had no direct test. In a
+  mutation run of 0.1.4 (101 single changes of operators and constants) 27 changes passed the tests. Of the
+  98 that still apply, one passes now: the starting value of NOTE 2 to C.3.1, which does not change a
+  converged result.
+
 ## 0.1.4 (2026-10-04)
 
 No change in any calculation.

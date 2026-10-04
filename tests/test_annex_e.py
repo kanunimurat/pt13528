@@ -23,9 +23,15 @@ def half_unit(printed_decimals):
 @pytest.mark.parametrize("case", ["ignored", "deleted"])
 def test_e1_algorithm_a(case):
     data, x_star, s_star = E.E1[case]
-    r = robust.algorithm_a(data)
+    r = robust.algorithm_a(data, tol="sig3")           # the three-figure rule of C.3.1 reproduces both columns
     assert r.location == pytest.approx(x_star, abs=half_unit(2))
     assert r.scale == pytest.approx(s_star, abs=half_unit(2))
+    c = robust.algorithm_a(data)                       # default: convergence
+    assert c.location == pytest.approx(x_star, abs=half_unit(2))
+    if case == "ignored":                              # printed 7,23; convergence gives 7,2373
+        assert round(c.scale, 2) == 7.24
+    else:
+        assert c.scale == pytest.approx(s_star, abs=half_unit(2))
 
 
 def test_e1_half_value_depends_on_stopping_rule():
@@ -70,7 +76,7 @@ def test_table_b1_factors(g):
 
 # ---------------------------------------------------------------- E.3
 def test_e3_table_e4_iterations():
-    r = robust.algorithm_a(E.E3)
+    r = robust.algorithm_a(E.E3, tol="sig3")
     assert r.iterations == 6 and r.converged
 
 
@@ -119,17 +125,16 @@ def test_e4_table_e7_scores():
         assert scores.en_score(x, E.E4_XPT, big_u, E.E4_BIG_U) == pytest.approx(en, abs=half_unit(2)), code
 
 
-def test_e4_uncertainty_flags_are_not_derivable_from_the_printed_data():
-    """Table E.6 flags reported uncertainties a/b/c "following criteria discussed in 9.8", but the
-    limits of 9.8.3 and 9.8.4 (u_min = u(x_pt) = 0,0041 and u_max = 1,5 s* = 0,0247) do not
-    reproduce the printed flags. They are reproduced with u_max = sigma_pt and any u_min in
-    (0,002; 0,0025], i.e. a characterisation uncertainty that the example does not state."""
+def test_e4_uncertainty_flags_follow_the_expanded_uncertainty():
+    """9.8.3 and 9.8.4 give limits for a reported standard uncertainty: u_min = u(x_pt) = 0,0041 and
+    u_max = 1,5 s* = 0,0247. The flags printed in Table E.6 are reproduced when these limits are
+    compared with the expanded uncertainty U_lab (21 of 21); with u_lab = U_lab / k only 9 agree."""
     s_star = robust.algorithm_a([r[1] for r in E.E4]).scale
-    by_9_8 = [scores.uncertainty_flag(r[2] / r[3], E.E4_BIG_U / 2, 1.5 * s_star) for r in E.E4]
+    u_min, u_max = E.E4_BIG_U / 2, 1.5 * s_star
     printed = [r[4] for r in E.E4]
-    assert by_9_8 != printed
-    for u_min in (0.0021, 0.0023, 0.0025):
-        assert [scores.uncertainty_flag(r[2] / r[3], u_min, E.E4_SIGMA) for r in E.E4] == printed
+    assert [scores.uncertainty_flag(r[2], u_min, u_max) for r in E.E4] == printed
+    with_u = [scores.uncertainty_flag(r[2] / r[3], u_min, u_max) for r in E.E4]
+    assert sum(a == b for a, b in zip(with_u, printed)) == 9
 
 
 # ---------------------------------------------------------------- E.5

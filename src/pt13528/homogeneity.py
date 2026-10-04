@@ -56,6 +56,8 @@ def homogeneity(samples: Sequence[Sequence[float]], sigma_pt: Optional[float] = 
         raise ValueError("samples must be g x m with g >= 2 and m >= 2 (balanced design)")
     if not np.all(np.isfinite(x)):
         raise ValueError("values must be finite")
+    if (sigma_pt is not None and not sigma_pt > 0) or (delta_e is not None and not delta_e > 0):
+        raise ValueError("sigma_pt and delta_E must be positive")
     g, m = x.shape
     item_mean = x.mean(axis=1)
     s_x2 = float(item_mean.var(ddof=1))
@@ -87,6 +89,8 @@ def homogeneity_single(values: Iterable[float], sigma_pt: Optional[float] = None
     v = np.asarray(list(values), dtype=float)
     if v.size < 2:
         raise ValueError("at least two items are required")
+    if not np.all(np.isfinite(v)):
+        raise ValueError("values must be finite")
     s = float(v.std(ddof=1))
     crit = 0.3 * sigma_pt if sigma_pt is not None else (0.1 * delta_e if delta_e is not None else None)
     return Homogeneity(int(v.size), 1, float(v.mean()), s, None, s, crit,
@@ -121,6 +125,8 @@ def stability(y1: Iterable[float], y2: Iterable[float], sigma_pt: Optional[float
         raise ValueError("give sigma_pt or delta_E")
     a = np.asarray(list(y1), dtype=float)
     b = np.asarray(list(y2), dtype=float)
+    if a.size == 0 or b.size == 0 or not (np.all(np.isfinite(a)) and np.all(np.isfinite(b))):
+        raise ValueError("both occasions need at least one result and only finite values")
     crit = 0.3 * sigma_pt if sigma_pt is not None else 0.1 * delta_e
     diff = abs(float(a.mean()) - float(b.mean()))
     exp_crit = stable_exp = None

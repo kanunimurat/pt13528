@@ -22,6 +22,7 @@ class AssignedValue(NamedTuple):
     method: str
     scale: Optional[float] = None
     p: Optional[int] = None
+    degenerate: bool = False     # no standard deviation could be derived from the results
 
 
 def combine_uncertainty(u_char: float, u_hom: float = 0.0, u_trans: float = 0.0, u_stab: float = 0.0) -> float:
@@ -50,32 +51,35 @@ def u_robust(scale: float, p: int, factor: float = 1.25) -> float:
     return factor * scale / math.sqrt(p)
 
 
-def consensus(x: Iterable[float], method: str = "algorithm_a", median_scale: str = "niqr") -> AssignedValue:
+def consensus(x: Iterable[float], method: str = "algorithm_a", median_scale: str = "niqr",
+              tol: str | float = robust.DEFAULT_TOL) -> AssignedValue:
     """7.7 - consensus value from participant results with u(x_pt) from Formula (6).
 
     method: 'algorithm_a', 'median', 'q_hampel' or 'mean'. For the median the
     scale entering Formula (6) is nIQR by default (this reproduces Table E.5)
     or MADe with ``median_scale='made'``. For the arithmetic mean
-    u = s / sqrt(p).
+    u = s / sqrt(p). ``tol`` is the stopping criterion of Algorithm A
+    (see :func:`robust.algorithm_a`). ``degenerate`` is set when the scale
+    is zero, in which case u(x_pt) is zero as well and has no meaning.
     """
     a = robust._arr(x)
     p = int(a.size)
     if median_scale not in ("niqr", "made"):
         raise ValueError("median_scale is 'niqr' or 'made'")
     if method == "algorithm_a":
-        r = robust.algorithm_a(a)
-        return AssignedValue(r.location, u_robust(r.scale, p), method, r.scale, p)
+        r = robust.algorithm_a(a, tol=tol)
+        return AssignedValue(r.location, u_robust(r.scale, p), method, r.scale, p, not r.scale > 0)
     if method == "median":
         s = robust.niqr(a) if median_scale == "niqr" else robust.made(a)
-        return AssignedValue(robust.median(a), u_robust(s, p), method, s, p)
+        return AssignedValue(robust.median(a), u_robust(s, p), method, s, p, not s > 0)
     if method == "q_hampel":
         r = robust.q_hampel(a)
-        return AssignedValue(r.location, u_robust(r.scale, p), method, float(r.scale), p)
+        return AssignedValue(r.location, u_robust(r.scale, p), method, float(r.scale), p, not r.scale > 0)
     if method == "mean":
         if p < 2:
             raise ValueError("the standard deviation needs at least two results")
         s = float(a.std(ddof=1))
-        return AssignedValue(float(a.mean()), s / math.sqrt(p), method, s, p)
+        return AssignedValue(float(a.mean()), s / math.sqrt(p), method, s, p, not s > 0)
     raise ValueError("unknown method")
 
 
