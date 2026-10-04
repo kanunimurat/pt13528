@@ -10,9 +10,10 @@ regenerated here from fixed seeds, so the comparison can be repeated without
 the PHP code. The PHP engine comes from the same group as this library; the
 comparison shows where the two implementations agree, not that they are
 independent readings of the standard (see tests/test_external.py for that).
-Since version 0.1.3 the Q method of the library merges differences that are
-equal in exact arithmetic; the PHP engine (stored outputs of version 1.5.0)
-does not, so the two differ in most of the sets with ties.
+php_200_before_fix.json holds the outputs of the PHP engine before its Q
+method merged differences that are equal in exact arithmetic (the library
+does so since version 0.1.3, the PHP engine since October 2026);
+php_200.json holds the outputs after that correction.
 
 Run from the repository root:  python crosscheck/compare.py
 """
@@ -86,7 +87,9 @@ def main():
     # even-numbered sets are continuous, odd-numbered sets are rounded to one decimal (ties)
     largest = {k: max(abs(a[k] - b[k]) for a, b in zip(py[0::2], php[0::2])) for k in py[0]}
     largest_ties = {k: max(abs(a[k] - b[k]) for a, b in zip(py[1::2], php[1::2])) for k in py[0]}
-    q_rel = [abs(a["Q method"] - b["Q method"]) / a["Q method"] for a, b in zip(py[1::2], php[1::2])]
+    before = json.load(open(os.path.join(HERE, "php_200_before_fix.json")))
+    q_rel = [abs(a["Q method"] - b["Q method"]) / a["Q method"] for a, b in zip(py[1::2], before[1::2])]
+    q_rel_0 = [abs(a["Q method"] - b["Q method"]) / a["Q method"] for a, b in zip(py[0::2], before[0::2])]
     differing_200 = [i for i, (a, b) in enumerate(zip(py, php)) if abs(a["Algorithm A s*"] - b["Algorithm A s*"]) > 1e-9]
     xs = list(sets_5000())
     py5 = [robust.algorithm_a(x) for x in xs]
@@ -115,8 +118,10 @@ def main():
     res = {
         "largest absolute difference, Python - PHP, 100 sets without ties": largest,
         "largest absolute difference, Python - PHP, 100 sets with ties": largest_ties,
-        "Q method in the 100 sets with ties: sets that differ by more than 1e-9, median and largest relative difference":
+        "Q method, PHP engine before the correction, 100 sets with ties: sets that differ by more than 1e-9, "
+        "median and largest relative difference":
             [int(sum(r > 1e-9 for r in q_rel)), float(np.median(q_rel)), float(max(q_rel))],
+        "Q method, PHP engine before the correction, 100 sets without ties: largest relative difference": float(max(q_rel_0)),
         "sets with a different Algorithm A result": {"of 200": len(differing_200), "of 5000": len(differing_5000)},
         "three-figure rule against convergence": {
             "sets": n,

@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.1.4 (2026-10-04)
+
+No change in any calculation.
+
+- `tests/test_real_round.py`: the participants of the recomputed round are labelled P1, P2 and P3.
+- `crosscheck/`: `php_200.json` now holds the outputs of the PHP engine after its Q method was corrected
+  in the same way as in 0.1.3 (tied differences merged); the earlier outputs are kept as
+  `php_200_before_fix.json`. `compare.py` reports both. All 16 quantities now agree to below 1e-10 except
+  Algorithm A in one set.
+
 ## 0.1.3 (2026-10-04)
 
 Results for valid, non-degenerate data are unchanged with the default settings (differences at the level of

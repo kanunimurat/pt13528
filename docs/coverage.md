@@ -190,16 +190,17 @@ not depend on the unit of the data (`tests/test_inputs.py`, units from 1e-12 to 
   on 200 data sets (16 quantities) and on 5000 more (Algorithm A). The PHP
   engine comes from the same group, and several of its functions were written
   together with this library, so this shows agreement of two implementations
-  and not independence. In the 100 sets without ties all quantities agree to
-  below 1e-10. In the 100 sets with ties two things differ. Algorithm A differs
-  in one set (and in none of the 5000 others), where a first iterate of
-  exactly 41,15 is rounded to three figures as 41,1 by Python and as 41,2 by
-  PHP, so that the two stop one iteration apart. The Q method differs in 64
-  sets (median 0,3 %, at most 17 %) and Q/Hampel with it, because the PHP
-  engine (version 1.5.0), like this library before 0.1.3, does not merge
-  differences that are equal in exact arithmetic. The defect was common to
-  both implementations and was found by a test of unit independence, not by
-  this comparison.
+  and not independence. All quantities agree to below 1e-10 except Algorithm
+  A in one set of the 5200 (a set with ties), where a first iterate of exactly
+  41,15 is rounded to three figures as 41,1 by Python and as 41,2 by PHP, so
+  that the two stop one iteration apart.
+- Until October 2026 both implementations shared a defect in the Q method:
+  differences that are equal in exact arithmetic were not merged. The two
+  agreed, so the comparison did not show it; a test of unit independence did.
+  The library was corrected in 0.1.3 and the PHP engine afterwards. Against
+  the outputs of the PHP engine before its correction
+  (`php_200_before_fix.json`) the Q method differs in 64 of the 100 sets with
+  ties (median 0,3 %, at most 17 %) and in none of the sets without ties.
 - The Q method with ties is checked against integer arithmetic
   (`tests/test_external.py`).
 - `tests/test_real_round.py` recomputes a real round from its formal report.

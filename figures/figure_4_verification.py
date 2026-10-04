@@ -74,8 +74,9 @@ lab = {"expanded criterion": "exp.\ncrit.", "Q/Hampel x*": "Q/H.\n$x^*$", "Q met
 ax.set_xticks(list(range(len(order_))) + [xa + i for i in range(len(ties_))]); ax.set_xticklabels([lab.get(k, k) for k in order_] + [lab.get(k, k) for k in ties_], fontsize=6.2)
 for i, k in enumerate(order_):
     if mx0[k] == 0: ax.text(i, 3e-17, "0", fontsize=6.8, color=BLUE, ha="center", va="bottom", fontweight="bold")
-nq = sum(abs(x["Q method"] - y["Q method"]) > 1e-9 * x["Q method"] for x, y in zip(A[1::2], B[1::2]))
-ax.text(xa - 0.75, 6e-1, f"With ties: Algorithm A differs in 1 set of 5200\n(first iterate exactly 41.15, rounded to 41.1 or 41.2).\nThe Q method differs in {nq} of 100 sets: the PHP\nengine does not merge tied differences", fontsize=6.6, color=ORANGE, ha="right", va="top", linespacing=1.25)
+B0 = json.load(open(os.path.join(HERE, "..", "crosscheck", "php_200_before_fix.json")))   # PHP engine before its Q method merged tied differences
+nq = sum(abs(x["Q method"] - y["Q method"]) > 1e-9 * x["Q method"] for x, y in zip(A[1::2], B0[1::2]))
+ax.text(xa - 0.75, 6e-1, f"With ties: Algorithm A differs in 1 set of 5200\n(first iterate exactly 41.15, rounded to 41.1 or 41.2).\nBefore tied differences were merged in both,\nthe Q method differed in {nq} of 100 sets", fontsize=6.6, color=ORANGE, ha="right", va="top", linespacing=1.25)
 ax.set_xlim(-0.7, xa + len(ties_) - 0.3); ax.set_ylabel("largest |difference|", fontsize=7.6, color=MID, labelpad=2); clean(ax)
 
 ptitle(2, 26.3, "c", "Printed results that do not follow from the text, and the 2026 amendment", "status after ISO 13528:2022/Amd 1:2026")
