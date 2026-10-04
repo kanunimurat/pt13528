@@ -102,11 +102,15 @@ def classify_en(score: Optional[float]) -> str:
     """9.7.2 - |E_n| >= 1,0 is a signal; -1,0 < E_n < 1,0 is not."""
     if score is None:
         return "not scored"
+    if score != score:
+        raise ValueError("the score is not a number")
     return "acceptable" if abs(score) < 1.0 else "action"
 
 
 def classify_d(d: float, delta_e: float) -> str:
     """9.3.2 - acceptable when -delta_E < D < delta_E (same rule for D% and PA)."""
+    if d != d or not delta_e > 0:
+        raise ValueError("D must be a number and delta_E positive")
     return "acceptable" if abs(d) < delta_e else "action"
 
 
@@ -128,6 +132,8 @@ def uncertainty_flag(u_x: float, u_min: float, u_max: float) -> str:
     (u_min <= u <= u_max), 'b' (u < u_min) or 'c' (u > u_max); the letters
     follow Table E.6.
     """
+    if u_x != u_x or u_min != u_min or u_max != u_max:
+        raise ValueError("uncertainties must be numbers")
     if u_x < u_min:
         return "b"
     if u_x > u_max:

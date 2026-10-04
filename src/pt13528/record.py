@@ -124,8 +124,8 @@ def round_record(x: Iterable[float], *, method: str = "algorithm_a",
             raise ValueError("sigma_pt is required when x_pt is given")
         sigma_pt, source = float(scale), "participant results of this round (8.6)"
         if sigma_pt <= 0:
-            raise ValueError("the robust standard deviation of the results is zero "
-                             "(more than half of them are identical); give sigma_pt")
+            raise ValueError("the standard deviation of the results is zero "
+                             "(too many identical results); give sigma_pt")
     else:
         source = "set by the provider (8.2 to 8.5)"
     if sigma_pt <= 0:

@@ -106,3 +106,34 @@ def test_hampel_against_root_search():
         med = float(np.median(x))
         best = min(inside, key=lambda r: abs(r - med))
         assert robust.hampel(x, s) == pytest.approx(best, abs=1e-8 * max(1.0, abs(best)))
+
+
+def _q_method_exact(k):
+    """Q method (C.22 to C.25) for one integer result per laboratory; ties are exact."""
+    k = [int(v) for v in k]
+    p = len(k)
+    d = sorted(abs(k[i] - k[j]) for i in range(p - 1) for j in range(i + 1, p))
+    n = len(d)
+    pts = sorted(set(d))
+    h = [sum(v <= x for v in d) / n for x in pts]            # H1 at its discontinuity points
+    h0 = h[0] if pts[0] == 0 else 0.0
+    gx, g = [0.0], [0.0]
+    for i, x in enumerate(pts):
+        if x == 0:
+            continue
+        gx.append(float(x))
+        g.append(0.5 * (h[i] + (h[i - 1] if i else 0.0)))
+    return float(np.interp(0.25 + 0.75 * h0, g, gx)) / (math.sqrt(2.0) * norm.ppf(0.625 + 0.375 * h0))
+
+
+def test_q_method_with_ties_against_integer_arithmetic():
+    """Results reported to one decimal: the differences 12.3 - 12.2 and 5.1 - 5.0 are equal, but not in binary."""
+    rng = np.random.default_rng(17)
+    for _ in range(300):
+        p = int(rng.integers(4, 31))
+        k = np.round(rng.normal(rng.uniform(-500, 500), 10 ** rng.uniform(0, 1.7), p)).astype(int)
+        ref = _q_method_exact(k)
+        if not ref > 0:
+            continue
+        for unit in (0.1, 1e-3, 1e-9, 7.0):
+            assert robust.q_method(k * unit) / unit == pytest.approx(ref, rel=1e-9)

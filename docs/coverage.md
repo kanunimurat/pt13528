@@ -108,7 +108,8 @@ Three items are mismatches between the text and the table:
    mean and standard deviation of Algorithm A. The printed z scores and the
    "Average" and "Standard deviation" rows are reproduced by the arithmetic
    mean and standard deviation (11,54 / 3,29 and 7,66 / 2,90); Algorithm A
-   gives 11,17 / 2,69 and 7,27 / 2,36.
+   gives 11,17 / 2,68 and 7,27 / 2,35 (three-figure rule; 2,69 and 2,36 at
+   convergence).
 3. **E.3, Table E.5, row "Median, nIQR (MADe)".** The printed u(x_pt) of
    0,0086 is reproduced with nIQR (1,25 x 0,0402 / sqrt(34)); MADe gives
    0,0083. The row names both estimators, and the text does not say which one
@@ -150,7 +151,7 @@ generated data sets (`crosscheck/compare.py`: 6 to 40 results, normal with up
 to 20 % shifted results, half of the sets rounded to one decimal) it stops
 after a median of 6 iterations, against 34 for convergence to a relative
 1e-12, and the resulting s* differs from the converged one in the third
-significant figure in 2594 sets (50 %), x* in 105 sets (2 %). The relative
+significant figure in 2594 sets (50 %), x* in 107 sets (2 %). The relative
 difference of s* has a median of 0,09 %, a 95th percentile of 0,56 % and a
 maximum of 10 %. With x_pt = x* and sigma_pt = s*, the signal of a z score
 (acceptable, warning, action) changes for 34 of the 120 754 results, in 34
@@ -161,9 +162,16 @@ the changes fall below 1e-12 s*.
 ## Degenerate data
 
 When more than half of the results are identical, MADe is zero and the
-iteration of Algorithm A drives s* to zero. `algorithm_a` then returns
-`scale=0.0` and `degenerate=True`, and `round_record` raises unless sigma_pt
-is given from Clause 8. Non-finite values are rejected.
+iteration starts from the standard deviation (C.3.1). When the identical share
+is larger (from about two thirds, depending on the other results; always for
+6 of 7, 8 of 10 and 16 of 20 results), the iteration of Algorithm A drives s*
+to zero. `algorithm_a` then returns `scale=0.0` and `degenerate=True`, and
+`round_record` raises unless sigma_pt is given from Clause 8. `consensus`
+returns a scale and an uncertainty of zero in that case. The estimators, the
+homogeneity check and the signal functions reject non-finite values.
+
+Algorithm A, Algorithm S, the Q method, the Hampel estimator and Q/Hampel do
+not depend on the unit of the data (`tests/test_inputs.py`, units from 1e-12 to 1e12).
 
 ## Comparison with other software
 
@@ -176,14 +184,22 @@ is given from Clause 8. Non-finite values are rejected.
   robustbase and agree with Table C.2 and Formulae (C.20) and (C.21). MADe
   and nIQR agree to the precision of the printed constants. The finite-step
   Hampel estimator equals the root nearest the median found by a separate
-  root search. The Q method and Algorithm S have no comparison with code
+  root search, which shares only the psi function with the library. The Q method and Algorithm S have no comparison with code
   that the authors did not write.
 - `crosscheck/compare.py` compares with the PHP engine of the LAKSiS platform
   on 200 data sets (16 quantities) and on 5000 more (Algorithm A). The PHP
   engine comes from the same group, and several of its functions were written
   together with this library, so this shows agreement of two implementations
-  and not independence. All quantities agree to below 1e-10 except Algorithm
-  A in one set of the 5200, where a first iterate of exactly 41,15 is rounded
-  to three figures as 41,1 by Python and as 41,2 by PHP, so that the two stop
-  one iteration apart.
+  and not independence. In the 100 sets without ties all quantities agree to
+  below 1e-10. In the 100 sets with ties two things differ. Algorithm A differs
+  in one set (and in none of the 5000 others), where a first iterate of
+  exactly 41,15 is rounded to three figures as 41,1 by Python and as 41,2 by
+  PHP, so that the two stop one iteration apart. The Q method differs in 64
+  sets (median 0,3 %, at most 17 %) and Q/Hampel with it, because the PHP
+  engine (version 1.5.0), like this library before 0.1.3, does not merge
+  differences that are equal in exact arithmetic. The defect was common to
+  both implementations and was found by a test of unit independence, not by
+  this comparison.
+- The Q method with ties is checked against integer arithmetic
+  (`tests/test_external.py`).
 - `tests/test_real_round.py` recomputes a real round from its formal report.

@@ -77,7 +77,8 @@ pytest
   statsmodels, which was written independently of the standard, and the
   Hampel estimator with a separate root search.
 - `tests/test_inputs.py` covers degenerate and invalid input and the
-  independence of the results from the unit of the data.
+  independence of Algorithm A, Algorithm S, the Q method and the Hampel
+  estimator from the unit of the data.
 - `tests/test_real_round.py` recomputes a real round from its formal report.
 - `figures/` holds the scripts and seeds of the simulated examples shown in the article.
 - `crosscheck/compare.py` repeats the comparison with the PHP engine of the
@@ -94,7 +95,7 @@ responsibility of the proficiency testing provider (ISO/IEC 17043).
 ## How to cite
 
 Sert M, Yağan MK, Aydın A, Heidarizadeh M, Tilki E, Selek AE, Mete Sert A.
-pt13528: A Python library for proficiency testing statistics according to ISO 13528
+pt13528: A Python library for proficiency testing statistics according to ISO 13528.
 Zenodo; 2026. https://doi.org/10.5281/zenodo.23135796 (this DOI always resolves to the latest version; each version has its own DOI on the Zenodo page).
 
 ## Licence

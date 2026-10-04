@@ -1,5 +1,29 @@
 # Changelog
 
+## 0.1.3 (2026-10-04)
+
+Results for valid, non-degenerate data are unchanged with the default settings (differences at the level of
+floating-point rounding).
+
+- `algorithm_a` iterates on x minus the median. In 0.1.2 a collapsing s* was not detected when the spread
+  of the results was small against their level (for example nine results of 10 and two that differ in the
+  sixth decimal), and a tiny s* was returned as converged.
+- The statement of 0.1.2 that s* goes to zero "when more than half of the results are identical" was wrong.
+  With more than half identical, MADe is zero and the iteration starts from the standard deviation; s* goes
+  to zero only for a larger identical share (from about two thirds, depending on the other results).
+  Docstring, documentation and error message are corrected.
+- `q_method` merges differences that are equal in exact arithmetic. Results reported to a fixed number of
+  decimals give tied differences (12,3 - 12,2 and 5,1 - 5,0) that differ by rounding noise in binary, and
+  0.1.2 treated them as separate discontinuity points of H1. For such data the Q-method standard deviation
+  changes (in the 100 tied sets of `crosscheck/`: 64 sets, median 0,3 %, at most 17 %), and Q/Hampel with
+  it. Continuous data and the printed value of example E.3 are unaffected. A test against integer
+  arithmetic is added.
+- `hampel` (finite-step) and `q_hampel` search the roots on standardized results. Before, two absolute
+  tolerances made the result depend on the unit of the data for values below about 1e-6.
+- `algorithm_s` reports a collapse to zero as `degenerate=True`; a negative or non-finite fixed `scale` of
+  `algorithm_a` and an unknown `method` of `hampel` are rejected; `classify_en`, `classify_d` and
+  `uncertainty_flag` reject NaN.
+
 ## 0.1.2 (2026-10-04)
 
 Results for valid, non-degenerate data are unchanged with the default settings.

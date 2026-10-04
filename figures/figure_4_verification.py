@@ -23,8 +23,7 @@ print(len(rows), "comparisons; max |dev| =", max(abs(v) for _, v in dev)); print
 # ---------- (b) Python against PHP ----------
 import compare
 A = compare.python_200(); B = json.load(open(os.path.join(HERE, "..", "crosscheck", "php_200.json")))   # 200 sets
-keys = list(A[0]); mx = {k: max(abs(x[k] - y[k]) for x, y in zip(A, B)) for k in keys}
-print(mx)
+keys = list(A[0])
 
 fig = plt.figure(figsize=(7.4, 7.3))
 bg = fig.add_axes([0, 0, 1, 1]); bg.set_xlim(0, 100); bg.set_ylim(0, 100); bg.axis("off")
@@ -59,22 +58,25 @@ ax.set_ylim(-lim, 3.7); ax.set_xlim(-0.6, x0 + 5.2); ax.set_yticks([-2, -1, -0.5
 ax.set_ylabel("computed − printed", fontsize=7.6, color=MID, labelpad=2); clean(ax)
 ax.text((len(groups) - 2) / 2, -4.25, "worked example of Annex E", fontsize=6.8, color=MID, ha="center", va="center")
 
-ptitle(2, 57.5, "b", "Python library against the PHP engine", "16 quantities on 200 generated data sets; largest absolute difference")
+ptitle(2, 57.5, "b", "Python library against the PHP engine", "16 quantities; largest absolute difference in 100 generated sets without ties (blue) and in 100 with ties, where larger (orange)")
 ax = fig.add_axes([0.20, 0.335, 0.775, 0.185])
-names = [k for k in keys if not k.startswith("Algorithm A")]
-order_ = sorted(names, key=lambda k: mx[k])
-vals_ = [max(mx[k], 1e-17) for k in order_]
-ax.bar(range(len(order_)), vals_, color=BLUE, width=0.66, lw=0)
+mx0 = {k: max(abs(x[k] - y[k]) for x, y in zip(A[0::2], B[0::2])) for k in keys}
+mx1 = {k: max(abs(x[k] - y[k]) for x, y in zip(A[1::2], B[1::2])) for k in keys}
+order_ = sorted(keys, key=lambda k: mx0[k])
+ax.bar(range(len(order_)), [max(mx0[k], 1e-17) for k in order_], color=BLUE, width=0.66, lw=0)
+ties_ = [k for k in ("Algorithm A x*", "Algorithm A s*", "Q/Hampel x*", "Q method") if mx1[k] > 1e-9]
 xa = len(order_) + 0.6
-ax.bar([xa, xa + 1], [mx["Algorithm A x*"], mx["Algorithm A s*"]], color=ORANGE, width=0.66, lw=0)
+ax.bar([xa + i for i in range(len(ties_))], [mx1[k] for k in ties_], color=ORANGE, width=0.66, lw=0)
 ax.set_yscale("log"); ax.set_ylim(1e-17, 1e0); ax.axhline(1e-10, color=MID, lw=0.6, ls=(0, (3, 2)))
 ax.text(-0.5, 2.2e-10, "$10^{-10}$", fontsize=6.8, color=MID, va="bottom")
-lab = {"expanded criterion": "exp.\ncrit.", "Q/Hampel x*": "Q/H.\n$x^*$", "Q method": "Q\nmeth.", "Algorithm S": "Algorithm\nS", "zeta": r"$\zeta$", "E_n": "$E_n$", "z'": "$z'$", "z": "$z$", "s_s": "$s_s$", "s_w": "$s_w$"}
-ax.set_xticks(list(range(len(order_))) + [xa, xa + 1]); ax.set_xticklabels([lab.get(k, k) for k in order_] + ["Alg. A\n$x^*$", "Alg. A\n$s^*$"], fontsize=6.6)
+lab = {"expanded criterion": "exp.\ncrit.", "Q/Hampel x*": "Q/H.\n$x^*$", "Q method": "Q\nmeth.", "Algorithm S": "Alg.\nS", "zeta": r"$\zeta$", "E_n": "$E_n$", "z'": "$z'$", "z": "$z$", "s_s": "$s_s$", "s_w": "$s_w$",
+       "Algorithm A x*": "Alg.\nA $x^*$", "Algorithm A s*": "Alg.\nA $s^*$", "median": "med.", "MADe": "MADe", "nIQR": "nIQR"}
+ax.set_xticks(list(range(len(order_))) + [xa + i for i in range(len(ties_))]); ax.set_xticklabels([lab.get(k, k) for k in order_] + [lab.get(k, k) for k in ties_], fontsize=6.2)
 for i, k in enumerate(order_):
-    if mx[k] == 0: ax.text(i, 3e-17, "0", fontsize=6.8, color=BLUE, ha="center", va="bottom", fontweight="bold")
-ax.text(xa - 0.7, 3e-2, "Algorithm A: 1 set of 5200 differs.\nA first iterate of exactly 41.15 is\nrounded to 41.1 by one and to 41.2\nby the other; one iteration apart", fontsize=6.8, color=ORANGE, ha="right", va="top", linespacing=1.25)
-ax.set_xlim(-0.7, xa + 1.7); ax.set_ylabel("largest |difference|", fontsize=7.6, color=MID, labelpad=2); clean(ax)
+    if mx0[k] == 0: ax.text(i, 3e-17, "0", fontsize=6.8, color=BLUE, ha="center", va="bottom", fontweight="bold")
+nq = sum(abs(x["Q method"] - y["Q method"]) > 1e-9 * x["Q method"] for x, y in zip(A[1::2], B[1::2]))
+ax.text(xa - 0.75, 6e-1, f"With ties: Algorithm A differs in 1 set of 5200\n(first iterate exactly 41.15, rounded to 41.1 or 41.2).\nThe Q method differs in {nq} of 100 sets: the PHP\nengine does not merge tied differences", fontsize=6.6, color=ORANGE, ha="right", va="top", linespacing=1.25)
+ax.set_xlim(-0.7, xa + len(ties_) - 0.3); ax.set_ylabel("largest |difference|", fontsize=7.6, color=MID, labelpad=2); clean(ax)
 
 ptitle(2, 26.3, "c", "Printed results that do not follow from the text, and the 2026 amendment", "status after ISO 13528:2022/Amd 1:2026")
 tab = [("Table E.1, third column, $x^*$", "printed 23.95; both stopping rules give 23.96", "open", ORANGE),

@@ -33,10 +33,11 @@ def test_three_figure_rule_does_not_depend_on_the_unit():
 
 
 @pytest.mark.parametrize("tol", ["sig3", 1e-12])
-def test_more_than_half_identical_results(tol):
+def test_large_majority_of_identical_results(tol):
     r = robust.algorithm_a([5, 5, 5, 5, 5, 5, 9], tol=tol)
     assert r.scale == 0.0 and r.degenerate and r.location == pytest.approx(5.0)
     assert not robust.algorithm_a([1, 2, 3, 4, 5, 6, 9], tol=tol).degenerate
+    assert not robust.algorithm_a([5, 5, 5, 5, 6, 7, 9], tol=tol).degenerate          # 4 of 7 identical: s* stays positive
     with pytest.raises(ValueError, match="identical"):
         record.round_record([5, 5, 5, 5, 5, 5, 9])
     rec = record.round_record([5, 5, 5, 5, 5, 5, 9], sigma_pt=0.5)       # a value from Clause 8 is still usable
@@ -65,6 +66,12 @@ def test_non_finite_input_is_rejected():
     with pytest.raises(ValueError):
         scores.classify_z(NAN)
     with pytest.raises(ValueError):
+        scores.classify_en(NAN)
+    with pytest.raises(ValueError):
+        scores.classify_d(NAN, 1.0)
+    with pytest.raises(ValueError):
+        scores.uncertainty_flag(NAN, 0.1, 1.0)
+    with pytest.raises(ValueError):
         scores.uncertainty_negligible(-0.1, sigma_pt=1.0)
     with pytest.raises(ValueError):
         record.round_record([1, 2, 3], x_pt=2.0, u_x_pt=-0.1, sigma_pt=1.0)
@@ -73,3 +80,40 @@ def test_non_finite_input_is_rejected():
 def test_hampel_iterative_with_two_distant_groups():
     x = [0.0] * 5 + [100.0] * 5
     assert math.isfinite(robust.hampel(x, 1.0, "iterative"))
+
+
+@pytest.mark.parametrize("tol", ["sig3", 1e-10, 1e-12])
+@pytest.mark.parametrize("x", [
+    [10.0] * 9 + [10.000001, 9.999998],
+    [1000.0] * 9 + [1000.001, 999.998],
+    [1000000.0] * 9 + [1000000.1, 999999.8],
+])
+def test_collapse_is_detected_when_the_spread_is_small_against_the_level(x, tol):
+    r = robust.algorithm_a(x, tol=tol)
+    assert r.degenerate and r.scale == 0.0
+    with pytest.raises(ValueError):
+        record.round_record(x)
+
+
+def test_hampel_and_q_hampel_do_not_depend_on_the_unit():
+    rng = np.random.default_rng(7)
+    x = rng.normal(10, 1, 20)
+    x[3] = 17
+    ref = robust.q_hampel(x).location
+    for unit in (1e-12, 1e-9, 1e-6, 1e6, 1e12):
+        assert robust.q_hampel(x * unit).location / unit == pytest.approx(ref, rel=1e-10)
+        assert robust.hampel(x * unit, 1.2 * unit) / unit == pytest.approx(robust.hampel(x, 1.2), rel=1e-10)
+    y = np.round(x, 1)                                       # ties
+    for unit in (1e-9, 1e-3, 7.0, 1e6):
+        assert robust.q_method(y * unit) / unit == pytest.approx(robust.q_method(y), rel=1e-10)
+
+
+def test_negative_fixed_scale_is_rejected():
+    with pytest.raises(ValueError):
+        robust.algorithm_a([1, 2, 3, 4, 9], update_scale=False, scale=-1.0)
+
+
+def test_algorithm_s_with_a_large_majority_of_zeros():
+    r = robust.algorithm_s([0.0] * 9 + [1.0], 1)
+    assert r.location == 0.0 and r.degenerate
+    assert not robust.algorithm_s([0.2, 0.5, 0.1, 0.4, 0.3], 1).degenerate

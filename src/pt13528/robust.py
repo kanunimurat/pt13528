@@ -89,9 +89,12 @@ def algorithm_a(x: Iterable[float], tol: str | float = "sig3", max_iter: int = 1
         convergence criteria"); the criterion is relative, so the result
         does not depend on the unit of the data.
 
-    When more than half of the results are identical, the iteration drives
-    s* towards zero. This is detected and returned as ``scale=0.0`` with
+    When a large majority of the results is identical (from about two
+    thirds, depending on the other results), the iteration drives s* towards
+    zero. This is detected and returned as ``scale=0.0`` with
     ``degenerate=True``; no standard deviation can be derived from such data.
+    The iteration runs on x minus the median, so that the detection does not
+    depend on the level of the results.
     update_scale, scale
         C.3.2 b): pass ``update_scale=False`` to keep s* fixed during iteration
         (at MADe, or at ``scale`` when given, e.g. the Q-method estimate).
@@ -100,12 +103,16 @@ def algorithm_a(x: Iterable[float], tol: str | float = "sig3", max_iter: int = 1
     p = a.size
     if p == 1:
         return RobustResult(location=float(a[0]), scale=0.0, iterations=0, converged=True, degenerate=True)
-    x_star = float(np.median(a))
+    if scale is not None and not (math.isfinite(scale) and scale >= 0):
+        raise ValueError("scale must be finite and not negative")
+    c = float(np.median(a))                 # iterate on x - median: identical results become exactly zero,
+    a = a - c                               # so a collapsing s* is not masked by rounding noise of large x
+    x_star = 0.0
     s_star = float(scale) if scale is not None else made(a)
     if s_star == 0.0:                       # C.3.1 NOTE 2
         s_star = float(np.std(a, ddof=1))
     if s_star == 0.0:
-        return RobustResult(location=x_star, scale=0.0, iterations=0, converged=True, degenerate=True)
+        return RobustResult(location=c, scale=0.0, iterations=0, converged=True, degenerate=True)
     s_0 = s_star
     for it in range(1, max_iter + 1):
         delta = ALG_A_DELTA * s_star
@@ -113,16 +120,16 @@ def algorithm_a(x: Iterable[float], tol: str | float = "sig3", max_iter: int = 1
         new_x = float(w.mean())
         new_s = float(ALG_A_FACTOR * np.sqrt(np.sum((w - new_x) ** 2) / (p - 1))) if update_scale else s_star
         if tol == "sig3":
-            done = _sig3(new_x) == _sig3(x_star) and _sig3(new_s) == _sig3(s_star)
+            done = _sig3(c + new_x) == _sig3(c + x_star) and _sig3(new_s) == _sig3(s_star)
         else:
             limit = max(tol * new_s, _EPS * abs(new_x))
             done = abs(new_x - x_star) < limit and abs(new_s - s_star) < limit
         if update_scale and new_s < _COLLAPSE * s_0:
-            return RobustResult(location=new_x, scale=0.0, iterations=it, converged=True, degenerate=True)
+            return RobustResult(location=c + new_x, scale=0.0, iterations=it, converged=True, degenerate=True)
         x_star, s_star = new_x, new_s
         if done:
-            return RobustResult(location=x_star, scale=s_star, iterations=it, converged=True, degenerate=False)
-    return RobustResult(location=x_star, scale=s_star, iterations=max_iter, converged=False, degenerate=False)
+            return RobustResult(location=c + x_star, scale=s_star, iterations=it, converged=True, degenerate=False)
+    return RobustResult(location=c + x_star, scale=s_star, iterations=max_iter, converged=False, degenerate=False)
 
 
 def algorithm_s(w: Iterable[float], nu: int, tol: str | float = "sig3", max_iter: int = 1000) -> RobustResult:
@@ -142,15 +149,18 @@ def algorithm_s(w: Iterable[float], nu: int, tol: str | float = "sig3", max_iter
     if w_star == 0.0:                       # C.4 NOTE
         w_star = float(np.sqrt(np.mean(a ** 2)))
     if w_star == 0.0:
-        return RobustResult(location=0.0, scale=0.0, iterations=0, converged=True)
+        return RobustResult(location=0.0, scale=0.0, iterations=0, converged=True, degenerate=True)
+    w_0 = w_star
     for it in range(1, max_iter + 1):
         psi = eta * w_star
         new = float(xi * np.sqrt(np.mean(np.minimum(a, psi) ** 2)))
+        if new < _COLLAPSE * w_0:           # a large majority of zeros drives w* to zero
+            return RobustResult(location=0.0, scale=0.0, iterations=it, converged=True, degenerate=True)
         done = (_sig3(new) == _sig3(w_star)) if tol == "sig3" else abs(new - w_star) < max(tol * new, _EPS * new)
         w_star = new
         if done:
-            return RobustResult(location=w_star, scale=w_star, iterations=it, converged=True)
-    return RobustResult(location=w_star, scale=w_star, iterations=max_iter, converged=False)
+            return RobustResult(location=w_star, scale=w_star, iterations=it, converged=True, degenerate=False)
+    return RobustResult(location=w_star, scale=w_star, iterations=max_iter, converged=False, degenerate=False)
 
 
 def qn(x: Iterable[float], h_rule: str = "rousseeuw-croux") -> float:
@@ -216,7 +226,13 @@ def q_method(results: Sequence[float] | Sequence[Sequence[float]]) -> float:
     w = np.concatenate(weights) * 2.0 / (p * (p - 1))
     order = np.argsort(d, kind="mergesort")
     d, w = d[order], w[order]
-    pts, idx = np.unique(d, return_index=True)
+    # Differences that are equal in exact arithmetic (results reported to a fixed number of
+    # decimals) differ by rounding noise in binary; they are merged so that H1 has one
+    # discontinuity per distinct difference, whatever the unit of the data.
+    tie = 16 * np.finfo(float).eps * max(float(np.max(np.abs(g))) for g in groups)
+    d = np.where(d <= tie, 0.0, d)
+    idx = np.concatenate([[0], np.flatnonzero(np.diff(d) > tie) + 1])
+    pts = d[idx]
     h = np.add.reduceat(w, idx).cumsum()          # H1 at each discontinuity point
     h0 = float(h[0]) if pts[0] == 0.0 else 0.0
     if pts[0] == 0.0:
@@ -247,7 +263,9 @@ def hampel(x: Iterable[float], scale: float, method: str = "finite") -> float:
     """
     y = _arr(x)
     med = float(np.median(y))
-    if scale <= 0:
+    if method not in ("finite", "iterative"):
+        raise ValueError("method must be 'finite' or 'iterative'")
+    if not scale > 0 or not math.isfinite(scale):
         return med
     if method == "iterative":
         x_star = med
@@ -264,12 +282,11 @@ def hampel(x: Iterable[float], scale: float, method: str = "finite") -> float:
                 return new
             x_star = new
         return x_star
-    if method != "finite":
-        raise ValueError("method must be 'finite' or 'iterative'")
-    nodes = np.sort(np.concatenate([y + c * scale for c in (-4.5, -3.0, -1.5, 1.5, 3.0, 4.5)]))
-    pm = np.array([_psi((y - d) / scale).sum() for d in nodes])
+    q = (y - med) / scale                   # standardized results: the search does not depend on the unit
+    nodes = np.sort(np.concatenate([q + c for c in (-4.5, -3.0, -1.5, 1.5, 3.0, 4.5)]))
+    pm = np.array([_psi(q - d).sum() for d in nodes])
     sols: list[float] = []
-    tiny = 1e-12 * max(1.0, float(np.max(np.abs(y))))
+    tiny = 1e-12 * max(1.0, float(np.max(np.abs(q))))
     for m in range(nodes.size - 1):
         a, b = pm[m], pm[m + 1]
         if abs(a) < 1e-12:
@@ -282,9 +299,9 @@ def hampel(x: Iterable[float], scale: float, method: str = "finite") -> float:
     if not sols:
         return med
     sols_arr = np.unique(np.round(np.array(sols), 12))
-    dist = np.abs(sols_arr - med)
+    dist = np.abs(sols_arr)
     best = np.flatnonzero(np.isclose(dist, dist.min(), rtol=0, atol=tiny))
-    return float(sols_arr[best[0]]) if best.size == 1 else med
+    return float(med + scale * sols_arr[best[0]]) if best.size == 1 else med
 
 
 def q_hampel(results: Sequence[float] | Sequence[Sequence[float]]) -> RobustResult:
