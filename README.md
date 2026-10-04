@@ -2,6 +2,8 @@
 
 *A Python library for proficiency testing statistics according to ISO 13528*
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23135797.svg)](https://doi.org/10.5281/zenodo.23135797)
+
 Statistical methods of **ISO 13528:2022 with Amd 1:2026** (*Statistical methods for use in
 proficiency testing by interlaboratory comparison*) as a small,
 framework-independent Python library.
@@ -67,6 +69,12 @@ exceptions documented in `docs/coverage.md`.
 The library computes; it does not decide. Choosing the method for the assigned
 value, the evaluation criterion and the handling of outliers is the
 responsibility of the proficiency testing provider (ISO/IEC 17043).
+
+## How to cite
+
+Sert M, Yağan MK, Aydın A, Heidarizadeh M, Tilki E, Selek AE, Mete Sert A.
+pt13528: A Python library for proficiency testing statistics according to ISO 13528
+(v0.1.0). Zenodo; 2026. https://doi.org/10.5281/zenodo.23135797
 
 ## Licence
 
