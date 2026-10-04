@@ -1,6 +1,7 @@
 # SPDX-License-Identifier: LGPL-3.0-or-later
 # Copyright (C) 2026 Kombobit Yazılım Madencilik LTD. ŞTİ.
-"""Comparison with code the authors did not write (statsmodels).
+"""Comparison with code the authors did not write (statsmodels, and the R packages metRology,
+MASS and robustbase through stored reference values).
 
 statsmodels implements Huber's proposal 2 and the Qn, MAD and IQR scale
 estimators independently of ISO 13528. Algorithm A of ISO 13528 is Huber's
@@ -15,8 +16,15 @@ finite-sample factors of Rousseeuw and Croux as tabulated, to six figures, in
 the R package robustbase; the factors are typed here and not taken from the
 library. The Hampel estimator is compared with a root search that shares no
 code with the finite-step algorithm.
+
+The R reference values are in crosscheck/r_reference.csv, produced by
+crosscheck/r_compare.R from crosscheck/r_sets.csv (R 4.3.3, metRology 0.9-29-2,
+MASS 7.3-60.0.1, robustbase 0.99-2). metRology was written by S. L. R. Ellison
+from ISO 5725-5, the source of Algorithms A and S.
 """
 import math
+import os
+import sys
 
 import numpy as np
 import pytest
@@ -137,3 +145,28 @@ def test_q_method_with_ties_against_integer_arithmetic():
             continue
         for unit in (0.1, 1e-3, 1e-9, 7.0):
             assert robust.q_method(k * unit) / unit == pytest.approx(ref, rel=1e-9)
+
+
+# ---------------------------------------------------------------- R packages (stored reference values)
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "crosscheck"))
+
+
+def test_against_metrology_mass_and_robustbase(capsys):
+    r_compare = pytest.importorskip("r_compare")
+    res, d = r_compare.main(write=False)
+    capsys.readouterr()
+    big = lambda key: res[key]["largest relative difference"]
+    # With the factors that the standard prints to three or four figures replaced by their exact
+    # values, Algorithm A and Algorithm S are the algA and algS of metRology run to convergence.
+    assert big("Algorithm A s*, unrounded factor, against metRology algA") < 1e-10
+    assert big("Algorithm S, unrounded factors, against metRology algS") < 1e-10
+    assert res["Algorithm S, unrounded factors, against metRology algS"]["sets"] == 200       # 20 for each nu = 1..10
+    # With the printed factors the difference is the rounding of 1,134 and of Table C.1.
+    assert big("Algorithm A s*, printed factor 1,134, against metRology algA") < 0.003
+    assert big("Algorithm S, printed Table C.1, against metRology algS") < 0.002
+    # MASS::hubers stops after 30 iterations without a message: where it has converged it agrees.
+    h = d["Algorithm A s*, unrounded factor, against MASS hubers"]
+    assert sum(t < 1e-9 for t in h) >= 140 and max(h) < 0.03
+    assert big("Qn against robustbase Qn") < 1e-4                                             # printed b_p and 2,2191
+    # metRology's default stopping (relative change 1,2e-4 or 25 iterations) also ends before convergence
+    assert 0.01 < big("metRology algA with its default stopping (tol 1.2e-4, 25 iterations) against its converged result") < 0.05

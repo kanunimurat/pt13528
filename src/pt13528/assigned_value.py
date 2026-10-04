@@ -9,6 +9,7 @@ from typing import Callable, Iterable, NamedTuple, Optional
 import numpy as np
 
 from . import robust
+from ._common import _arr
 
 __all__ = [
     "AssignedValue", "combine_uncertainty", "from_crm_comparison", "consensus",
@@ -36,7 +37,7 @@ def from_crm_comparison(x_crm: float, u_crm: float, differences: Iterable[float]
     ``differences`` are d_i, PT item average minus CRM average on sample i.
     u_d is the standard deviation of d_i divided by sqrt(n) (Table E.8).
     """
-    d = np.asarray(list(differences), dtype=float)
+    d = _arr(differences)
     if d.size < 2:
         raise ValueError("at least two differences are required")
     d_bar = float(d.mean())
@@ -68,6 +69,8 @@ def consensus(x: Iterable[float], method: str = "algorithm_a", median_scale: str
         raise ValueError("median_scale is 'niqr' or 'made'")
     if method == "algorithm_a":
         r = robust.algorithm_a(a, tol=tol)
+        if not r.converged:
+            raise RuntimeError("Algorithm A did not converge")
         return AssignedValue(r.location, u_robust(r.scale, p), method, r.scale, p, not r.scale > 0)
     if method == "median":
         s = robust.niqr(a) if median_scale == "niqr" else robust.made(a)

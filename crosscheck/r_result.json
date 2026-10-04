@@ -1,0 +1,42 @@
+{
+ "Algorithm A s*, printed factor 1,134, against metRology algA": {
+  "sets": 200,
+  "largest relative difference": 0.002343776199096577,
+  "sets differing by more than 1e-9": 200
+ },
+ "Algorithm A x*, printed factor, against metRology algA (in units of s*)": {
+  "sets": 200,
+  "largest relative difference": 0.0005257529037722295,
+  "sets differing by more than 1e-9": 135
+ },
+ "Algorithm A s*, unrounded factor, against metRology algA": {
+  "sets": 200,
+  "largest relative difference": 7.667518998334466e-14,
+  "sets differing by more than 1e-9": 0
+ },
+ "Algorithm A s*, unrounded factor, against MASS hubers": {
+  "sets": 200,
+  "largest relative difference": 0.023677022450016315,
+  "sets differing by more than 1e-9": 55
+ },
+ "Algorithm S, printed Table C.1, against metRology algS": {
+  "sets": 200,
+  "largest relative difference": 0.0015151804903385942,
+  "sets differing by more than 1e-9": 200
+ },
+ "Algorithm S, unrounded factors, against metRology algS": {
+  "sets": 200,
+  "largest relative difference": 1.92278728214274e-15,
+  "sets differing by more than 1e-9": 0
+ },
+ "Qn against robustbase Qn": {
+  "sets": 200,
+  "largest relative difference": 7.356875466819187e-05,
+  "sets differing by more than 1e-9": 200
+ },
+ "metRology algA with its default stopping (tol 1.2e-4, 25 iterations) against its converged result": {
+  "sets": 200,
+  "largest relative difference": 0.041593256103003004,
+  "sets differing by more than 1e-9": 187
+ }
+}

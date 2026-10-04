@@ -1,5 +1,51 @@
 # Changelog
 
+## 0.1.6 (2026-10-05)
+
+This version withdraws a statement of 0.1.5 and corrects the defect behind it.
+
+- **The three-figure stopping criterion has two readings, and 0.1.5 presented a property of one of them as
+  a property of the standard.** C.3.1, as quoted in the literature, stops when the third significant figure
+  of s* and the *equivalent figure* of x* (the same decimal place) no longer change; example E.3 words the
+  rule as "their third significant figures". Up to 0.1.5 the library implemented the second wording only.
+  The dependence on the origin of the results that 0.1.5 reported (eleven results giving four action
+  signals in kelvin and none in degrees Celsius) holds for that reading and not for the first; the
+  statement that it is a property of the rule of the standard is withdrawn. `tol="sig3"` now implements
+  the first reading (s* = 1,328 for the eleven results in both units); the earlier criterion is kept as
+  `tol="sig3-of-x"`. Annex E comes out the same under both, so the printed values did not show the
+  difference; an independent review did. The default (convergence, since 0.1.5) is not affected. Under
+  both readings the criterion stops before convergence and its result changes with the unit
+  (`docs/coverage.md`).
+- A slow collapse of s* was not detected: for five results of 10, one of 9 and one of 11, `algorithm_a`
+  ran into `max_iter` and returned s* = 8e-9 with `converged=False`, and `round_record` used it as
+  sigma_pt. The collapse is now detected as soon as all results that are not winsorized are identical
+  and s* shrinks by a constant factor; `consensus` and `round_record` raise if Algorithm A has not
+  converged; `max_iter` defaults to 100 000. `algorithm_s` detects the corresponding case.
+- Algorithms A and S iterate on data scaled to unit size, so that results of the order of 1e-200 or
+  1e160 are handled.
+- Scores (`z_score`, `z_prime_score`, `zeta_score`, `en_score`, differences) and `uncertainty_negligible`
+  reject non-finite values; `round_record`, `q_method`, `q_hampel`, the homogeneity, outlier and
+  graphics functions reject strings and mappings; `hampel` rejects a negative or non-finite scale;
+  `stability` rejects a non-positive sigma_pt; an invalid `tol` is rejected.
+- `crosscheck/r_compare.py`, `r_compare.R`: comparison with the R packages metRology (`algA`, `algS`), MASS
+  (`hubers`) and robustbase (`Qn`) through stored reference values. With unrounded factors Algorithm A and
+  Algorithm S equal metRology to 1e-13 on 200 sets each.
+- Tests: Table C.1 against the chi-squared distribution, Algorithm S for every nu, Formula (23), Formula (3)
+  with four terms, Formulae (C.20) and (C.21), the weights of the iterative Hampel estimator, critical values of Cochran's test; 134 tests.
+  The sentence of 0.1.5 on a mutation run ("one passes now") referred to a list of 101 hand-picked
+  changes and overstated the result: an independent run with randomly chosen changes of operators and
+  constants found that 41 of 153 passed the tests of 0.1.5. With the tests of this version, 32 of 232
+  such changes pass; they are boundary comparisons (< against <=), tolerances and input checks that a
+  second check makes redundant.
+- The tests also run in CI with the lowest versions of NumPy and SciPy that the package allows (1.24, 1.11).
+  The test extra requires statsmodels 0.15 or later; with 0.14 its Huber estimator does not reach the
+  tolerance of the comparison in one set.
+- `crosscheck/`: `php_200.json` and `php_5000.json` now hold the outputs of the PHP engine 1.6.0, which iterates
+  to convergence as well (the Algorithm A outputs of engine 1.5.0 are kept as `php_5000_engine_1.5.0.json`).
+- `crosscheck/compare.py` reports the two readings of the three-figure criterion separately, uses the default
+  tolerance for convergence (median 28 iterations, not 34 as with 1e-12), and gives the median Q-method
+  difference over the sets that differ.
+
 ## 0.1.5 (2026-10-04)
 
 Results of Algorithm A and Algorithm S change in the third significant figure for about half of the data

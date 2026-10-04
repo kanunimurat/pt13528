@@ -74,8 +74,9 @@ pytest
   of the library reproduce to half a unit of the last printed digit, and the
   three printed items that do not follow from the text.
 - `tests/test_external.py` compares Algorithm A, Qn, MADe and nIQR with
-  statsmodels, which was written independently of the standard, and the
-  Hampel estimator with a separate root search.
+  statsmodels, Algorithm A, Algorithm S and Qn with the R packages metRology,
+  MASS and robustbase (stored reference values, `crosscheck/r_compare.R`),
+  and the Hampel estimator with a separate root search.
 - `tests/test_by_hand.py` checks the remaining public functions against
   values worked by hand.
 - `tests/test_inputs.py` covers degenerate and invalid input and the

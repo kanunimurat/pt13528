@@ -11,6 +11,7 @@ from typing import Iterable
 
 import numpy as np
 from scipy import stats
+from ._common import _arr
 
 __all__ = ["bandwidth", "kernel_density", "repeatability_statistic", "repeatability_region", "ordinal_summary"]
 
@@ -29,7 +30,7 @@ def bandwidth(p: int, robust_sd: float | None = None, sigma_pt: float | None = N
 
 def kernel_density(x: Iterable[float], bandwidth: float, grid: int = 512, cut: float = 3.0):
     """10.3 - Gaussian kernel density estimate. Returns (grid points, density)."""
-    a = np.asarray(list(x), dtype=float)
+    a = _arr(x)
     g = np.linspace(a.min() - cut * bandwidth, a.max() + cut * bandwidth, grid)
     z = (g[:, None] - a[None, :]) / bandwidth
     dens = np.exp(-0.5 * z * z).sum(axis=1) / (a.size * bandwidth * math.sqrt(2 * math.pi))

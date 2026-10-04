@@ -14,13 +14,21 @@ __all__ = [
 ]
 
 
+def _finite(*values: float) -> None:
+    for v in values:
+        if isinstance(v, (str, bytes, bool)) or not math.isfinite(v):
+            raise ValueError("results, assigned values, standard deviations and uncertainties must be finite numbers")
+
+
 def difference(x: float, x_pt: float) -> float:
     """9.3.1, Formula (11) - D = x - x_pt."""
+    _finite(x, x_pt)
     return x - x_pt
 
 
 def percent_difference(x: float, x_pt: float) -> float:
     """9.3.1, Formula (12) - D% = 100 (x - x_pt) / x_pt. Undefined for x_pt = 0."""
+    _finite(x, x_pt)
     if x_pt == 0:
         raise ZeroDivisionError("Formula (12) cannot be applied when x_pt = 0")
     return 100.0 * (x - x_pt) / x_pt
@@ -28,6 +36,7 @@ def percent_difference(x: float, x_pt: float) -> float:
 
 def percent_allowed(x: float, x_pt: float, delta_e: float) -> float:
     """9.3.6, Formula (13) - PA = (D / delta_E) x 100 %."""
+    _finite(x, x_pt, delta_e)
     if delta_e <= 0:
         raise ValueError("delta_E must be positive")
     return 100.0 * (x - x_pt) / delta_e
@@ -35,11 +44,13 @@ def percent_allowed(x: float, x_pt: float, delta_e: float) -> float:
 
 def delta_e_prime(delta_e: float, big_u_x_pt: float) -> float:
     """9.5.2, Formula (16) - delta_E' = sqrt(delta_E^2 + U^2(x_pt)), U with k = 2."""
+    _finite(delta_e, big_u_x_pt)
     return math.hypot(delta_e, big_u_x_pt)
 
 
 def z_score(x: float, x_pt: float, sigma_pt: float) -> float:
     """9.4.1, Formula (14)."""
+    _finite(x, x_pt, sigma_pt)
     if sigma_pt <= 0:
         raise ValueError("sigma_pt must be positive")
     return (x - x_pt) / sigma_pt
@@ -47,6 +58,7 @@ def z_score(x: float, x_pt: float, sigma_pt: float) -> float:
 
 def z_prime_score(x: float, x_pt: float, sigma_pt: float, u_x_pt: float) -> float:
     """9.5.1, Formula (15)."""
+    _finite(x, x_pt, sigma_pt, u_x_pt)
     if sigma_pt < 0 or u_x_pt < 0:
         raise ValueError("sigma_pt and u(x_pt) cannot be negative")
     den = math.hypot(sigma_pt, u_x_pt)
@@ -57,11 +69,13 @@ def z_prime_score(x: float, x_pt: float, sigma_pt: float, u_x_pt: float) -> floa
 
 def z_reduction_factor(sigma_pt: float, u_x_pt: float) -> float:
     """9.5.4, Formula (17) - constant ratio z'/z."""
+    _finite(sigma_pt, u_x_pt)
     return sigma_pt / math.hypot(sigma_pt, u_x_pt)
 
 
 def zeta_score(x: float, x_pt: float, u_x: float, u_x_pt: float) -> float:
     """9.6.1, Formula (19) - standard uncertainties."""
+    _finite(x, x_pt, u_x, u_x_pt)
     if u_x < 0 or u_x_pt < 0:
         raise ValueError("uncertainties cannot be negative")
     den = math.hypot(u_x, u_x_pt)
@@ -79,6 +93,7 @@ def en_score(x: float, x_pt: float, big_u_x: float, big_u_x_pt: float) -> float:
     and ``big_u_x_pt``; the library has no separate laboratory-to-laboratory
     scoring mode.
     """
+    _finite(x, x_pt, big_u_x, big_u_x_pt)
     if big_u_x < 0 or big_u_x_pt < 0:
         raise ValueError("uncertainties cannot be negative")
     den = math.hypot(big_u_x, big_u_x_pt)
@@ -125,8 +140,9 @@ def uncertainty_negligible(u_x_pt: float, sigma_pt: Optional[float] = None,
     """9.2.1, Formula (10) - u(x_pt) < 0,3 sigma_pt or u(x_pt) < 0,1 delta_E."""
     if (sigma_pt is None) == (delta_e is None):
         raise ValueError("give either sigma_pt or delta_E")
-    if not u_x_pt >= 0:
-        raise ValueError("u(x_pt) must be a number and cannot be negative")
+    _finite(u_x_pt, sigma_pt if sigma_pt is not None else delta_e)
+    if u_x_pt < 0 or (sigma_pt if sigma_pt is not None else delta_e) <= 0:
+        raise ValueError("u(x_pt) cannot be negative, and sigma_pt or delta_E must be positive")
     limit = 0.3 * sigma_pt if sigma_pt is not None else 0.1 * delta_e
     return u_x_pt < limit
 
@@ -138,8 +154,7 @@ def uncertainty_flag(u_x: float, u_min: float, u_max: float) -> str:
     (u_min <= u <= u_max), 'b' (u < u_min) or 'c' (u > u_max); the letters
     follow Table E.6.
     """
-    if u_x != u_x or u_min != u_min or u_max != u_max:
-        raise ValueError("uncertainties must be numbers")
+    _finite(u_x, u_min, u_max)
     if u_x < u_min:
         return "b"
     if u_x > u_max:

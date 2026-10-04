@@ -7,6 +7,7 @@ import math
 from typing import Iterable, NamedTuple, Optional
 
 import numpy as np
+from ._common import _arr
 
 __all__ = ["horwitz", "from_precision", "LinearFit", "fit_previous_rounds", "limit_sigma"]
 
@@ -43,8 +44,8 @@ class LinearFit(NamedTuple):
 
 def fit_previous_rounds(assigned_values: Iterable[float], sds: Iterable[float]) -> LinearFit:
     """8.3.2 - least-squares line of (robust) standard deviation on assigned value (see E.8)."""
-    x = np.asarray(list(assigned_values), dtype=float)
-    y = np.asarray(list(sds), dtype=float)
+    x = _arr(assigned_values)
+    y = _arr(sds)
     if x.size != y.size or x.size < 3:
         raise ValueError("at least three previous rounds are required")
     slope, intercept = np.polyfit(x, y, 1)

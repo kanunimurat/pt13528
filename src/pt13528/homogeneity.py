@@ -8,6 +8,7 @@ from typing import Iterable, NamedTuple, Optional, Sequence
 
 import numpy as np
 from scipy import stats
+from ._common import _arr
 
 __all__ = [
     "Homogeneity", "homogeneity", "homogeneity_single", "expanded_criterion_factors",
@@ -51,6 +52,8 @@ def homogeneity(samples: Sequence[Sequence[float]], sigma_pt: Optional[float] = 
     m = 2 special case), the criterion of B.2.2, the expanded criterion of
     B.2.3 and the analysis-of-variance F test of B.2.4 a).
     """
+    if isinstance(samples, (str, bytes, dict)):
+        raise TypeError("a table of numbers is required")
     x = np.asarray(samples, dtype=float)
     if x.ndim != 2 or x.shape[0] < 2 or x.shape[1] < 2:
         raise ValueError("samples must be g x m with g >= 2 and m >= 2 (balanced design)")
@@ -86,7 +89,7 @@ def homogeneity_single(values: Iterable[float], sigma_pt: Optional[float] = None
     The standard deviation of the results is used as s_s; it includes the
     repeatability of the method and is therefore an upper bound.
     """
-    v = np.asarray(list(values), dtype=float)
+    v = _arr(values)
     if v.size < 2:
         raise ValueError("at least two items are required")
     if not np.all(np.isfinite(v)):
@@ -123,8 +126,14 @@ def stability(y1: Iterable[float], y2: Iterable[float], sigma_pt: Optional[float
     """
     if sigma_pt is None and delta_e is None:
         raise ValueError("give sigma_pt or delta_E")
-    a = np.asarray(list(y1), dtype=float)
-    b = np.asarray(list(y2), dtype=float)
+    limit = sigma_pt if sigma_pt is not None else delta_e
+    if not (math.isfinite(limit) and limit > 0):
+        raise ValueError("sigma_pt or delta_E must be a positive number")
+    for u in (u_y1, u_y2):
+        if u is not None and not (math.isfinite(u) and u >= 0):
+            raise ValueError("uncertainties must be finite and not negative")
+    a = _arr(y1)
+    b = _arr(y2)
     if a.size == 0 or b.size == 0 or not (np.all(np.isfinite(a)) and np.all(np.isfinite(b))):
         raise ValueError("both occasions need at least one result and only finite values")
     crit = 0.3 * sigma_pt if sigma_pt is not None else 0.1 * delta_e
@@ -144,8 +153,8 @@ def stability_t_test(item_means_1: Iterable[float], item_means_2: Iterable[float
     portions would understate the standard error of the difference. Returns
     (t, degrees of freedom, p value, significant).
     """
-    a = np.asarray(list(item_means_1), dtype=float)
-    b = np.asarray(list(item_means_2), dtype=float)
+    a = _arr(item_means_1)
+    b = _arr(item_means_2)
     if a.size < 2 or b.size < 2:
         raise ValueError("at least two item means per occasion are required")
     res = stats.ttest_ind(a, b, equal_var=equal_var)

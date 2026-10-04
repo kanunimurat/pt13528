@@ -8,6 +8,7 @@ from typing import Iterable
 
 import numpy as np
 from scipy import stats
+from ._common import _arr
 
 __all__ = ["grubbs_critical", "grubbs", "cochran_critical", "cochran"]
 
@@ -23,7 +24,7 @@ def grubbs(x: Iterable[float], alpha: float = 0.01):
     """6.6.2 NOTE, D.1.2 - Grubbs' test of ISO 5725-2 for the largest and the smallest observation.
 
     Returns (G_high, G_low, critical)."""
-    a = np.asarray(list(x), dtype=float)
+    a = _arr(x)
     if not np.all(np.isfinite(a)):
         raise ValueError("values must be finite")
     s = a.std(ddof=1) if a.size > 1 else 0.0
@@ -42,7 +43,7 @@ def cochran(variances: Iterable[float], n: int, alpha: float = 0.01):
     """B.2.1 c), 6.6.2 NOTE - Cochran's C = max(s^2) / sum(s^2), the test of ISO 5725-2.
 
     Returns (C, critical, index of the largest variance)."""
-    v = np.asarray(list(variances), dtype=float)
+    v = _arr(variances)
     if not np.all(np.isfinite(v)) or np.any(v < 0):
         raise ValueError("variances must be finite and not negative")
     if v.sum() <= 0:

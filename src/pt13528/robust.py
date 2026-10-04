@@ -12,6 +12,8 @@ from typing import Iterable, Sequence
 import numpy as np
 from scipy.stats import norm
 
+from ._common import DEFAULT_TOL, _arr
+
 __all__ = [
     "median", "made", "niqr", "algorithm_a", "algorithm_s", "qn", "q_method",
     "hampel", "q_hampel", "mean_abs_dev_sd", "sd_two_results", "RobustResult",
@@ -35,7 +37,6 @@ _EPS = 8 * np.finfo(float).eps     # floor of the relative stopping criterion
 _COLLAPSE = 1e-9                    # s* below this fraction of its starting value is reported as zero
 
 
-DEFAULT_TOL = 1e-10                 # relative stopping tolerance of the iterative estimators
 
 
 class RobustResult(dict):
@@ -46,17 +47,6 @@ class RobustResult(dict):
             return self[name]
         except KeyError:
             raise AttributeError(name) from None
-
-
-def _arr(x: Iterable[float]) -> np.ndarray:
-    if isinstance(x, (str, bytes, dict)):
-        raise TypeError("a sequence of numbers is required")
-    a = np.asarray(list(x), dtype=float)
-    if a.ndim != 1 or a.size == 0:
-        raise ValueError("a non-empty one-dimensional sequence is required")
-    if not np.all(np.isfinite(a)):
-        raise ValueError("values must be finite")
-    return a
 
 
 def _sig3(v: float) -> float:
@@ -88,31 +78,52 @@ def niqr(x: Iterable[float], quantile_method: str = "linear") -> float:
     return float(NIQR_FACTOR * (q3 - q1))
 
 
-def algorithm_a(x: Iterable[float], tol: str | float = DEFAULT_TOL, max_iter: int = 1000,
+def _stopping(tol):
+    if isinstance(tol, str):
+        if tol not in ("sig3", "sig3-of-x"):
+            raise ValueError("tol must be a positive number, 'sig3' or 'sig3-of-x'")
+        return tol
+    if isinstance(tol, bool) or not isinstance(tol, (int, float)) or not (math.isfinite(tol) and tol > 0):
+        raise ValueError("tol must be a positive number, 'sig3' or 'sig3-of-x'")
+    return float(tol)
+
+
+def algorithm_a(x: Iterable[float], tol: str | float = DEFAULT_TOL, max_iter: int = 100_000,
                 update_scale: bool = True, scale: float | None = None) -> RobustResult:
-    """C.3.1 - Algorithm A with iterated scale (Formulae C.5 to C.10).
+    """C.3.1 / C.3.2 - Algorithm A (Formulae C.6 to C.10).
+
+    Returns the robust mean x* (``location``) and robust standard deviation
+    s* (``scale``).
 
     tol
         A float (default 1e-10) stops when the changes of x* and s* both
         fall below ``tol`` times s*. This criterion is relative, so the
         result depends neither on the unit nor on the origin of the data.
-        ``"sig3"`` stops when the third significant figures of x* and s* no
-        longer change, the criterion stated in C.3.1, which also allows
-        "alternative convergence criteria". The three-figure criterion stops
-        before convergence and its result changes with the unit and with the
-        origin of the data (see docs/coverage.md); it is kept to reproduce
-        the worked examples of Annex E.
 
-    When a large majority of the results is identical (from about two
-    thirds, depending on the other results), the iteration drives s* towards
-    zero. This is detected and returned as ``scale=0.0`` with
-    ``degenerate=True``; no standard deviation can be derived from such data.
-    The iteration runs on x minus the median, so that the detection does not
-    depend on the level of the results.
+        ``"sig3"`` is the three-figure criterion of the standard read as
+        "the third significant figure of s* and the equivalent figure of x*"
+        (the same decimal place) no longer change. It stops before
+        convergence, and because significant figures depend on the unit, so
+        does its result (see docs/coverage.md). It reproduces the worked
+        examples of Annex E.
+
+        ``"sig3-of-x"`` is the same criterion read as "the third significant
+        figures of x* and of s*" (the wording of example E.3). It reproduces
+        Annex E as well, but its result also depends on the origin of the
+        data. Versions up to 0.1.5 implemented ``"sig3"`` in this way; it is
+        kept to reproduce their results and is not recommended.
+
+    When a large majority of the results is identical, the iteration can
+    drive s* towards zero. This is detected and returned as ``scale=0.0``
+    with ``degenerate=True``; no standard deviation can be derived from
+    such data. The iteration runs on (x - median) / max|x - median|, so that
+    neither the detection nor the result depends on the level or the unit of
+    the results.
     update_scale, scale
         C.3.2 b): pass ``update_scale=False`` to keep s* fixed during iteration
         (at MADe, or at ``scale`` when given, e.g. the Q-method estimate).
     """
+    tol = _stopping(tol)
     a = np.sort(_arr(x))
     p = a.size
     if p == 1:
@@ -121,60 +132,95 @@ def algorithm_a(x: Iterable[float], tol: str | float = DEFAULT_TOL, max_iter: in
         raise ValueError("scale must be finite and not negative")
     c = float(np.median(a))                 # iterate on x - median: identical results become exactly zero,
     a = a - c                               # so a collapsing s* is not masked by rounding noise of large x
+    m = float(np.max(np.abs(a)))
+    if m == 0.0:
+        return RobustResult(location=c, scale=0.0, iterations=0, converged=True, degenerate=True)
+    a = a / m                               # and on unit scale: no overflow or underflow of squares
     x_star = 0.0
-    s_star = float(scale) if scale is not None else made(a)
+    s_star = float(scale) / m if scale is not None else made(a)
     if s_star == 0.0:                       # C.3.1 NOTE 2
         s_star = float(np.std(a, ddof=1))
-    if s_star == 0.0:
-        return RobustResult(location=c, scale=0.0, iterations=0, converged=True, degenerate=True)
     s_0 = s_star
+    ratio = None
     for it in range(1, max_iter + 1):
         delta = ALG_A_DELTA * s_star
-        w = np.clip(a, x_star - delta, x_star + delta)
+        lo, hi = x_star - delta, x_star + delta
+        w = np.clip(a, lo, hi)
         new_x = float(w.mean())
         new_s = float(ALG_A_FACTOR * np.sqrt(np.sum((w - new_x) ** 2) / (p - 1))) if update_scale else s_star
-        if tol == "sig3":
-            done = _sig3(c + new_x) == _sig3(c + x_star) and _sig3(new_s) == _sig3(s_star)
+        if tol == "sig3":                   # third figure of s*, equivalent figure (same decimal place) of x*
+            d = 2 - int(math.floor(math.log10(m * new_s))) if new_s > 0 else 0
+            done = (round(c + m * new_x, d) == round(c + m * x_star, d)
+                    and _sig3(m * new_s) == _sig3(m * s_star))
+        elif tol == "sig3-of-x":
+            done = (_sig3(c + m * new_x) == _sig3(c + m * x_star)
+                    and _sig3(m * new_s) == _sig3(m * s_star))
         else:
             limit = max(tol * new_s, _EPS * abs(new_x))
             done = abs(new_x - x_star) < limit and abs(new_s - s_star) < limit
-        if update_scale and new_s < _COLLAPSE * s_0:
-            return RobustResult(location=c + new_x, scale=0.0, iterations=it, converged=True, degenerate=True)
+        if update_scale:
+            if new_s < _COLLAPSE * s_0:
+                return RobustResult(location=c + m * new_x, scale=0.0, iterations=it, converged=True, degenerate=True)
+            # All results that are not winsorized are identical: s* then changes by a factor that
+            # settles to a constant. A constant factor below one means s* falls to zero, however
+            # slowly, and the iteration is stopped here instead of running into max_iter.
+            inside = a[(a >= lo) & (a <= hi)]
+            if inside.size and inside[0] == inside[-1] and new_s < s_star:
+                r = new_s / s_star
+                if ratio is not None and abs(r - ratio) <= 1e-12:
+                    return RobustResult(location=c + m * float(inside[0]), scale=0.0, iterations=it,
+                                        converged=True, degenerate=True)
+                ratio = r
+            else:
+                ratio = None
         x_star, s_star = new_x, new_s
         if done:
-            return RobustResult(location=c + x_star, scale=s_star, iterations=it, converged=True, degenerate=False)
-    return RobustResult(location=c + x_star, scale=s_star, iterations=max_iter, converged=False, degenerate=False)
+            return RobustResult(location=c + m * x_star, scale=m * s_star, iterations=it, converged=True,
+                                degenerate=False)
+    return RobustResult(location=c + m * x_star, scale=m * s_star, iterations=max_iter, converged=False,
+                        degenerate=False)
 
 
-def algorithm_s(w: Iterable[float], nu: int, tol: str | float = DEFAULT_TOL, max_iter: int = 1000) -> RobustResult:
+def algorithm_s(w: Iterable[float], nu: int, tol: str | float = DEFAULT_TOL, max_iter: int = 100_000) -> RobustResult:
     """C.4 - Algorithm S: robust pooled standard deviation (or range).
 
     nu is the degrees of freedom of each w_i (1 for ranges of duplicates,
     m - 1 for standard deviations of m results); Table C.1 covers nu = 1..10.
-    A float ``tol`` is relative to w*, as in :func:`algorithm_a`.
+    A float ``tol`` is relative to w*, as in :func:`algorithm_a`; ``"sig3"``
+    stops when the third significant figure of w* no longer changes.
     """
-    if nu not in _ALG_S:
+    tol = _stopping(tol)
+    if isinstance(nu, bool) or nu not in _ALG_S:
         raise ValueError("Table C.1 gives factors for nu = 1..10 only")
     eta, xi = _ALG_S[nu]
     a = np.sort(_arr(w))
     if a[0] < 0:
         raise ValueError("ranges and standard deviations cannot be negative")
+    m = float(a[-1])
+    if m == 0.0:
+        return RobustResult(location=0.0, scale=0.0, iterations=0, converged=True, degenerate=True)
+    a = a / m                               # unit scale: no overflow or underflow of squares
     w_star = float(np.median(a))
     if w_star == 0.0:                       # C.4 NOTE
         w_star = float(np.sqrt(np.mean(a ** 2)))
-    if w_star == 0.0:
-        return RobustResult(location=0.0, scale=0.0, iterations=0, converged=True, degenerate=True)
     w_0 = w_star
     for it in range(1, max_iter + 1):
         psi = eta * w_star
         new = float(xi * np.sqrt(np.mean(np.minimum(a, psi) ** 2)))
-        if new < _COLLAPSE * w_0:           # a large majority of zeros drives w* to zero
+        # a large majority of zeros drives w* to zero: either it has fallen far enough, or every
+        # value below the limit is zero, in which case w* shrinks by the same factor for ever
+        if new < _COLLAPSE * w_0 or (new < w_star and not np.any(a[a <= psi] > 0)):
             return RobustResult(location=0.0, scale=0.0, iterations=it, converged=True, degenerate=True)
-        done = (_sig3(new) == _sig3(w_star)) if tol == "sig3" else abs(new - w_star) < max(tol * new, _EPS * new)
+        if isinstance(tol, str):
+            done = _sig3(m * new) == _sig3(m * w_star)
+        else:
+            done = abs(new - w_star) < max(tol * new, _EPS * new)
         w_star = new
         if done:
-            return RobustResult(location=w_star, scale=w_star, iterations=it, converged=True, degenerate=False)
-    return RobustResult(location=w_star, scale=w_star, iterations=max_iter, converged=False, degenerate=False)
+            return RobustResult(location=m * w_star, scale=m * w_star, iterations=it, converged=True,
+                                degenerate=False)
+    return RobustResult(location=m * w_star, scale=m * w_star, iterations=max_iter, converged=False,
+                        degenerate=False)
 
 
 def qn(x: Iterable[float], h_rule: str = "rousseeuw-croux") -> float:
@@ -224,7 +270,11 @@ def q_method(results: Sequence[float] | Sequence[Sequence[float]]) -> float:
     per laboratory. Between-laboratory absolute differences are weighted
     1/(n_i n_j) as in Formula (C.23).
     """
+    if isinstance(results, (str, bytes, dict)) or any(isinstance(g, (str, bytes, dict)) for g in results):
+        raise TypeError("results must be numbers or sequences of numbers")
     groups = [np.atleast_1d(np.asarray(g, dtype=float)) for g in results]
+    if any(g.ndim != 1 for g in groups):
+        raise ValueError("each laboratory needs a number or a one-dimensional sequence of numbers")
     if any(g.size == 0 or not np.all(np.isfinite(g)) for g in groups):
         raise ValueError("values must be finite and every laboratory needs at least one result")
     p = len(groups)
@@ -285,7 +335,10 @@ def hampel(x: Iterable[float], scale: float, method: str = "finite") -> float:
     med = float(np.median(y))
     if method not in ("finite", "iterative"):
         raise ValueError("method must be 'finite' or 'iterative'")
-    if not scale > 0 or not math.isfinite(scale):
+    if isinstance(scale, bool) or not (isinstance(scale, (int, float, np.floating, np.integer))
+                                       and math.isfinite(scale) and scale >= 0):
+        raise ValueError("scale must be finite and not negative")
+    if scale == 0:
         return med
     if method == "iterative":
         x_star = med

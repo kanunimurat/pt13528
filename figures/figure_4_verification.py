@@ -57,7 +57,7 @@ ax.set_ylim(-lim, 3.7); ax.set_xlim(-0.6, x0 + 5.2); ax.set_yticks([-2, -1, -0.5
 ax.set_ylabel("computed − printed", fontsize=7.6, color=MID, labelpad=2); clean(ax)
 ax.text((len(groups) - 2) / 2, -4.25, "worked example of Annex E", fontsize=6.8, color=MID, ha="center", va="center")
 
-ptitle(2, 57.5, "b", "Python library against the PHP engine", "16 quantities; largest absolute difference in 100 generated sets without ties (blue) and in 100 with ties, where larger (orange)")
+ptitle(2, 57.5, "b", "Python library against the PHP engine", "16 quantities; largest absolute difference in 100 generated sets without ties and in 100 with ties")
 ax = fig.add_axes([0.20, 0.335, 0.775, 0.185])
 mx0 = {k: max(abs(x[k] - y[k]) for x, y in zip(A[0::2], B[0::2])) for k in keys}
 mx1 = {k: max(abs(x[k] - y[k]) for x, y in zip(A[1::2], B[1::2])) for k in keys}
@@ -75,7 +75,7 @@ for i, k in enumerate(order_):
     if mx0[k] == 0: ax.text(i, 3e-17, "0", fontsize=6.8, color=BLUE, ha="center", va="bottom", fontweight="bold")
 B0 = json.load(open(os.path.join(HERE, "..", "crosscheck", "php_200_before_fix.json")))   # PHP engine before its Q method merged tied differences
 nq = sum(abs(x["Q method"] - y["Q method"]) > 1e-9 * x["Q method"] for x, y in zip(A[1::2], B0[1::2]))
-ax.text(xa - 0.75, 6e-1, f"With ties: Algorithm A differs in 1 set of 5200\n(first iterate exactly 41.15, rounded to 41.1 or 41.2).\nBefore tied differences were merged in both,\nthe Q method differed in {nq} of 100 sets", fontsize=6.6, color=ORANGE, ha="right", va="top", linespacing=1.25)
+ax.text(xa - 0.75, 6e-1, f"Algorithm A agrees in all 5200 sets when both iterate to convergence.\nBefore tied differences were merged in both,\nthe Q method differed in {nq} of 100 sets with ties", fontsize=6.6, color=ORANGE, ha="right", va="top", linespacing=1.25)
 ax.set_xlim(-0.7, xa + len(ties_) - 0.3); ax.set_ylabel("largest |difference|", fontsize=7.6, color=MID, labelpad=2); clean(ax)
 
 ptitle(2, 26.3, "c", "Printed results that do not follow from the text, and the 2026 amendment", "status after ISO 13528:2022/Amd 1:2026")
@@ -84,7 +84,7 @@ tab = [("Table E.1, third column, $x^*$", "printed 23.95; both stopping rules gi
        ("Table E.6, flags", "follow the limits of Clause 9.8 for $U$, not for $u$ as worded", "open", ORANGE),
        ("Formula (C.18), $h$", "undefined for $p$ = 2, 3; now $\\lfloor p/2 \\rfloor + 1$", "corrected", GREEN),
        ("Formula (C.19), factor", "2.2219; now 2.2191", "corrected", GREEN),
-       ("Table E.12", "one assigned value corrected; footnote on rounding added", "corrected", GREEN)]
+       ("Table E.12 (example E.14)", "one assigned value corrected; footnote on rounding added", "corrected", GREEN)]
 y = 20.3
 for nm, why, stt, col in tab:
     bg.add_patch(FancyBboxPatch((2.5, y - 0.95), 11.5, 1.9, boxstyle="round,pad=0,rounding_size=0.5", fc=col, ec="none"))

@@ -16,7 +16,8 @@ from typing import Iterable, NamedTuple, Optional, Sequence
 
 import numpy as np
 
-from . import assigned_value, robust, scores
+from . import assigned_value, scores
+from ._common import DEFAULT_TOL, _arr
 
 __all__ = ["ParticipantRecord", "RoundRecord", "round_record"]
 
@@ -75,7 +76,7 @@ def round_record(x: Iterable[float], *, method: str = "algorithm_a",
                  sigma_pt: Optional[float] = None, u_x: Optional[Sequence[Optional[float]]] = None,
                  labels: Optional[Sequence[str]] = None, statistic: str = "auto",
                  action: float = 3.0, warning: Optional[float] = 2.0,
-                 tol: str | float = robust.DEFAULT_TOL) -> RoundRecord:
+                 tol: str | float = DEFAULT_TOL) -> RoundRecord:
     """Assemble the record of one measurand from participant results.
 
     Assigned value (Clause 7): the consensus of ``x`` by ``method`` (see
@@ -98,7 +99,7 @@ def round_record(x: Iterable[float], *, method: str = "algorithm_a",
     of sigma_pt and of the limits remains with the provider; the function
     records the choices next to the numbers so that they can be reported.
     """
-    a = np.asarray(list(x), dtype=float)
+    a = _arr(x)
     p = int(a.size)
     if p < 1 or not np.all(np.isfinite(a)):
         raise ValueError("x must contain at least one result and only finite numbers")

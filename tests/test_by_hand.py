@@ -200,3 +200,136 @@ def test_result_objects():
     for bad in ("12345", b"123", {1: 2, 3: 4, 5: 6}):
         with pytest.raises(TypeError):
             robust.median(bad)
+
+
+# ---------------------------------------------------------------- added in 0.1.6
+def test_repeatability_statistic_with_a_logarithm_other_than_one():
+    # Formula (23): 4 (11 - 10)^2 / 2^2 + 2 (4 - 1) ln(3 / 2)^2 = 1 + 6 x 0,164402
+    assert graphics.repeatability_statistic(11.0, 3.0, 10.0, 2.0, 4) == pytest.approx(1.0 + 6 * 0.1644019, abs=1e-6)
+
+
+def test_combine_uncertainty_with_four_terms():
+    assert assigned_value.combine_uncertainty(1.0, 2.0, 3.0, 4.0) == pytest.approx(math.sqrt(30.0))   # Formula (3)
+
+
+def test_table_c1_follows_from_the_chi_squared_distribution():
+    """eta = sqrt(chi2_0.9(nu) / nu) and xi = 1 / sqrt(F_{nu+2}(nu eta^2) + 0,1 eta^2), where F is the
+    chi-squared distribution function (ISO 5725-5). The printed three decimals agree within one unit
+    of the last digit."""
+    for nu, (eta, xi) in robust._ALG_S.items():
+        e = math.sqrt(stats.chi2.ppf(0.9, nu) / nu)
+        x = 1 / math.sqrt(stats.chi2.cdf(nu * e * e, nu + 2) + 0.1 * e * e)
+        assert eta == pytest.approx(e, abs=6e-4), nu
+        assert xi == pytest.approx(x, abs=1.1e-3), nu
+    assert sorted(robust._ALG_S) == list(range(1, 11))
+
+
+@pytest.mark.parametrize("nu,eta,xi", [(2, 1.517, 1.054), (4, 1.395, 1.032), (5, 1.359, 1.027), (6, 1.332, 1.024),
+                                       (7, 1.310, 1.021), (8, 1.292, 1.019), (9, 1.277, 1.018), (10, 1.264, 1.017)])
+def test_algorithm_s_other_degrees_of_freedom(nu, eta, xi):
+    w = np.array([0.2, 0.5, 0.1, 0.4, 0.3, 0.6, 2.0])            # the last value is limited for every nu
+    ws = float(np.median(w))
+    for _ in range(300):
+        ws = xi * math.sqrt(np.mean(np.minimum(w, eta * ws) ** 2))
+    assert robust.algorithm_s(w, nu).location == pytest.approx(ws, rel=1e-8)
+    assert 2.0 > eta * ws
+
+
+def test_algorithm_s_three_figure_rule():
+    w = [0.2, 0.5, 0.1, 0.4, 0.3, 0.6, 2.0]
+    r, full = robust.algorithm_s(w, 1, tol="sig3"), robust.algorithm_s(w, 1)
+    assert 1 < r.iterations < full.iterations
+    assert r.scale == pytest.approx(0.5403, abs=5e-5) and full.scale == pytest.approx(0.5409, abs=5e-5)
+
+
+def test_qn_correction_factor_for_more_than_twelve_results():
+    x = [float(v * v) for v in range(1, 15)]                     # p = 14 (even): Formula (C.21)
+    d = sorted(b - a for i, a in enumerate(x) for b in x[i + 1:])
+    h = 14 // 2 + 1
+    r = (1 / 14) * (3.6756 + (1 / 14) * (1.965 + (1 / 14) * (6.987 - 77 / 14)))
+    assert robust.qn(x) == pytest.approx(2.2191 * d[h * (h - 1) // 2 - 1] / (r + 1), rel=1e-12)
+    x = x[:13]                                                   # p = 13 (odd): Formula (C.20)
+    d = sorted(b - a for i, a in enumerate(x) for b in x[i + 1:])
+    h = 13 // 2 + 1
+    r = (1 / 13) * (1.6019 + (1 / 13) * (-2.128 - 5.172 / 13))
+    assert robust.qn(x) == pytest.approx(2.2191 * d[h * (h - 1) // 2 - 1] / (r + 1), rel=1e-12)
+
+
+def test_hampel_iterative_weights():
+    # psi sums to zero at m = 0,25 for (0, 0, 0, 4) and at m = 0,5 for (0, 0, 0, 2), scale 1:
+    # -3 m + (4,5 - (4 - m)) = 0 and -3 m + 1,5 = 0. The iteration stops within 0,01 s / sqrt(p).
+    assert robust.hampel([0, 0, 0, 4], 1.0) == pytest.approx(0.25, abs=1e-9)
+    assert robust.hampel([0, 0, 0, 2], 1.0) == pytest.approx(0.5, abs=1e-9)
+    assert robust.hampel([0, 0, 0, 4], 1.0, "iterative") == pytest.approx(0.25, abs=0.004)
+    assert robust.hampel([0, 0, 0, 2], 1.0, "iterative") == pytest.approx(0.5, abs=0.004)
+    # (0, 0, 0, 2,5): -3 m + 1,5 = 0 again, and the last result has |q| = 2, weight 1,5 / 2
+    assert robust.hampel([0, 0, 0, 2.5], 1.0) == pytest.approx(0.5, abs=1e-9)
+    assert robust.hampel([0, 0, 0, 2.5], 1.0, "iterative") == pytest.approx(0.5, abs=0.004)
+
+
+def test_q_hampel_with_identical_results_and_flag_limits():
+    r = robust.q_hampel([5.0, 5.0, 5.0, 5.0])
+    assert r.degenerate and r.scale == 0.0 and r.location == 5.0
+    assert not robust.q_hampel([5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 9.0]).degenerate   # ties shift the quantile (C.24)
+    assert scores.uncertainty_flag(0.10, 0.10, 0.30) == "a" and scores.uncertainty_flag(0.30, 0.10, 0.30) == "a"
+    assert scores.uncertainty_flag(0.0999, 0.10, 0.30) == "b" and scores.uncertainty_flag(0.3001, 0.10, 0.30) == "c"
+
+
+def test_small_cases_and_limits():
+    r = robust.algorithm_a([1.0, 3.0])                           # two results: x* = 2, MADe = 1,483, nothing is winsorized
+    assert not r.degenerate and r.location == pytest.approx(2.0) and r.scale == pytest.approx(1.134 * math.sqrt(2.0))
+    assert robust.algorithm_a([4.0]).degenerate and robust.algorithm_a([4.0]).iterations == 0
+    assert scores.en_score(1.0, 0.0, 0.0, 2.0) == pytest.approx(0.5)             # one expanded uncertainty may be zero
+    assert scores.zeta_score(1.0, 0.0, 0.0, 2.0) == pytest.approx(0.5)
+    assert not scores.uncertainty_negligible(0.1, delta_e=1.0)                   # 9.2.1: u < 0,1 delta_E, strictly
+    assert scores.uncertainty_negligible(0.0999, delta_e=1.0)
+    assert not scores.uncertainty_negligible(0.3, sigma_pt=1.0) and scores.uncertainty_negligible(0.2999, sigma_pt=1.0)
+    stat, _crit, idx = outliers.cochran([0.01, 0.02, 0.03, 0.2], n=3)            # variances that sum to less than one
+    assert stat == pytest.approx(0.2 / 0.26) and idx == 3
+    assert sigma_pt.horwitz(1.0) == pytest.approx(0.01)                           # c = 1: 0,01 c^0,5
+    with pytest.raises(ValueError):
+        sigma_pt.horwitz(1.5)
+
+
+def test_result_details():
+    r = robust.algorithm_a([7.0, 7.0, 7.0])
+    assert r.degenerate and r.iterations == 0 and r.location == 7.0
+    r = robust.algorithm_s([1.0, 1.0, 1.0], 1)                   # nothing is limited: w* = 1,097 after the first step
+    assert r.scale == pytest.approx(1.097) and r.iterations == 2
+    for method in ("mean", "median", "algorithm_a", "q_hampel"):
+        assert assigned_value.consensus([2.0, 2.0, 2.0], method).degenerate
+    assert not assigned_value.consensus([1.0, 2.0, 3.0], "mean").degenerate
+    with pytest.raises(ValueError):
+        homogeneity.homogeneity([[1.0, 1.1]], sigma_pt=0.1)      # one item
+    with pytest.raises(ValueError):
+        homogeneity.homogeneity([[1.0], [1.1], [1.2]], sigma_pt=0.1)   # one replicate
+    assert homogeneity.homogeneity([[1.0, 1.1], [1.2, 1.1]], sigma_pt=0.1).s_w > 0
+
+
+def test_more_values_from_tables_and_by_hand():
+    # Cochran's critical values at 1 % and 5 %, as tabulated in ISO 5725-2
+    assert outliers.cochran_critical(10, 2, 0.01) == pytest.approx(0.718, abs=6e-4)
+    assert outliers.cochran_critical(10, 2, 0.05) == pytest.approx(0.602, abs=6e-4)
+    assert outliers.cochran_critical(5, 3, 0.01) == pytest.approx(0.788, abs=6e-4)
+    # Formulae (24), (25) at a point inside the region: a quarter of chi is used by the mean
+    chi = -2.0 * math.log(0.01)
+    x, lo, hi = graphics.repeatability_region(10.0, 2.0, m=4, points=5)
+    e = math.sqrt(0.75 * chi / (2 * 3))
+    assert x[1] == pytest.approx(10.0 - 0.5 * 2.0 * math.sqrt(chi / 4))
+    assert lo[1] == pytest.approx(2.0 * math.exp(-e)) and hi[1] == pytest.approx(2.0 * math.exp(e))
+    # Qn with exactly twelve results uses b_12 of Table C.2
+    x = [float(v * v) for v in range(1, 13)]
+    d = sorted(b - a for i, a in enumerate(x) for b in x[i + 1:])
+    assert robust.qn(x) == pytest.approx(2.2191 * d[7 * 6 // 2 - 1] * 0.7574, rel=1e-12)
+    # regression on three previous rounds; the mean of two results; a round of one result
+    fit = sigma_pt.fit_previous_rounds([1.0, 2.0, 3.0], [0.1, 0.2, 0.3])
+    assert fit.slope == pytest.approx(0.1) and fit.intercept == pytest.approx(0.0, abs=1e-12)
+    av = assigned_value.consensus([1.0, 3.0], "mean")
+    assert av.x_pt == 2.0 and av.u_x_pt == pytest.approx(math.sqrt(2.0) / math.sqrt(2.0))
+    rec = record.round_record([3.05], x_pt=0.0, u_x_pt=0.0, sigma_pt=1.0)
+    assert rec.participants[0].signal == "action" and rec.action == 3.0 and rec.warning == 2.0
+    assert record.round_record([2.95], x_pt=0.0, u_x_pt=0.0, sigma_pt=1.0).participants[0].signal == "warning"
+    assert sigma_pt.from_precision(1.0, 2.0, 1) == pytest.approx(1.0)        # m = 1: sigma_r does not enter
+    with pytest.raises(ValueError):
+        sigma_pt.from_precision(1.0, 2.0, 2)                                   # 1 - 4 x 0,5 < 0
+    assert sigma_pt.from_precision(1.0, math.sqrt(1.5), 2) == pytest.approx(0.5)   # 1 - 1,5 x 0,5 = 0,25

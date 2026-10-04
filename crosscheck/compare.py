@@ -61,15 +61,21 @@ def sets_5000():
         yield [float(v) for v in x]
 
 
+# php_200.json and php_5000.json are outputs of the PHP engine 1.6.0, which iterates Algorithms A and S
+# to convergence like the library. php_5000_engine_1.5.0.json holds the Algorithm A outputs of engine
+# 1.5.0, which stopped when the third significant figures of x* and of s* no longer changed (the
+# criterion "sig3-of-x" of the library).
+
+
 def python_200():
     out = []
     for x, hom, w, (xi, xpt, s, u, upt) in sets_200():
-        a = robust.algorithm_a(x, tol="sig3")          # the PHP engine uses the three-figure rule
+        a = robust.algorithm_a(x)
         qh = robust.q_hampel(x)
         h = homogeneity.homogeneity(hom, sigma_pt=s)
         out.append({"median": robust.median(x), "MADe": robust.made(x), "nIQR": robust.niqr(x),
                     "Algorithm A x*": a.location, "Algorithm A s*": a.scale,
-                    "Algorithm S": robust.algorithm_s(w, 1, tol="sig3").location, "Qn": robust.qn(x),
+                    "Algorithm S": robust.algorithm_s(w, 1).location, "Qn": robust.qn(x),
                     "Q method": float(robust.q_method(x)), "Q/Hampel x*": qh.location,
                     "s_s": h.s_s, "s_w": h.s_w, "expanded criterion": h.expanded_criterion,
                     "z": scores.z_score(xi, xpt, s), "z'": scores.z_prime_score(xi, xpt, s, upt),
@@ -79,6 +85,61 @@ def python_200():
 
 def sig(v, n):
     return 0.0 if v == 0 else round(v, n - 1 - int(math.floor(math.log10(abs(v)))))
+
+
+def rule_statistics(all_x, rule):
+    """A stopping rule of Algorithm A against convergence (default tolerance), and after a change of
+    unit (inch to millimetre) or of origin (degree Celsius to kelvin) of the same results."""
+    third_x = third_s = results = signals = sets_with_signal_change = 0
+    rel, iters = [], []
+    unit_changed = origin_changed = unit_sig = origin_sig = 0
+    unit_worst = origin_worst = 0.0
+    for x in all_x:
+        x = np.asarray(x)
+        a = robust.algorithm_a(x, tol=rule)
+        c = robust.algorithm_a(x)
+        if c.degenerate:
+            continue
+        # z scores with x_pt = x* and sigma_pt = s* (8.6) under the two stopping rules
+        za = [scores.classify_z(scores.z_score(v, a.location, a.scale)) for v in x]
+        zc = [scores.classify_z(scores.z_score(v, c.location, c.scale)) for v in x]
+        changed = sum(u != v for u, v in zip(za, zc))
+        results += len(x)
+        signals += changed
+        sets_with_signal_change += changed > 0
+        third_x += sig(a.location, 3) != sig(c.location, 3)
+        third_s += sig(a.scale, 3) != sig(c.scale, 3)
+        rel.append(abs(a.scale - c.scale) / c.scale)
+        iters.append((a.iterations, c.iterations))
+        for kind, y, back in (("unit", x * 25.4, lambda r: (r.location / 25.4, r.scale / 25.4)),
+                              ("origin", x + 273.15, lambda r: (r.location - 273.15, r.scale))):
+            loc, sc = back(robust.algorithm_a(y, tol=rule))
+            moved = abs(sc - a.scale) > 1e-9 * a.scale
+            zb = [scores.classify_z(scores.z_score(v, loc, sc)) for v in x]
+            nsig = sum(u != v for u, v in zip(za, zb))
+            err = abs(sc - c.scale) / c.scale
+            if kind == "unit":
+                unit_changed += moved; unit_sig += nsig; unit_worst = max(unit_worst, err)
+            else:
+                origin_changed += moved; origin_sig += nsig; origin_worst = max(origin_worst, err)
+    return {
+        "sets": len(rel),
+        "against convergence": {
+            "x* differs in the third significant figure": int(third_x),
+            "s* differs in the third significant figure": int(third_s),
+            "relative difference of s*: median, 95th percentile, maximum":
+                [float(np.median(rel)), float(np.percentile(rel, 95)), float(max(rel))],
+            "median iterations: rule, convergence":
+                [float(np.median([i[0] for i in iters])), float(np.median([i[1] for i in iters]))],
+            "z signals (acceptable, warning, action) that change: results, of results, sets":
+                [int(signals), int(results), int(sets_with_signal_change)],
+        },
+        "after a change of unit (x 25,4) or of origin (+ 273,15)": {
+            "sets in which s* changes: unit, origin": [int(unit_changed), int(origin_changed)],
+            "z signals that change: unit, origin": [int(unit_sig), int(origin_sig)],
+            "largest relative error of s* against convergence: unit, origin": [float(unit_worst), float(origin_worst)],
+        },
+    }
 
 
 def main():
@@ -92,73 +153,26 @@ def main():
     q_rel_0 = [abs(a["Q method"] - b["Q method"]) / a["Q method"] for a, b in zip(py[0::2], before[0::2])]
     differing_200 = [i for i, (a, b) in enumerate(zip(py, php)) if abs(a["Algorithm A s*"] - b["Algorithm A s*"]) > 1e-9]
     xs = list(sets_5000())
-    py5 = [robust.algorithm_a(x, tol="sig3") for x in xs]
     php5 = json.load(open(os.path.join(HERE, "php_5000.json")))
-    differing_5000 = [i for i, (a, b) in enumerate(zip(py5, php5)) if abs(a.location - b[0]) > 1e-9 or abs(a.scale - b[1]) > 1e-9]
+    differing_5000 = [i for i, (x, b) in enumerate(zip(xs, php5))
+                      if (lambda a: abs(a.location - b[0]) > 1e-9 or abs(a.scale - b[1]) > 1e-9)(robust.algorithm_a(x))]
+    old5 = json.load(open(os.path.join(HERE, "php_5000_engine_1.5.0.json")))
+    differing_old = [i for i, (x, b) in enumerate(zip(xs, old5))
+                     if (lambda a: abs(a.location - b[0]) > 1e-9 or abs(a.scale - b[1]) > 1e-9)(robust.algorithm_a(x, tol="sig3-of-x"))]
     all_x = [s[0] for s in sets_200()] + xs
-    third_x = third_s = 0
-    rel = []
-    iters = []
-    results = signals = sets_with_signal_change = 0
-    for x in all_x:
-        a = robust.algorithm_a(x, tol="sig3")
-        c = robust.algorithm_a(x, tol=1e-12)
-        # z scores with x_pt = x* and sigma_pt = s* (8.6) under the two stopping rules
-        ca = [scores.classify_z(scores.z_score(v, a.location, a.scale)) for v in x]
-        cc = [scores.classify_z(scores.z_score(v, c.location, c.scale)) for v in x]
-        changed = sum(u != v for u, v in zip(ca, cc))
-        results += len(x)
-        signals += changed
-        sets_with_signal_change += changed > 0
-        third_x += sig(a.location, 3) != sig(c.location, 3)
-        third_s += sig(a.scale, 3) != sig(c.scale, 3)
-        rel.append(abs(a.scale - c.scale) / c.scale)
-        iters.append((a.iterations, c.iterations))
-    n = len(all_x)
-    # the three-figure rule under a change of unit (inch to millimetre) and of origin (degree Celsius to kelvin)
-    unit_changed = origin_changed = unit_sig = origin_sig = 0
-    unit_worst = origin_worst = 0.0
-    for x in all_x:
-        x = np.asarray(x)
-        a = robust.algorithm_a(x, tol="sig3")
-        c = robust.algorithm_a(x, tol=1e-12)
-        if c.degenerate:
-            continue
-        za = [scores.classify_z(scores.z_score(v, a.location, a.scale)) for v in x]
-        for kind, y, back in (("unit", x * 25.4, lambda r: (r.location / 25.4, r.scale / 25.4)),
-                              ("origin", x + 273.15, lambda r: (r.location - 273.15, r.scale))):
-            loc, sc = back(robust.algorithm_a(y, tol="sig3"))
-            changed = abs(sc - a.scale) > 1e-9 * a.scale
-            zb = [scores.classify_z(scores.z_score(v, loc, sc)) for v in x]
-            nsig = sum(u != v for u, v in zip(za, zb))
-            err = abs(sc - c.scale) / c.scale
-            if kind == "unit":
-                unit_changed += changed; unit_sig += nsig; unit_worst = max(unit_worst, err)
-            else:
-                origin_changed += changed; origin_sig += nsig; origin_worst = max(origin_worst, err)
+    q_diff = [r for r in q_rel if r > 1e-9]
     res = {
         "largest absolute difference, Python - PHP, 100 sets without ties": largest,
         "largest absolute difference, Python - PHP, 100 sets with ties": largest_ties,
         "Q method, PHP engine before the correction, 100 sets with ties: sets that differ by more than 1e-9, "
         "median and largest relative difference":
             [int(sum(r > 1e-9 for r in q_rel)), float(np.median(q_rel)), float(max(q_rel))],
+        "Q method, PHP engine before the correction: median relative difference in the sets that differ": float(np.median(q_diff)),
         "Q method, PHP engine before the correction, 100 sets without ties: largest relative difference": float(max(q_rel_0)),
-        "sets with a different Algorithm A result": {"of 200": len(differing_200), "of 5000": len(differing_5000)},
-        "three-figure rule against convergence": {
-            "sets": n,
-            "x* differs in the third significant figure": third_x,
-            "s* differs in the third significant figure": third_s,
-            "relative difference of s*: median, 95th percentile, maximum":
-                [float(np.median(rel)), float(np.percentile(rel, 95)), float(max(rel))],
-            "median iterations: rule, convergence": [float(np.median([i[0] for i in iters])), float(np.median([i[1] for i in iters]))],
-            "z signals (acceptable, warning, action) that change: results, of results, sets":
-                [int(signals), int(results), int(sets_with_signal_change)],
-        },
-        "three-figure rule after a change of unit (x 25,4) or of origin (+ 273,15)": {
-            "sets in which s* changes: unit, origin": [int(unit_changed), int(origin_changed)],
-            "z signals that change: unit, origin": [int(unit_sig), int(origin_sig)],
-            "largest relative error of s* against convergence: unit, origin": [float(unit_worst), float(origin_worst)],
-        },
+        "sets with a different Algorithm A result (convergence)": {"of 200": len(differing_200), "of 5000": len(differing_5000)},
+        "sets with a different Algorithm A result, engine 1.5.0 against tol='sig3-of-x', of 5000": len(differing_old),
+        "three-figure rule, third figure of s* and equivalent figure of x* (sig3)": rule_statistics(all_x, "sig3"),
+        "three-figure rule, third figures of x* and s* (sig3-of-x; versions up to 0.1.5, PHP engine 1.5.0)": rule_statistics(all_x, "sig3-of-x"),
     }
     json.dump(res, open(os.path.join(HERE, "result.json"), "w"), indent=1)
     print(json.dumps(res, indent=1))

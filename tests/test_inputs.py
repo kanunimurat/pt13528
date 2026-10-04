@@ -6,9 +6,10 @@ import math
 import numpy as np
 import pytest
 
-from pt13528 import assigned_value, homogeneity, record, robust, scores
+from pt13528 import assigned_value, homogeneity, outliers, record, robust, scores
 
 NAN = float("nan")
+DEFAULT = robust.DEFAULT_TOL
 
 
 def test_convergence_does_not_depend_on_the_unit():
@@ -44,24 +45,123 @@ def test_default_depends_neither_on_the_unit_nor_on_the_origin():
         assert [q.signal for q in r1.participants] == [q.signal for q in r2.participants]
 
 
-def test_three_figure_rule_depends_on_the_origin():
-    """The criterion of C.3.1 on the same eleven results in degrees Celsius and in kelvin.
+X11 = [18.2, 18.2, 18.4, 18.4, 18.4, 18.4, 18.6, 19.8, 20.5, 20.9, 22.3]
 
-    In kelvin the third significant figure of x* is the units digit, which no iterate changes, and
-    s* happens to keep its third figure in the first step: the iteration stops at once with an s*
-    that is 78 % too small, and four results get an action signal. See docs/coverage.md.
-    """
-    x = [18.2, 18.2, 18.4, 18.4, 18.4, 18.4, 18.6, 19.8, 20.5, 20.9, 22.3]
-    k = [v + 273.15 for v in x]
-    full = robust.algorithm_a(x)
+
+def test_three_figure_rule_of_c_3_1_and_the_reading_of_earlier_versions():
+    """Read as "third significant figure of s* and the equivalent figure (the same decimal place)
+    of x*", the criterion gives the same s* for the eleven results in degrees Celsius and in kelvin.
+    Read as "third significant figures of x* and s*" ("sig3-of-x", the only reading up to 0.1.5), the
+    figure tested in kelvin is the units digit of x*: the iteration stops after one step with an s*
+    that is 78 % too small, and four results get an action signal."""
+    k = [v + 273.15 for v in X11]
+    full = robust.algorithm_a(X11)
     assert full.scale == pytest.approx(1.3299, abs=5e-5)
     assert robust.algorithm_a(k).scale == pytest.approx(full.scale, rel=1e-9)
-    celsius, kelvin = robust.algorithm_a(x, tol="sig3"), robust.algorithm_a(k, tol="sig3")
-    assert celsius.scale == pytest.approx(1.328, abs=5e-4)
-    assert kelvin.iterations == 1 and kelvin.scale == pytest.approx(0.297, abs=5e-4)
-    assert record.round_record(k, tol="sig3").counts["action"] == 4
-    assert record.round_record(k).counts["action"] == 0
-    assert record.round_record(x, tol="sig3").counts["action"] == 0
+    celsius, kelvin = robust.algorithm_a(X11, tol="sig3"), robust.algorithm_a(k, tol="sig3")
+    assert celsius.scale == pytest.approx(1.328, abs=5e-4) and celsius.iterations == 13
+    assert kelvin.scale == pytest.approx(celsius.scale, rel=1e-9) and kelvin.iterations == 13
+    assert record.round_record(k, tol="sig3").counts["action"] == 0
+    old = robust.algorithm_a(k, tol="sig3-of-x")
+    assert old.iterations == 1 and old.scale == pytest.approx(0.297, abs=5e-4)
+    assert record.round_record(k, tol="sig3-of-x").counts["action"] == 4
+    assert robust.algorithm_a(X11, tol="sig3-of-x").scale == pytest.approx(celsius.scale, rel=1e-12)
+
+
+def test_three_figure_rule_depends_on_the_unit():
+    """Significant figures depend on the unit, so the rule of C.3.1 stops at a different iterate
+    after a change of unit: results in inches and the same results in millimetres."""
+    x = [0.52, 0.55, 0.61, 0.48, 0.50, 0.57, 0.93, 0.49, 0.53, 0.60]
+    inch, mm = robust.algorithm_a(x, tol="sig3"), robust.algorithm_a([25.4 * v for v in x], tol="sig3")
+    full = robust.algorithm_a(x)
+    assert robust.algorithm_a([25.4 * v for v in x]).scale / 25.4 == pytest.approx(full.scale, rel=1e-9)
+    assert inch.iterations != mm.iterations
+    assert abs(mm.scale / 25.4 - inch.scale) > 1e-4 * full.scale
+
+
+@pytest.mark.parametrize("tol", [0, -1.0, NAN, math.inf, "three", True, None])
+def test_invalid_stopping_criterion(tol):
+    with pytest.raises(ValueError):
+        robust.algorithm_a([1, 2, 3, 4, 9], tol=tol)
+    with pytest.raises(ValueError):
+        robust.algorithm_s([0.1, 0.2, 0.3], 1, tol=tol)
+
+
+@pytest.mark.parametrize("tol", ["sig3", "sig3-of-x", DEFAULT])
+def test_slow_collapse_is_detected(tol):
+    """Five of seven results identical and two symmetric ones: s* shrinks by 1,8 % per iteration, which
+    took more than 1000 iterations to reach the collapse threshold in 0.1.5."""
+    r = robust.algorithm_a([10, 10, 10, 10, 10, 9, 11], tol=tol)
+    assert r.degenerate and r.scale == 0.0 and r.location == pytest.approx(10.0) and r.iterations < 50
+    assert assigned_value.consensus([10, 10, 10, 10, 10, 9, 11]).degenerate
+    with pytest.raises(ValueError, match="identical"):
+        record.round_record([10, 10, 10, 10, 10, 9, 11])
+    r = robust.algorithm_a([10, 10, 10, 10, 10, 10, 9.5, 12], tol=tol)          # asymmetric
+    assert r.degenerate and r.location == pytest.approx(10.0)
+
+
+def test_identical_majorities_never_run_into_the_iteration_limit():
+    rng = np.random.default_rng(5)
+    for _ in range(3000):
+        p = int(rng.integers(5, 21))
+        k = int(rng.integers(p // 2 + 1, p))
+        x = np.concatenate([np.full(k, 10.0), np.round(rng.normal(10, 1, p - k), 1)])
+        r = robust.algorithm_a(x)
+        assert r.converged
+        if not r.degenerate:
+            assert r.scale > 0
+
+
+@pytest.mark.parametrize("unit", [1e-200, 1e-30, 1e30, 1e160])
+def test_extreme_units(unit):
+    a = robust.algorithm_a(X11)
+    b = robust.algorithm_a([unit * v for v in X11])
+    assert not b.degenerate and b.scale / unit == pytest.approx(a.scale, rel=1e-9)
+    assert b.location / unit == pytest.approx(a.location, rel=1e-9)
+    w = [0.2, 0.5, 0.1, 0.4, 0.3, 0.6, 2.0]
+    assert robust.algorithm_s([unit * v for v in w], 3).scale / unit == pytest.approx(robust.algorithm_s(w, 3).scale, rel=1e-9)
+
+
+def test_strings_and_mappings_are_not_data():
+    for f in (robust.algorithm_a, robust.q_method, robust.q_hampel, robust.qn, record.round_record,
+              outliers.grubbs, robust.median):
+        with pytest.raises(TypeError):
+            f("12345")
+        with pytest.raises(TypeError):
+            f({1: 2.0, 2: 3.0})
+    with pytest.raises(TypeError):
+        robust.q_method([[1.0, 2.0], "34", [5.0]])
+    with pytest.raises(TypeError):
+        homogeneity.homogeneity("12345", sigma_pt=1.0)
+
+
+def test_scores_reject_non_finite_values():
+    for bad in (NAN, math.inf, -math.inf):
+        for f, args in ((scores.z_score, (bad, 1.0, 1.0)), (scores.z_score, (1.0, bad, 1.0)),
+                        (scores.z_score, (1.0, 1.0, bad)), (scores.z_prime_score, (1.0, 1.0, 1.0, bad)),
+                        (scores.zeta_score, (1.0, 1.0, bad, 0.1)), (scores.en_score, (bad, 1.0, 0.1, 0.1)),
+                        (scores.difference, (bad, 1.0)), (scores.percent_difference, (bad, 1.0)),
+                        (scores.percent_allowed, (1.0, 1.0, bad)), (scores.delta_e_prime, (bad, 0.1)),
+                        (scores.z_reduction_factor, (bad, 0.1)), (scores.uncertainty_flag, (0.1, 0.1, bad))):
+            with pytest.raises(ValueError):
+                f(*args)
+        with pytest.raises(ValueError):
+            scores.uncertainty_negligible(0.1, sigma_pt=bad)
+        with pytest.raises(ValueError):
+            record.round_record([1, 2, 3], x_pt=2.0, u_x_pt=0.1, sigma_pt=bad)
+        with pytest.raises(ValueError):
+            record.round_record([1, 2, 3], x_pt=2.0, u_x_pt=bad, sigma_pt=1.0)
+        with pytest.raises(ValueError):
+            robust.hampel([1, 2, 3], bad)
+    with pytest.raises(ValueError):
+        robust.hampel([1, 2, 3], -1.0)
+    assert robust.hampel([1, 2, 4], 0.0) == 2.0                                   # no scale: the median
+    with pytest.raises(ValueError):
+        homogeneity.stability([1.0, 1.1], [1.0, 1.2], sigma_pt=-1.0)
+    with pytest.raises(ValueError):
+        homogeneity.stability([1.0, 1.1], [1.0, 1.2], sigma_pt=1.0, u_y1=-0.1, u_y2=0.1)
+    with pytest.raises(ValueError):
+        scores.uncertainty_negligible(0.1, sigma_pt=0.0)
 
 
 @pytest.mark.parametrize("tol", ["sig3", 1e-12])
