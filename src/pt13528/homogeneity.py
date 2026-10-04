@@ -54,6 +54,8 @@ def homogeneity(samples: Sequence[Sequence[float]], sigma_pt: Optional[float] = 
     x = np.asarray(samples, dtype=float)
     if x.ndim != 2 or x.shape[0] < 2 or x.shape[1] < 2:
         raise ValueError("samples must be g x m with g >= 2 and m >= 2 (balanced design)")
+    if not np.all(np.isfinite(x)):
+        raise ValueError("values must be finite")
     g, m = x.shape
     item_mean = x.mean(axis=1)
     s_x2 = float(item_mean.var(ddof=1))

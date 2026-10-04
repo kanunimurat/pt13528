@@ -90,9 +90,17 @@ def main():
     third_x = third_s = 0
     rel = []
     iters = []
+    results = signals = sets_with_signal_change = 0
     for x in all_x:
         a = robust.algorithm_a(x)
         c = robust.algorithm_a(x, tol=1e-12)
+        # z scores with x_pt = x* and sigma_pt = s* (8.6) under the two stopping rules
+        ca = [scores.classify_z(scores.z_score(v, a.location, a.scale)) for v in x]
+        cc = [scores.classify_z(scores.z_score(v, c.location, c.scale)) for v in x]
+        changed = sum(u != v for u, v in zip(ca, cc))
+        results += len(x)
+        signals += changed
+        sets_with_signal_change += changed > 0
         third_x += sig(a.location, 3) != sig(c.location, 3)
         third_s += sig(a.scale, 3) != sig(c.scale, 3)
         rel.append(abs(a.scale - c.scale) / c.scale)
@@ -108,6 +116,8 @@ def main():
             "relative difference of s*: median, 95th percentile, maximum":
                 [float(np.median(rel)), float(np.percentile(rel, 95)), float(max(rel))],
             "median iterations: rule, convergence": [float(np.median([i[0] for i in iters])), float(np.median([i[1] for i in iters]))],
+            "z signals (acceptable, warning, action) that change: results, of results, sets":
+                [int(signals), int(results), int(sets_with_signal_change)],
         },
     }
     json.dump(res, open(os.path.join(HERE, "result.json"), "w"), indent=1)

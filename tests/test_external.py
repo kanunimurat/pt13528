@@ -8,7 +8,13 @@ proposal 2 with tuning constant 1,5; the standard prints the consistency
 factor as 1,134, statsmodels uses the unrounded value 1,13339... The test
 therefore runs Algorithm A to convergence with the unrounded factor and
 requires agreement to 1e-9, and separately checks that the printed factor
-changes s* by less than 0,2 %.
+changes s* by less than 1 % (0,05 % to 0,3 % in these sets).
+
+Qn is compared with the unscaled statsmodels estimate multiplied by the
+finite-sample factors of Rousseeuw and Croux as tabulated, to six figures, in
+the R package robustbase; the factors are typed here and not taken from the
+library. The Hampel estimator is compared with a root search that shares no
+code with the finite-step algorithm.
 """
 import math
 
@@ -51,15 +57,52 @@ def test_algorithm_a_is_huber_proposal_2(monkeypatch):
     assert worst_printed < 0.01
 
 
+# finite-sample factors d_n of Qn, robustbase (>= 0.93): table for n = 2..12, polynomial above
+_DN = {2: .399356, 3: .99365, 4: .51321, 5: .84401, 6: .61220, 7: .85877,
+       8: .66993, 9: .87344, 10: .72014, 11: .88906, 12: .75743}
+
+
+def _dn(n):
+    if n <= 12:
+        return _DN[n]
+    if n % 2:
+        return 1 / (1 + (1.60188 + (-2.1284 - 5.172 / n) / n) / n)
+    return 1 / (1 + (3.67561 + (1.9654 + (6.987 - 77 / n) / n) / n) / n)
+
+
 def test_qn_made_niqr():
     for x in _sets():
-        p = len(x)
-        d = np.sort(np.abs(x[:, None] - x[None, :])[np.triu_indices(p, 1)])
-        h = p // 2 + 1
-        bp = robust.qn(x) / (2.2191 * d[h * (h - 1) // 2 - 1])           # finite-sample factor of Table C.2 / (C.20), (C.21)
-        ref = float(sm.qn_scale(x))                                     # no finite-sample factor, constant 2.219144...
+        ref = float(sm.qn_scale(x)) * _dn(len(x))                       # constant 2.219144... against 2,2191
         if ref > 0:
-            assert robust.qn(x) / bp == pytest.approx(ref, rel=3e-5)    # 2,2191 against 2,219144
+            assert robust.qn(x) == pytest.approx(ref, rel=1e-4)
         if sm.mad(x) > 0:
             assert robust.made(x) == pytest.approx(float(sm.mad(x)), rel=5e-4)   # 1,483 against 1,4826
         assert robust.niqr(x) == pytest.approx(float(sm.iqr(x)), rel=5e-5)       # 0,7413 against 1/1,349
+
+
+def test_qn_small_samples():
+    rng = np.random.default_rng(2)
+    for p in range(2, 14):
+        for _ in range(20):
+            x = rng.normal(10, 2, p)
+            assert robust.qn(x) == pytest.approx(float(sm.qn_scale(x)) * _dn(p), rel=1e-4)
+
+
+def test_hampel_against_root_search():
+    """All roots of sum(psi((x_i - m)/s)) = 0 by a dense sign-change search; the one nearest the median is taken."""
+    brentq = pytest.importorskip("scipy.optimize").brentq
+    for x in _sets(120):
+        s = robust.q_method(x)
+        if s <= 0:
+            continue
+
+        def f(m):
+            return float(robust._psi((x - m) / s).sum())
+        grid = np.linspace(x.min() - 5 * s, x.max() + 5 * s, 20001)
+        v = np.array([f(m) for m in grid])
+        roots = [brentq(f, grid[i], grid[i + 1], xtol=1e-14, rtol=1e-14)
+                 for i in range(grid.size - 1) if v[i] * v[i + 1] < 0]
+        inside = [r for r in roots if np.any(np.abs(x - r) < 4.5 * s)]
+        med = float(np.median(x))
+        best = min(inside, key=lambda r: abs(r - med))
+        assert robust.hampel(x, s) == pytest.approx(best, abs=1e-8 * max(1.0, abs(best)))

@@ -123,10 +123,15 @@ def round_record(x: Iterable[float], *, method: str = "algorithm_a",
         if scale is None:
             raise ValueError("sigma_pt is required when x_pt is given")
         sigma_pt, source = float(scale), "participant results of this round (8.6)"
+        if sigma_pt <= 0:
+            raise ValueError("the robust standard deviation of the results is zero "
+                             "(more than half of them are identical); give sigma_pt")
     else:
         source = "set by the provider (8.2 to 8.5)"
     if sigma_pt <= 0:
         raise ValueError("sigma_pt must be positive")
+    if u_x_pt < 0:
+        raise ValueError("u(x_pt) cannot be negative")
 
     negligible = scores.uncertainty_negligible(u_x_pt, sigma_pt=sigma_pt)
     if statistic == "auto":

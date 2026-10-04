@@ -2,7 +2,7 @@
 
 *A Python library for proficiency testing statistics according to ISO 13528*
 
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23137089.svg)](https://doi.org/10.5281/zenodo.23137089)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23135796.svg)](https://doi.org/10.5281/zenodo.23135796)
 
 Statistical methods of **ISO 13528:2022 with Amd 1:2026** (*Statistical methods for use in
 proficiency testing by interlaboratory comparison*) as a small,
@@ -69,13 +69,17 @@ pip install -e ".[test]"
 pytest
 ```
 
-- `tests/printed_values.py` lists 256 values printed in ISO 13528:2022 (228
-  from the worked examples of Annex E, 28 from Table B.1) that the library
-  reproduces to half a unit of the last printed digit, and the five printed
-  items that do not follow from the text.
+- `tests/printed_values.py` lists 255 values printed in ISO 13528:2022 (227
+  from the worked examples of Annex E, 28 from Table B.1) that the functions
+  of the library reproduce to half a unit of the last printed digit, and the
+  four printed items that do not follow from the text.
 - `tests/test_external.py` compares Algorithm A, Qn, MADe and nIQR with
-  statsmodels, which was written independently of the standard.
+  statsmodels, which was written independently of the standard, and the
+  Hampel estimator with a separate root search.
+- `tests/test_inputs.py` covers degenerate and invalid input and the
+  independence of the results from the unit of the data.
 - `tests/test_real_round.py` recomputes a real round from its formal report.
+- `figures/` holds the scripts and seeds of the simulated examples shown in the article.
 - `crosscheck/compare.py` repeats the comparison with the PHP engine of the
   LAKSiS platform and measures the effect of the stopping rule of Algorithm A.
 
@@ -91,7 +95,7 @@ responsibility of the proficiency testing provider (ISO/IEC 17043).
 
 Sert M, Yağan MK, Aydın A, Heidarizadeh M, Tilki E, Selek AE, Mete Sert A.
 pt13528: A Python library for proficiency testing statistics according to ISO 13528
-Version 0.1.1. Zenodo; 2026. https://doi.org/10.5281/zenodo.23137089 (other versions are listed on the Zenodo page).
+Zenodo; 2026. https://doi.org/10.5281/zenodo.23135796 (this DOI always resolves to the latest version; each version has its own DOI on the Zenodo page).
 
 ## Licence
 

@@ -10,3 +10,7 @@ dist/
 # internal release notes and local helper, not part of the published package
 RELEASING.md
 Git-Hazirla.command
+figures/*.png
+figures/*.pdf
+figures/*.png
+figures/*.pdf

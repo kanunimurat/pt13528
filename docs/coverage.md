@@ -19,7 +19,8 @@ the formula, a published table or a simulation); **no** not implemented.
 | 8.5 | (9) | sigma_pt from a precision experiment | `sigma_pt.from_precision` | yes | E.10 |
 | 8.6.2 | | limits on sigma_pt | `sigma_pt.limit_sigma` | yes* | |
 | 9.2.1 | (10) | u(x_pt) < 0,3 sigma_pt | `scores.uncertainty_negligible` | yes | E.6 |
-| 9.3 | (11) to (13) | D, D%, PA | `scores.difference`, `percent_difference`, `percent_allowed` | yes | E.4 |
+| 9.3.1 | (11) to (13) | D, D%, PA | `scores.difference`, `percent_difference`, `percent_allowed` | yes | E.4 |
+| 9.3.2, 9.4.2, 9.7.2 | | signals | `scores.classify_d`, `classify_z`, `classify_en` | yes* | |
 | 9.4 | (14) | z | `scores.z_score` | yes | E.4 |
 | 9.5 | (15) to (18) | z', delta_E', reduction factor | `scores.z_prime_score`, `delta_e_prime`, `z_reduction_factor` | yes | E.4 |
 | 9.6 | (19) | zeta | `scores.zeta_score` | yes | E.4 |
@@ -27,6 +28,7 @@ the formula, a published table or a simulation); **no** not implemented.
 | 9.8 | | screening of reported uncertainties | `scores.uncertainty_flag` | yes* (see note 4) | |
 | 9.9 | | combined scores | | no (the standard gives no formula) | |
 | 10.3 | (21), (22) | kernel density | `graphics.kernel_density`, `assigned_value.kernel_mode` | yes | E.6 |
+| 10.3.2 i) | | bandwidth | `graphics.bandwidth` | yes* | |
 | 10.6 | (23) to (25) | repeatability plot | `graphics.repeatability_statistic`, `repeatability_region` | yes* | E.13 (robust values only) |
 | 10.2, 10.4, 10.5, 10.7, 10.8 | | histograms, bar plots, Youden plot, split samples, control charts | | no (plots are left to the caller) | |
 | 11 | | ordinal quantities | `graphics.ordinal_summary` | yes | E.15 |
@@ -79,42 +81,51 @@ All other changes update references to ISO/IEC 17043:2023 or wording
 
 ## Printed values reproduced
 
-`tests/printed_values.py` lists 256 values printed in ISO 13528:2022 that the
-library reproduces to within half a unit of the last printed digit: 228 from
-the worked examples E.1 to E.7, E.9, E.10, E.12 and E.13 of Annex E, and the
-28 factors of Table B.1. Of the 228, 126 are the scores of Table E.7 and 63
-belong to Table E.10. `tests/test_printed_values.py` asserts the count and the
-tolerance. E.14 is not covered, and E.15 is checked by equality of counts.
+`tests/printed_values.py` lists 255 values printed in ISO 13528:2022 that the
+functions of the library reproduce to within half a unit of the last printed
+digit: 227 from the worked examples E.1 to E.7, E.9, E.10, E.12 and E.13 of
+Annex E, and the 28 factors of Table B.1. Of the 227, 126 are the scores of
+Table E.7 and 62 belong to Table E.10 (arithmetic mean, standard deviation and
+z scores, see item 2 below). Locations and scales from the estimators of Annex C account for
+15 of the values. `tests/test_printed_values.py` asserts the count and the tolerance.
+E.14 is not covered, and E.15 is checked by equality of counts.
 
 ## Where a printed result does not follow from the text
 
-Five items remain after Amd 1:2026 (`inconsistent()` in the same file).
+Four items remain after Amd 1:2026 (`inconsistent()` in the same file).
 
-Two printed values differ from the computed one by one unit of the last
-digit, and both equal the computed value truncated instead of rounded:
+One printed value is not reproduced by any reading of the text:
 
-1. **E.1, Table E.1, third column (0,5 x '<' value).** Printed 23,95 / 8,60.
-   Full convergence gives 23,9585 / 8,5960, so s* agrees and x* is truncated.
-   The iterates of x* fall monotonically from 24,375 to 23,9585, so no stopping
-   point gives 23,95. The three-figure rule of C.3.1 stops at 23,96 / 8,59.
-2. **E.8, coefficient of determination.** Printed 0,82. The data of Table E.9
-   give 0,8264.
+1. **E.1, Table E.1, third column (0,5 x '<' value), x\*.** Printed 23,95.
+   The three-figure rule of C.3.1 stops at 23,9601 and full convergence gives
+   23,9585; both round to 23,96. The iterates of x* fall monotonically from
+   24,375 to 23,9585, so no stopping point gives 23,95. The printed value
+   equals the converged one cut after the second decimal.
 
 Three items are mismatches between the text and the table:
 
-3. **E.12, Table E.10.** The text states that the z scores use the robust
+2. **E.12, Table E.10.** The text states that the z scores use the robust
    mean and standard deviation of Algorithm A. The printed z scores and the
    "Average" and "Standard deviation" rows are reproduced by the arithmetic
    mean and standard deviation (11,54 / 3,29 and 7,66 / 2,90); Algorithm A
    gives 11,17 / 2,69 and 7,27 / 2,36.
-4. **E.3, Table E.5, row "Median, nIQR (MADe)".** The printed u(x_pt) of
+3. **E.3, Table E.5, row "Median, nIQR (MADe)".** The printed u(x_pt) of
    0,0086 is reproduced with nIQR (1,25 x 0,0402 / sqrt(34)); MADe gives
    0,0083. The row names both estimators, and the text does not say which one
    enters Formula (6). `consensus(..., "median")` uses nIQR by default.
-5. **E.4, Table E.6, flags.** The limits of 9.8.3 and 9.8.4 (u_min = u(x_pt),
+4. **E.4, Table E.6, flags.** The limits of 9.8.3 and 9.8.4 (u_min = u(x_pt),
    u_max = 1,5 s*) do not reproduce the printed flags. They are reproduced
    with u_max = sigma_pt and a u_min between 0,002 and 0,0025, which the
    example does not state.
+
+Two further observations are recorded by `notes()` and not counted:
+
+- **Table E.1 follows no single stopping rule.** The printed s* of the first
+  column (7,23) is the value of the three-figure rule (7,2296; convergence
+  gives 7,2373). The printed s* of the third column (8,60) is the converged
+  value (8,5960; the three-figure rule gives 8,5911).
+- **E.8, coefficient of determination.** Printed 0,82. The data of Table E.9
+  give 0,8264 (0,83); the adjusted coefficient is 0,8167 (0,82).
 
 Bootstrap results (E.3, E.6) depend on the random number generator of R and
 are checked within Monte Carlo error only.
@@ -135,21 +146,38 @@ Two cases of the 2022 edition are settled by the amendment:
 
 C.3.1 allows the iteration to stop when the third significant figure of x*
 and s* no longer changes. That rule stops well before convergence: on 5200
-generated data sets (`crosscheck/compare.py`) it stops after a median of 6
-iterations, against 35 for convergence to 1e-12, and the resulting s* differs
-from the converged one in the third significant figure in 2594 sets (50 %),
-x* in 105 sets (2 %). The relative difference of s* has a median of 0,09 %,
-a 95th percentile of 0,56 % and a maximum of 10 %. `algorithm_a(x)` follows
-the rule of the standard; `algorithm_a(x, tol=1e-12)` iterates to convergence.
+generated data sets (`crosscheck/compare.py`: 6 to 40 results, normal with up
+to 20 % shifted results, half of the sets rounded to one decimal) it stops
+after a median of 6 iterations, against 34 for convergence to a relative
+1e-12, and the resulting s* differs from the converged one in the third
+significant figure in 2594 sets (50 %), x* in 105 sets (2 %). The relative
+difference of s* has a median of 0,09 %, a 95th percentile of 0,56 % and a
+maximum of 10 %. With x_pt = x* and sigma_pt = s*, the signal of a z score
+(acceptable, warning, action) changes for 34 of the 120 754 results, in 34
+sets. The share of affected sets depends on the generator. `algorithm_a(x)`
+follows the rule of the standard; `algorithm_a(x, tol=1e-12)` iterates until
+the changes fall below 1e-12 s*.
+
+## Degenerate data
+
+When more than half of the results are identical, MADe is zero and the
+iteration of Algorithm A drives s* to zero. `algorithm_a` then returns
+`scale=0.0` and `degenerate=True`, and `round_record` raises unless sigma_pt
+is given from Clause 8. Non-finite values are rejected.
 
 ## Comparison with other software
 
 - `tests/test_external.py` compares with statsmodels, which was written
   independently of ISO 13528. Algorithm A run to convergence equals Huber's
   proposal 2 (c = 1,5) to 1e-9 when the consistency factor is not rounded
-  (1,13339 instead of the printed 1,134); the rounding changes s* by about
-  0,1 %. Qn equals `qn_scale` after the finite-sample factor b_p, and MADe and
-  nIQR agree to the precision of the printed constants.
+  (1,13339 instead of the printed 1,134); the rounding changes s* by 0,05 %
+  to 0,3 %. Qn equals `qn_scale` multiplied by the finite-sample factors of
+  Rousseeuw and Croux, which are typed in the test from the R package
+  robustbase and agree with Table C.2 and Formulae (C.20) and (C.21). MADe
+  and nIQR agree to the precision of the printed constants. The finite-step
+  Hampel estimator equals the root nearest the median found by a separate
+  root search. The Q method and Algorithm S have no comparison with code
+  that the authors did not write.
 - `crosscheck/compare.py` compares with the PHP engine of the LAKSiS platform
   on 200 data sets (16 quantities) and on 5000 more (Algorithm A). The PHP
   engine comes from the same group, and several of its functions were written

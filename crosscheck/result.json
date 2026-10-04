@@ -26,13 +26,18 @@
   "x* differs in the third significant figure": 105,
   "s* differs in the third significant figure": 2594,
   "relative difference of s*: median, 95th percentile, maximum": [
-   0.0008995261435702361,
-   0.0055535733699707095,
-   0.10370216576886707
+   0.0008995261431892561,
+   0.005553573376454229,
+   0.10370216577797935
   ],
   "median iterations: rule, convergence": [
    6.0,
-   35.0
+   34.0
+  ],
+  "z signals (acceptable, warning, action) that change: results, of results, sets": [
+   34,
+   120754,
+   34
   ]
  }
 }

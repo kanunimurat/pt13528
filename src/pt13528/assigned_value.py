@@ -58,8 +58,10 @@ def consensus(x: Iterable[float], method: str = "algorithm_a", median_scale: str
     or MADe with ``median_scale='made'``. For the arithmetic mean
     u = s / sqrt(p).
     """
-    a = np.asarray(list(x), dtype=float)
+    a = robust._arr(x)
     p = int(a.size)
+    if median_scale not in ("niqr", "made"):
+        raise ValueError("median_scale is 'niqr' or 'made'")
     if method == "algorithm_a":
         r = robust.algorithm_a(a)
         return AssignedValue(r.location, u_robust(r.scale, p), method, r.scale, p)
@@ -70,6 +72,8 @@ def consensus(x: Iterable[float], method: str = "algorithm_a", median_scale: str
         r = robust.q_hampel(a)
         return AssignedValue(r.location, u_robust(r.scale, p), method, float(r.scale), p)
     if method == "mean":
+        if p < 2:
+            raise ValueError("the standard deviation needs at least two results")
         s = float(a.std(ddof=1))
         return AssignedValue(float(a.mean()), s / math.sqrt(p), method, s, p)
     raise ValueError("unknown method")
@@ -92,7 +96,9 @@ def compare_with_reference(x_ref: float, u_ref: float, x_pt: float, u_x_pt: floa
 
 def kernel_mode(x: Iterable[float], bandwidth: float, grid: int = 4096, cut: float = 3.0) -> float:
     """10.3 / E.6 - mode of a Gaussian kernel density estimate with a given bandwidth."""
-    a = np.asarray(list(x), dtype=float)
+    a = robust._arr(x)
+    if not bandwidth > 0:
+        raise ValueError("bandwidth must be positive")
     g = np.linspace(a.min() - cut * bandwidth, a.max() + cut * bandwidth, grid)
     dens = np.exp(-0.5 * ((g[:, None] - a[None, :]) / bandwidth) ** 2).sum(axis=1)
     return float(g[int(np.argmax(dens))])
@@ -107,7 +113,7 @@ def bootstrap(x: Iterable[float], statistic: Callable[[np.ndarray], float], repl
     random number generator, so they agree with other software only within
     Monte Carlo error.
     """
-    a = np.asarray(list(x), dtype=float)
+    a = robust._arr(x)
     rng = np.random.default_rng(seed)
     reps = np.array([statistic(a[rng.integers(0, a.size, a.size)]) for _ in range(replicates)])
     return AssignedValue(float(statistic(a)), float(reps.std(ddof=1)), "bootstrap", float(reps.mean()), int(a.size))

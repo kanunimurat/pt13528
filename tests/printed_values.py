@@ -76,12 +76,11 @@ def reproduced():
     add("E.9", "sigma_pt, c = 2,565 mg/kg", 0.356, sp.horwitz(2.565e-6) * 1e6, 3)
     add("E.10", "sigma_pt", 20.9, sp.from_precision(23.2, 14.3, 2), 1)
     for name, data, zs, mean, sd in (("A", E.E12_A, E.E12_ZA, 11.54, 3.29), ("B", E.E12_B, E.E12_ZB, 7.66, 2.90)):
-        a = np.array(data)
-        add("E.12", f"allergen {name} average", mean, a.mean(), 2)
-        add("E.12", f"allergen {name} standard deviation", sd, a.std(ddof=1), 2)
-        for i, (zc, zpr) in enumerate(zip((a - a.mean()) / a.std(ddof=1), zs)):
-            add("E.12", f"allergen {name} z {i + 1}", zpr, zc, 3)
-    add("E.12", "correlation", 0.706, np.corrcoef(E.E12_A, E.E12_B)[0, 1], 3)
+        m12 = av.consensus(data, "mean")           # Table E.10 uses the arithmetic mean and SD (see inconsistent())
+        add("E.12", f"allergen {name} average", mean, m12.x_pt, 2)
+        add("E.12", f"allergen {name} standard deviation", sd, m12.scale, 2)
+        for i, (xi, zpr) in enumerate(zip(data, zs)):
+            add("E.12", f"allergen {name} z {i + 1}", zpr, scores.z_score(xi, m12.x_pt, m12.scale), 3)
     add("E.13", "x* of averages", 1.57, robust.algorithm_a(E.E13_AVG).location, 2)
     add("E.13", "w* of standard deviations", 0.34, robust.algorithm_s(E.E13_SD, nu=3).location, 2)
     for g_ in sorted(E.TABLE_B1):
@@ -98,23 +97,50 @@ def deviation(row):
 
 
 def inconsistent():
-    """Printed items that do not follow from the text or from rounding (after Amd 1:2026).
+    """Printed items that do not follow from the accompanying text (after Amd 1:2026).
 
-    Each entry: (item, kind, what the text gives, what is printed, deviation in last-digit units or None).
+    Each entry: (item, kind, what the text gives, what is printed, deviation in
+    units of the last printed digit or None). ``kind`` is "not reproduced"
+    for a number that no reading of the text yields, and "text and table" where
+    the table follows a rule other than the one the text names.
     """
     dat, xs, ss = E.E1["half"]
+    rule = robust.algorithm_a(dat)
     full = robust.algorithm_a(dat, tol=1e-12)
-    fit = sp.fit_previous_rounds(E.E8_AV, E.E8_SD)
     a12 = robust.algorithm_a(E.E12_A)
     return [
-        ("E.1, Table E.1, third column, x*", "last digit", round(full.location, 4), xs, (full.location - xs) * 100),
-        ("E.8, coefficient of determination", "last digit", round(fit.r_squared, 4), 0.82, (fit.r_squared - 0.82) * 100),
+        ("E.1, Table E.1, third column, x*: neither stopping rule gives the printed value", "not reproduced",
+         (round(rule.location, 4), round(full.location, 4)), xs, (rule.location - xs) * 100),
         ("E.12, Table E.10: text names Algorithm A, table uses the arithmetic mean and SD", "text and table",
          round(a12.location, 2), 11.54, (a12.location - 11.54) * 100),
         ("E.3, Table E.5: row labelled with nIQR and MADe, printed u follows nIQR", "text and table",
-         round(av.consensus(E.E3, "median", median_scale="made").u_x_pt, 4), 0.0086, None),
+         round(av.consensus(E.E3, "median", median_scale="made").u_x_pt, 4), 0.0086,
+         (av.consensus(E.E3, "median", median_scale="made").u_x_pt - 0.0086) * 1e4),
         ("E.4, Table E.6: flags do not follow the limits of 9.8", "text and table", None, None, None),
     ]
+
+
+def notes():
+    """Observations that are not counted as inconsistencies.
+
+    E.1: the printed s* of the third column (8,60) is the converged value, the
+    printed s* of the first column (7,23) is the value of the three-figure
+    rule, so Table E.1 follows no single stopping rule. E.8: the printed
+    coefficient 0,82 equals the adjusted coefficient of determination; the
+    plain coefficient is 0,83.
+    """
+    dat, xs, ss = E.E1["half"]
+    d1, _x1, s1 = E.E1["ignored"]
+    fit = sp.fit_previous_rounds(E.E8_AV, E.E8_SD)
+    n = len(E.E8_AV)
+    return {
+        "E.1 third column s*: printed, three-figure rule, convergence":
+            (ss, robust.algorithm_a(dat).scale, robust.algorithm_a(dat, tol=1e-12).scale),
+        "E.1 first column s*: printed, three-figure rule, convergence":
+            (s1, robust.algorithm_a(d1).scale, robust.algorithm_a(d1, tol=1e-12).scale),
+        "E.8 coefficient of determination: printed, plain, adjusted":
+            (0.82, fit.r_squared, 1 - (1 - fit.r_squared) * (n - 1) / (n - 2)),
+    }
 
 
 if __name__ == "__main__":
@@ -127,3 +153,5 @@ if __name__ == "__main__":
     print(by)
     for item in inconsistent():
         print(item)
+    for k, v in notes().items():
+        print(k, [round(float(x), 4) for x in v])

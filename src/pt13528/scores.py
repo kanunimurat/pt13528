@@ -88,6 +88,8 @@ def classify_z(score: Optional[float], action: float = 3.0, warning: Optional[fl
     """
     if score is None:
         return "not scored"
+    if score != score:
+        raise ValueError("the score is not a number")
     a = abs(score)
     if warning is None:
         return "acceptable" if a <= action else "action"
@@ -113,6 +115,8 @@ def uncertainty_negligible(u_x_pt: float, sigma_pt: Optional[float] = None,
     """9.2.1, Formula (10) - u(x_pt) < 0,3 sigma_pt or u(x_pt) < 0,1 delta_E."""
     if sigma_pt is None and delta_e is None:
         raise ValueError("give sigma_pt or delta_E")
+    if u_x_pt < 0:
+        raise ValueError("u(x_pt) cannot be negative")
     limit = 0.3 * sigma_pt if sigma_pt is not None else 0.1 * delta_e
     return u_x_pt < limit
 
