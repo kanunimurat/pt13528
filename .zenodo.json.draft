@@ -1,0 +1,45 @@
+{
+  "_comment": "DRAFT. Rename to .zenodo.json only after affiliations and ORCID iDs are confirmed. Zenodo rejects unknown keys, so delete this _comment line too.",
+  "title": "pt13528: A Python library for proficiency testing statistics according to ISO 13528",
+  "upload_type": "software",
+  "description": "Framework-independent Python implementation of the statistical methods of ISO 13528:2022 (assigned value, standard deviation for proficiency assessment, performance scores, homogeneity and stability checks, robust estimators), verified against the worked examples of Annex E of the standard.",
+  "creators": [
+    {
+      "name": "Sert, Murat",
+      "affiliation": "Afyon Kocatepe University"
+    },
+    {
+      "name": "Yağan, Mustafa Kemal",
+      "affiliation": "Kombobit Yazılım Madencilik LTD. ŞTİ."
+    },
+    {
+      "name": "Aydın, Ali",
+      "affiliation": "Kombobit Yazılım Madencilik LTD. ŞTİ."
+    },
+    {
+      "name": "Heidarizadeh, Matin",
+      "affiliation": "Kombobit Yazılım Madencilik LTD. ŞTİ."
+    },
+    {
+      "name": "Tilki, Eyüphan",
+      "affiliation": "Kombobit Yazılım Madencilik LTD. ŞTİ."
+    },
+    {
+      "name": "Selek, Ahmet Enes",
+      "affiliation": "Kombobit Yazılım Madencilik LTD. ŞTİ."
+    },
+    {
+      "name": "Mete Sert, Aliye",
+      "affiliation": "Kombobit Yazılım Madencilik LTD. ŞTİ."
+    }
+  ],
+  "keywords": [
+    "proficiency testing",
+    "ISO 13528",
+    "interlaboratory comparison",
+    "robust statistics",
+    "metrology"
+  ],
+  "license": "LGPL-3.0-or-later",
+  "access_right": "open"
+}

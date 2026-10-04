@@ -1,0 +1,36 @@
+# DRAFT - ORCID iDs, affiliations of co-authors (to be confirmed) and repository URL are still open
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+title: "pt13528: A Python library for proficiency testing statistics according to ISO 13528"
+type: software
+license: LGPL-3.0-or-later
+version: 0.1.0
+authors:
+  - family-names: "Sert"
+    given-names: "Murat"
+    orcid: "https://orcid.org/0000-0001-6595-1681"
+    email: "msert@aku.edu.tr"
+    affiliation: "Afyon Kocatepe University, Marble and Natural Stone Technology Application and Research Center; Department of Mining Engineering"
+  - family-names: "Yağan"
+    given-names: "Mustafa Kemal"
+    affiliation: "Kombobit Yazılım Madencilik LTD. ŞTİ."
+  - family-names: "Aydın"
+    given-names: "Ali"
+    affiliation: "Kombobit Yazılım Madencilik LTD. ŞTİ."
+  - family-names: "Heidarizadeh"
+    given-names: "Matin"
+    affiliation: "Kombobit Yazılım Madencilik LTD. ŞTİ."
+  - family-names: "Tilki"
+    given-names: "Eyüphan"
+    affiliation: "Kombobit Yazılım Madencilik LTD. ŞTİ."
+  - family-names: "Selek"
+    given-names: "Ahmet Enes"
+    affiliation: "Kombobit Yazılım Madencilik LTD. ŞTİ."
+  - family-names: "Mete Sert"
+    given-names: "Aliye"
+    affiliation: "Kombobit Yazılım Madencilik LTD. ŞTİ."
+keywords:
+  - proficiency testing
+  - ISO 13528
+  - interlaboratory comparison
+  - robust statistics

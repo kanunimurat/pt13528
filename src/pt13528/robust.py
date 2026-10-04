@@ -1,0 +1,284 @@
+# SPDX-License-Identifier: LGPL-3.0-or-later
+# Copyright (C) 2026 Kombobit Yazılım Madencilik LTD. ŞTİ.
+"""Robust estimators of ISO 13528:2022 Annex C (and D.1.4.2).
+
+Every public function names the clause or formula it implements.
+"""
+from __future__ import annotations
+
+import math
+from typing import Iterable, Sequence
+
+import numpy as np
+from scipy.stats import norm
+
+__all__ = [
+    "median", "made", "niqr", "algorithm_a", "algorithm_s", "qn", "q_method",
+    "hampel", "q_hampel", "mean_abs_dev_sd", "sd_two_results", "RobustResult",
+]
+
+MADE_FACTOR = 1.483      # C.2.2
+NIQR_FACTOR = 0.7413     # C.2.3
+ALG_A_FACTOR = 1.134     # C.3.1, Formula (C.10)
+ALG_A_DELTA = 1.5        # C.3.1, Formula (C.7)
+
+# Table C.1 - limit factor (eta) and adjustment factor (xi) for Algorithm S
+_ALG_S = {1: (1.645, 1.097), 2: (1.517, 1.054), 3: (1.444, 1.039), 4: (1.395, 1.032),
+          5: (1.359, 1.027), 6: (1.332, 1.024), 7: (1.310, 1.021), 8: (1.292, 1.019),
+          9: (1.277, 1.018), 10: (1.264, 1.017)}
+# Table C.2 - correction factor b_p for Qn, 2 <= p <= 12
+_QN_BP = {2: 0.3994, 3: 0.9937, 4: 0.5132, 5: 0.8440, 6: 0.6122, 7: 0.8588,
+          8: 0.6699, 9: 0.8734, 10: 0.7201, 11: 0.8891, 12: 0.7574}
+
+
+class RobustResult(dict):
+    """Dictionary with attribute access (location, scale, iterations, converged)."""
+    __getattr__ = dict.__getitem__
+
+
+def _arr(x: Iterable[float]) -> np.ndarray:
+    a = np.asarray(list(x), dtype=float)
+    if a.ndim != 1 or a.size == 0:
+        raise ValueError("a non-empty one-dimensional sequence is required")
+    if not np.all(np.isfinite(a)):
+        raise ValueError("values must be finite")
+    return a
+
+
+def _sig3(v: float) -> float:
+    if v == 0:
+        return 0.0
+    return round(v, 2 - int(math.floor(math.log10(abs(v)))))
+
+
+def median(x: Iterable[float]) -> float:
+    """C.2.1 - median."""
+    return float(np.median(_arr(x)))
+
+
+def made(x: Iterable[float]) -> float:
+    """C.2.2 - scaled median absolute deviation, MADe = 1,483 med|x_i - med(x)|."""
+    a = _arr(x)
+    return float(MADE_FACTOR * np.median(np.abs(a - np.median(a))))
+
+
+def niqr(x: Iterable[float], quantile_method: str = "linear") -> float:
+    """C.2.3 - normalized interquartile range, nIQR = 0,7413 (Q3 - Q1).
+
+    Quartile definitions differ between software packages (see the NOTE under
+    Table E.5). The default, linear interpolation (R type 7), reproduces the
+    value printed in Table E.5.
+    """
+    a = _arr(x)
+    q1, q3 = np.quantile(a, [0.25, 0.75], method=quantile_method)
+    return float(NIQR_FACTOR * (q3 - q1))
+
+
+def algorithm_a(x: Iterable[float], tol: str | float = "sig3", max_iter: int = 1000,
+                update_scale: bool = True, scale: float | None = None) -> RobustResult:
+    """C.3.1 - Algorithm A with iterated scale (Formulae C.5 to C.10).
+
+    tol
+        ``"sig3"`` stops when the third significant figures of x* and s* no
+        longer change (the criterion stated in C.3.1). A float stops when both
+        absolute changes fall below it ("alternative convergence criteria").
+    update_scale, scale
+        C.3.2 b): pass ``update_scale=False`` to keep s* fixed during iteration
+        (at MADe, or at ``scale`` when given, e.g. the Q-method estimate).
+    """
+    a = np.sort(_arr(x))
+    p = a.size
+    if p == 1:
+        return RobustResult(location=float(a[0]), scale=0.0, iterations=0, converged=True)
+    x_star = float(np.median(a))
+    s_star = float(scale) if scale is not None else made(a)
+    if s_star == 0.0:                       # C.3.1 NOTE 2
+        s_star = float(np.std(a, ddof=1))
+    if s_star == 0.0:
+        return RobustResult(location=x_star, scale=0.0, iterations=0, converged=True)
+    for it in range(1, max_iter + 1):
+        delta = ALG_A_DELTA * s_star
+        w = np.clip(a, x_star - delta, x_star + delta)
+        new_x = float(w.mean())
+        new_s = float(ALG_A_FACTOR * np.sqrt(np.sum((w - new_x) ** 2) / (p - 1))) if update_scale else s_star
+        if tol == "sig3":
+            done = _sig3(new_x) == _sig3(x_star) and _sig3(new_s) == _sig3(s_star)
+        else:
+            done = abs(new_x - x_star) < tol and abs(new_s - s_star) < tol
+        x_star, s_star = new_x, new_s
+        if done:
+            return RobustResult(location=x_star, scale=s_star, iterations=it, converged=True)
+    return RobustResult(location=x_star, scale=s_star, iterations=max_iter, converged=False)
+
+
+def algorithm_s(w: Iterable[float], nu: int, tol: str | float = "sig3", max_iter: int = 1000) -> RobustResult:
+    """C.4 - Algorithm S: robust pooled standard deviation (or range).
+
+    nu is the degrees of freedom of each w_i (1 for ranges of duplicates,
+    m - 1 for standard deviations of m results); Table C.1 covers nu = 1..10.
+    """
+    if nu not in _ALG_S:
+        raise ValueError("Table C.1 gives factors for nu = 1..10 only")
+    eta, xi = _ALG_S[nu]
+    a = np.sort(_arr(w))
+    w_star = float(np.median(a))
+    if w_star == 0.0:                       # C.4 NOTE
+        w_star = float(np.sqrt(np.mean(a ** 2)))
+    if w_star == 0.0:
+        return RobustResult(location=0.0, scale=0.0, iterations=0, converged=True)
+    for it in range(1, max_iter + 1):
+        psi = eta * w_star
+        new = float(xi * np.sqrt(np.mean(np.minimum(a, psi) ** 2)))
+        done = (_sig3(new) == _sig3(w_star)) if tol == "sig3" else abs(new - w_star) < tol
+        w_star = new
+        if done:
+            return RobustResult(location=w_star, scale=w_star, iterations=it, converged=True)
+    return RobustResult(location=w_star, scale=w_star, iterations=max_iter, converged=False)
+
+
+def qn(x: Iterable[float], h_rule: str = "rousseeuw-croux") -> float:
+    """C.5.2.1 - Qn estimator of the standard deviation (Formulae C.15 to C.21).
+
+    h_rule
+        The default ``"rousseeuw-croux"`` is h = floor(p/2) + 1 with the
+        factor 2,219 1. This is the definition of the estimator's authors and,
+        since ISO 13528:2022/Amd 1:2026, also the text of Formulae (C.18) and
+        (C.19). ``"iso-literal"`` reproduces the 2022 edition as first
+        printed: h = p/2 (p even) or (p - 1)/2 (p odd) with the factor
+        2,221 9. That formula gives k = 0 for p = 2 and 3 and raises for
+        p < 4.
+    """
+    a = _arr(x)
+    p = a.size
+    if p < 2:
+        raise ValueError("Qn needs at least two results")
+    i, j = np.triu_indices(p, k=1)
+    d = np.sort(np.abs(a[i] - a[j]))
+    factor = 2.2191
+    if h_rule == "rousseeuw-croux":
+        h = p // 2 + 1
+    elif h_rule == "iso-literal":
+        h = p // 2 if p % 2 == 0 else (p - 1) // 2
+        factor = 2.2219
+    else:
+        raise ValueError("h_rule must be 'rousseeuw-croux' or 'iso-literal'")
+    k = h * (h - 1) // 2
+    if k < 1:
+        raise ValueError("Formula (C.18) of the 2022 edition is undefined for p < 4")
+    if p <= 12:
+        bp = _QN_BP[p]
+    elif p % 2:
+        rp = (1 / p) * (1.6019 + (1 / p) * (-2.128 - 5.172 / p))
+        bp = 1 / (rp + 1)
+    else:
+        rp = (1 / p) * (3.6756 + (1 / p) * (1.965 + (1 / p) * (6.987 - 77 / p)))
+        bp = 1 / (rp + 1)
+    return float(factor * d[k - 1] * bp)
+
+
+def q_method(results: Sequence[float] | Sequence[Sequence[float]]) -> float:
+    """C.5.2.2 - Q method robust (reproducibility) standard deviation (C.22 to C.25).
+
+    ``results`` is either one value per laboratory or one sequence of replicates
+    per laboratory. Between-laboratory absolute differences are weighted
+    1/(n_i n_j) as in Formula (C.23).
+    """
+    groups = [np.atleast_1d(np.asarray(g, dtype=float)) for g in results]
+    p = len(groups)
+    if p < 2:
+        raise ValueError("the Q method needs at least two laboratories")
+    diffs, weights = [], []
+    for i in range(p - 1):
+        for j in range(i + 1, p):
+            d = np.abs(groups[i][:, None] - groups[j][None, :]).ravel()
+            diffs.append(d)
+            weights.append(np.full(d.size, 1.0 / (groups[i].size * groups[j].size)))
+    d = np.concatenate(diffs)
+    w = np.concatenate(weights) * 2.0 / (p * (p - 1))
+    order = np.argsort(d, kind="mergesort")
+    d, w = d[order], w[order]
+    pts, idx = np.unique(d, return_index=True)
+    h = np.add.reduceat(w, idx).cumsum()          # H1 at each discontinuity point
+    h0 = float(h[0]) if pts[0] == 0.0 else 0.0
+    if pts[0] == 0.0:
+        gx = pts
+        g = np.concatenate([[0.0], 0.5 * (h[1:] + h[:-1])])
+    else:
+        gx = np.concatenate([[0.0], pts])
+        g = np.concatenate([[0.0], [0.5 * h[0]], 0.5 * (h[1:] + h[:-1])])
+    q = 0.25 + 0.75 * h0
+    num = float(np.interp(q, g, gx))
+    den = math.sqrt(2.0) * norm.ppf(0.625 + 0.375 * h0)
+    return num / den
+
+
+def _psi(q: np.ndarray) -> np.ndarray:
+    """Formula (C.30) with a = 1,5, b = 3, c = 4,5."""
+    a = np.abs(q)
+    out = np.where(a <= 1.5, q, np.where(a <= 3.0, 1.5 * np.sign(q),
+                   np.where(a <= 4.5, (4.5 - a) * np.sign(q), 0.0)))
+    return out
+
+
+def hampel(x: Iterable[float], scale: float, method: str = "finite") -> float:
+    """C.5.3 - Hampel estimator of location.
+
+    method ``"finite"`` is the finite-step algorithm of C.5.3.3 (unique result);
+    ``"iterative"`` is the reweighting scheme of C.5.3.2.
+    """
+    y = _arr(x)
+    med = float(np.median(y))
+    if scale <= 0:
+        return med
+    if method == "iterative":
+        x_star = med
+        limit = 0.01 * scale / math.sqrt(y.size)
+        for _ in range(1000):
+            q = np.abs((y - x_star) / scale)
+            with np.errstate(divide="ignore", invalid="ignore"):
+                w = np.where(q <= 1.5, 1.0, np.where(q <= 3.0, 1.5 / q,
+                             np.where(q <= 4.5, (4.5 - q) / q, 0.0)))
+            new = float(np.sum(w * y) / np.sum(w))
+            if abs(new - x_star) < limit:
+                return new
+            x_star = new
+        return x_star
+    if method != "finite":
+        raise ValueError("method must be 'finite' or 'iterative'")
+    nodes = np.sort(np.concatenate([y + c * scale for c in (-4.5, -3.0, -1.5, 1.5, 3.0, 4.5)]))
+    pm = np.array([_psi((y - d) / scale).sum() for d in nodes])
+    sols: list[float] = []
+    tiny = 1e-12 * max(1.0, float(np.max(np.abs(y))))
+    for m in range(nodes.size - 1):
+        a, b = pm[m], pm[m + 1]
+        if abs(a) < 1e-12:
+            sols.append(float(nodes[m]))
+        if abs(b) < 1e-12:
+            sols.append(float(nodes[m + 1]))
+        if a * b < 0 and nodes[m + 1] - nodes[m] > tiny:
+            slope = (b - a) / (nodes[m + 1] - nodes[m])
+            sols.append(float(nodes[m] - a / slope))
+    if not sols:
+        return med
+    sols_arr = np.unique(np.round(np.array(sols), 12))
+    dist = np.abs(sols_arr - med)
+    best = np.flatnonzero(np.isclose(dist, dist.min(), rtol=0, atol=tiny))
+    return float(sols_arr[best[0]]) if best.size == 1 else med
+
+
+def q_hampel(results: Sequence[float] | Sequence[Sequence[float]]) -> RobustResult:
+    """C.5.4 - Q/Hampel: Q-method scale with the finite-step Hampel location."""
+    s = q_method(results)
+    means = [float(np.mean(g)) for g in results]
+    return RobustResult(location=hampel(means, s, "finite"), scale=s, iterations=0, converged=True)
+
+
+def mean_abs_dev_sd(x: Iterable[float]) -> float:
+    """D.1.4.2 NOTE 4, Formula (D.1) - s* from the mean absolute deviation from the median."""
+    a = _arr(x)
+    return float(np.sum(np.abs(a - np.median(a))) / (0.798 * a.size))
+
+
+def sd_two_results(x1: float, x2: float) -> float:
+    """D.1.4.2 NOTE 3 - dispersion estimate for p = 2: |x1 - x2| / sqrt(2)."""
+    return abs(x1 - x2) / math.sqrt(2.0)
