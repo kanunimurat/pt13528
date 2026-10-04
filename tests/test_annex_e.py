@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: LGPL-3.0-or-later
 # Copyright (C) 2026 Kombobit Yazılım Madencilik LTD. ŞTİ.
-"""Golden-master tests: every worked example of ISO 13528:2022 Annex E that prints numbers.
+"""Golden-master tests: the worked examples of ISO 13528:2022 Annex E (E.14 is not covered).
 
 Tolerance is half a unit of the last printed digit unless a comment says otherwise.
 """
@@ -29,9 +29,9 @@ def test_e1_algorithm_a(case):
 
 
 def test_e1_half_value_depends_on_stopping_rule():
-    """Table E.1 prints 23,95 / 8,60. The third-significant-figure rule of C.3.1 gives
-    23,96 / 8,59 and full convergence gives 23,9585 / 8,5960, so the printed pair
-    cannot come from one stopping rule; agreement is within one unit of the last digit."""
+    """Table E.1 prints 23,95 / 8,60. Full convergence gives 23,9585 / 8,5960: the printed s* is
+    the converged value and the printed x* is the converged value truncated, not rounded. The
+    third-significant-figure rule of C.3.1 stops earlier, at 23,96 / 8,59."""
     data, x_star, s_star = E.E1["half"]
     for tol in ("sig3", 1e-12):
         r = robust.algorithm_a(data, tol=tol)
@@ -169,7 +169,9 @@ def test_e7_comparison_with_reference():
 # ---------------------------------------------------------------- E.8 to E.10
 def test_e8_regression_on_previous_rounds():
     fit = sigma_pt.fit_previous_rounds(E.E8_AV, E.E8_SD)
-    assert math.floor(fit.r_squared * 100) / 100 == 0.82      # printed as 0,82; computed 0,826
+    # The standard prints 0,82. The data of Table E.9 give 0,8264, which rounds to 0,83: the printed
+    # value is the truncated one (docs/coverage.md, case 2).
+    assert fit.r_squared == pytest.approx(0.8264, abs=5e-5)
 
 
 def test_e9_horwitz():

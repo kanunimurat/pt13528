@@ -27,7 +27,7 @@ Repository = "https://github.com/kanunimurat/pt13528"
 Issues = "https://github.com/kanunimurat/pt13528/issues"
 
 [project.optional-dependencies]
-test = ["pytest>=7"]
+test = ["pytest>=7", "statsmodels>=0.14"]
 
 [tool.hatch.version]
 path = "src/pt13528/__init__.py"

@@ -77,40 +77,85 @@ All other changes update references to ISO/IEC 17043:2023 or wording
 (Foreword, 0.3, 3.4, 5.2.1, 5.3.1, 5.3.5, 5.4.1, 5.5.1.1, 6.3.1, 9.2.1,
 9.4.2). Formula (10), Clause 9.8 and Annex B are unchanged.
 
-## Where Annex E cannot be reproduced from the text
+## Printed values reproduced
 
-The amendment leaves cases 1 to 4 as they were printed in 2022.
+`tests/printed_values.py` lists 256 values printed in ISO 13528:2022 that the
+library reproduces to within half a unit of the last printed digit: 228 from
+the worked examples E.1 to E.7, E.9, E.10, E.12 and E.13 of Annex E, and the
+28 factors of Table B.1. Of the 228, 126 are the scores of Table E.7 and 63
+belong to Table E.10. `tests/test_printed_values.py` asserts the count and the
+tolerance. E.14 is not covered, and E.15 is checked by equality of counts.
 
-1. **E.1, third column (0,5 x '<' value).** Printed 23,95 / 8,60. The
-   stopping rule of C.3.1 gives 23,96 / 8,59; full convergence gives 23,9585 /
-   8,5960. The first two columns agree with the C.3.1 rule. The test accepts
-   one unit of the last digit and pins the fully converged values.
-2. **E.3, Table E.5, row "Median, nIQR (MADe)".** The printed u(x_pt) of
-   0,0086 corresponds to nIQR (1,25 x 0,0402 / sqrt(34)); MADe gives 0,0083.
-   `consensus(..., "median")` uses nIQR by default for that reason.
+## Where a printed result does not follow from the text
+
+Five items remain after Amd 1:2026 (`inconsistent()` in the same file).
+
+Two printed values differ from the computed one by one unit of the last
+digit, and both equal the computed value truncated instead of rounded:
+
+1. **E.1, Table E.1, third column (0,5 x '<' value).** Printed 23,95 / 8,60.
+   Full convergence gives 23,9585 / 8,5960, so s* agrees and x* is truncated.
+   The iterates of x* fall monotonically from 24,375 to 23,9585, so no stopping
+   point gives 23,95. The three-figure rule of C.3.1 stops at 23,96 / 8,59.
+2. **E.8, coefficient of determination.** Printed 0,82. The data of Table E.9
+   give 0,8264.
+
+Three items are mismatches between the text and the table:
+
 3. **E.12, Table E.10.** The text states that the z scores use the robust
    mean and standard deviation of Algorithm A. The printed z scores and the
-   "Average" and "Standard deviation" rows are reproduced only by the
-   arithmetic mean and standard deviation (11,54 / 3,29 and 7,66 / 2,90);
-   Algorithm A gives 11,17 / 2,69 and 7,27 / 2,36.
-4. **E.4, Table E.6, flags.** The limits of 9.8.3 and 9.8.4 do not reproduce
-   the printed flags. They follow from u_max = sigma_pt and a u_min between
-   0,002 and 0,0025 that the example does not state. This is the rule of the
-   source study IMEP-111 (u_min = u_ref, u_max = sigma_pt).
-5. **E.3 and E.6, bootstrap.** Results depend on the random number generator
-   of R; they are checked within Monte Carlo error only.
+   "Average" and "Standard deviation" rows are reproduced by the arithmetic
+   mean and standard deviation (11,54 / 3,29 and 7,66 / 2,90); Algorithm A
+   gives 11,17 / 2,69 and 7,27 / 2,36.
+4. **E.3, Table E.5, row "Median, nIQR (MADe)".** The printed u(x_pt) of
+   0,0086 is reproduced with nIQR (1,25 x 0,0402 / sqrt(34)); MADe gives
+   0,0083. The row names both estimators, and the text does not say which one
+   enters Formula (6). `consensus(..., "median")` uses nIQR by default.
+5. **E.4, Table E.6, flags.** The limits of 9.8.3 and 9.8.4 (u_min = u(x_pt),
+   u_max = 1,5 s*) do not reproduce the printed flags. They are reproduced
+   with u_max = sigma_pt and a u_min between 0,002 and 0,0025, which the
+   example does not state.
+
+Bootstrap results (E.3, E.6) depend on the random number generator of R and
+are checked within Monte Carlo error only.
 
 Two cases of the 2022 edition are settled by the amendment:
 
 - **C.5.2.1, Formulae (C.18) and (C.19).** As printed in 2022, h gave k = 0
   for p = 2 and 3 although Table C.2 tabulates b_p for them, and the factor
   was 2,221 9. The amendment prints h = floor(p/2) + 1 and 2,219 1, which is
-  the definition of the estimator's authors and the default of `qn`. The
-  documentation of the R package robustbase and Akinshin (2022,
-  arXiv:2209.12268) had already identified 2.2219 as a typographical error
+  the default of `qn`. The documentation of the R package robustbase and
+  Akinshin (2022, arXiv:2209.12268) had already identified 2.2219 as an error
   for 1/(sqrt(2) qnorm(5/8)) = 2.21914.
-- **E.14, Table E.12.** The printed PA scores imply allowances that do not
-  follow from the stated rule when computed from the displayed values. The
-  amendment corrects one assigned value and adds a footnote that attributes
-  the remaining differences to rounding of the displayed assigned values.
+- **E.14, Table E.12.** The amendment corrects one assigned value and adds a
+  footnote on the rounding of the displayed assigned values. The library has
+  no test on this table.
 
+## The stopping rule of Algorithm A
+
+C.3.1 allows the iteration to stop when the third significant figure of x*
+and s* no longer changes. That rule stops well before convergence: on 5200
+generated data sets (`crosscheck/compare.py`) it stops after a median of 6
+iterations, against 35 for convergence to 1e-12, and the resulting s* differs
+from the converged one in the third significant figure in 2594 sets (50 %),
+x* in 105 sets (2 %). The relative difference of s* has a median of 0,09 %,
+a 95th percentile of 0,56 % and a maximum of 10 %. `algorithm_a(x)` follows
+the rule of the standard; `algorithm_a(x, tol=1e-12)` iterates to convergence.
+
+## Comparison with other software
+
+- `tests/test_external.py` compares with statsmodels, which was written
+  independently of ISO 13528. Algorithm A run to convergence equals Huber's
+  proposal 2 (c = 1,5) to 1e-9 when the consistency factor is not rounded
+  (1,13339 instead of the printed 1,134); the rounding changes s* by about
+  0,1 %. Qn equals `qn_scale` after the finite-sample factor b_p, and MADe and
+  nIQR agree to the precision of the printed constants.
+- `crosscheck/compare.py` compares with the PHP engine of the LAKSiS platform
+  on 200 data sets (16 quantities) and on 5000 more (Algorithm A). The PHP
+  engine comes from the same group, and several of its functions were written
+  together with this library, so this shows agreement of two implementations
+  and not independence. All quantities agree to below 1e-10 except Algorithm
+  A in one set of the 5200, where a first iterate of exactly 41,15 is rounded
+  to three figures as 41,1 by Python and as 41,2 by PHP, so that the two stop
+  one iteration apart.
+- `tests/test_real_round.py` recomputes a real round from its formal report.

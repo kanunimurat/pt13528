@@ -22,8 +22,8 @@ framework-independent Python library.
 | `record` | result record of one measurand: assigned value, u(x_pt), sigma_pt, criterion of 9.2.1, statistic, score and signal of every participant, each with its clause | 7 to 9 |
 
 `docs/coverage.md` lists every formula of the standard and whether it is
-implemented, and records the places where the worked examples of Annex E
-cannot be reproduced from the text of the standard.
+implemented, and records the printed results of Annex E that do not follow
+from the text of the standard.
 
 ## Example
 
@@ -53,6 +53,15 @@ The library does not produce reports. `round_record` returns the numbers and
 the choices behind them; layout, wording and file format belong to the
 software that calls it.
 
+## Installation
+
+```
+pip install pt13528
+```
+
+or, for the development version, `pip install git+https://github.com/kanunimurat/pt13528`.
+Python 3.10 or later, NumPy and SciPy are required.
+
 ## Verification
 
 ```
@@ -60,9 +69,17 @@ pip install -e ".[test]"
 pytest
 ```
 
-`tests/test_annex_e.py` reproduces the worked examples E.1 to E.10, E.12,
-E.13 and E.15 and Table B.1 to half a unit of the last printed digit, with the
-exceptions documented in `docs/coverage.md`.
+- `tests/printed_values.py` lists 256 values printed in ISO 13528:2022 (228
+  from the worked examples of Annex E, 28 from Table B.1) that the library
+  reproduces to half a unit of the last printed digit, and the five printed
+  items that do not follow from the text.
+- `tests/test_external.py` compares Algorithm A, Qn, MADe and nIQR with
+  statsmodels, which was written independently of the standard.
+- `tests/test_real_round.py` recomputes a real round from its formal report.
+- `crosscheck/compare.py` repeats the comparison with the PHP engine of the
+  LAKSiS platform and measures the effect of the stopping rule of Algorithm A.
+
+`docs/coverage.md` gives the details.
 
 ## Scope
 
@@ -74,7 +91,7 @@ responsibility of the proficiency testing provider (ISO/IEC 17043).
 
 Sert M, Yağan MK, Aydın A, Heidarizadeh M, Tilki E, Selek AE, Mete Sert A.
 pt13528: A Python library for proficiency testing statistics according to ISO 13528
-(v0.1.0). Zenodo; 2026. https://doi.org/10.5281/zenodo.23135797
+Zenodo; 2026. https://doi.org/10.5281/zenodo.23135797 (v0.1.0; later versions are listed on the Zenodo page).
 
 ## Licence
 
