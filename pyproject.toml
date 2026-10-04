@@ -22,6 +22,10 @@ authors = [
 ]
 keywords = ["proficiency testing", "ISO 13528", "interlaboratory comparison", "robust statistics", "metrology"]
 
+[project.urls]
+Repository = "https://github.com/kanunimurat/pt13528"
+Issues = "https://github.com/kanunimurat/pt13528/issues"
+
 [project.optional-dependencies]
 test = ["pytest>=7"]
 

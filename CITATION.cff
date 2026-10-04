@@ -1,10 +1,11 @@
-# DRAFT - ORCID iDs, affiliations of co-authors (to be confirmed) and repository URL are still open
 cff-version: 1.2.0
 message: "If you use this software, please cite it as below."
 title: "pt13528: A Python library for proficiency testing statistics according to ISO 13528"
 type: software
 license: LGPL-3.0-or-later
 version: 0.1.0
+date-released: 2026-10-04
+repository-code: "https://github.com/kanunimurat/pt13528"
 authors:
   - family-names: "Sert"
     given-names: "Murat"
