@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.1.0 (unreleased)
+## 0.1.0 (2026-10-04)
 
 First version. Implements the calculations of ISO 13528:2022 listed in
 `docs/coverage.md` and checks them against every worked example of Annex E
