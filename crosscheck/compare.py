@@ -64,7 +64,7 @@ def sets_5000():
 # php_200.json and php_5000.json are outputs of the PHP engine 1.6.0, which iterates Algorithms A and S
 # to convergence like the library. php_5000_engine_1.5.0.json holds the Algorithm A outputs of engine
 # 1.5.0, which stopped when the third significant figures of x* and of s* no longer changed (the
-# criterion "sig3-of-x" of the library).
+# criterion "iso2022" of the library).
 
 
 def python_200():
@@ -158,7 +158,7 @@ def main():
                       if (lambda a: abs(a.location - b[0]) > 1e-9 or abs(a.scale - b[1]) > 1e-9)(robust.algorithm_a(x))]
     old5 = json.load(open(os.path.join(HERE, "php_5000_engine_1.5.0.json")))
     differing_old = [i for i, (x, b) in enumerate(zip(xs, old5))
-                     if (lambda a: abs(a.location - b[0]) > 1e-9 or abs(a.scale - b[1]) > 1e-9)(robust.algorithm_a(x, tol="sig3-of-x"))]
+                     if (lambda a: abs(a.location - b[0]) > 1e-9 or abs(a.scale - b[1]) > 1e-9)(robust.algorithm_a(x, tol="iso2022"))]
     all_x = [s[0] for s in sets_200()] + xs
     q_diff = [r for r in q_rel if r > 1e-9]
     res = {
@@ -170,9 +170,9 @@ def main():
         "Q method, PHP engine before the correction: median relative difference in the sets that differ": float(np.median(q_diff)),
         "Q method, PHP engine before the correction, 100 sets without ties: largest relative difference": float(max(q_rel_0)),
         "sets with a different Algorithm A result (convergence)": {"of 200": len(differing_200), "of 5000": len(differing_5000)},
-        "sets with a different Algorithm A result, engine 1.5.0 against tol='sig3-of-x', of 5000": len(differing_old),
-        "three-figure rule, third figure of s* and equivalent figure of x* (sig3)": rule_statistics(all_x, "sig3"),
-        "three-figure rule, third figures of x* and s* (sig3-of-x; versions up to 0.1.5, PHP engine 1.5.0)": rule_statistics(all_x, "sig3-of-x"),
+        "sets with a different Algorithm A result, engine 1.5.0 against tol='iso2022', of 5000": len(differing_old),
+        "criterion of ISO 13528:2022, third significant figures of x* and s* (iso2022)": rule_statistics(all_x, "iso2022"),
+        "criterion quoted from the 2015 edition, third figure of s* and equivalent figure of x* (iso2015)": rule_statistics(all_x, "iso2015"),
     }
     json.dump(res, open(os.path.join(HERE, "result.json"), "w"), indent=1)
     print(json.dumps(res, indent=1))

@@ -23,7 +23,7 @@ def half_unit(printed_decimals):
 @pytest.mark.parametrize("case", ["ignored", "deleted"])
 def test_e1_algorithm_a(case):
     data, x_star, s_star = E.E1[case]
-    r = robust.algorithm_a(data, tol="sig3")           # the three-figure rule of C.3.1 reproduces both columns
+    r = robust.algorithm_a(data, tol="iso2022")           # the rule of C.3.1 reproduces both columns
     assert r.location == pytest.approx(x_star, abs=half_unit(2))
     assert r.scale == pytest.approx(s_star, abs=half_unit(2))
     c = robust.algorithm_a(data)                       # default: convergence
@@ -39,7 +39,7 @@ def test_e1_half_value_depends_on_stopping_rule():
     the converged value and the printed x* is the converged value truncated, not rounded. The
     third-significant-figure rule of C.3.1 stops earlier, at 23,96 / 8,59."""
     data, x_star, s_star = E.E1["half"]
-    for tol in ("sig3", 1e-12):
+    for tol in ("iso2022", "iso2015", 1e-12):
         r = robust.algorithm_a(data, tol=tol)
         assert r.location == pytest.approx(x_star, abs=0.011)
         assert r.scale == pytest.approx(s_star, abs=0.011)
@@ -76,7 +76,7 @@ def test_table_b1_factors(g):
 
 # ---------------------------------------------------------------- E.3
 def test_e3_table_e4_iterations():
-    r = robust.algorithm_a(E.E3, tol="sig3")
+    r = robust.algorithm_a(E.E3, tol="iso2022")
     assert r.iterations == 6 and r.converged
 
 
@@ -117,8 +117,7 @@ def test_e4_table_e7_scores():
     delta_e = 3 * E.E4_SIGMA                      # PA column corresponds to delta_E = 3 sigma_pt
     for code, x, big_u, k, _flag, d_pct, pa, z, zp, zeta, en in E.E4:
         assert scores.percent_difference(x, E.E4_XPT) == pytest.approx(d_pct, abs=half_unit(1)), code
-        # PA is printed from D% rounded to one decimal; allow that rounding to propagate
-        assert scores.percent_allowed(x, E.E4_XPT, delta_e) == pytest.approx(pa, abs=0.2), code
+        assert scores.percent_allowed(x, E.E4_XPT, delta_e) == pytest.approx(pa, abs=half_unit(1)), code
         assert scores.z_score(x, E.E4_XPT, E.E4_SIGMA) == pytest.approx(z, abs=half_unit(2)), code
         assert scores.z_prime_score(x, E.E4_XPT, E.E4_SIGMA, u_pt) == pytest.approx(zp, abs=half_unit(2)), code
         assert scores.zeta_score(x, E.E4_XPT, big_u / k, u_pt) == pytest.approx(zeta, abs=half_unit(2)), code
@@ -174,8 +173,8 @@ def test_e7_comparison_with_reference():
 # ---------------------------------------------------------------- E.8 to E.10
 def test_e8_regression_on_previous_rounds():
     fit = sigma_pt.fit_previous_rounds(E.E8_AV, E.E8_SD)
-    # The standard prints 0,82. The data of Table E.9 give 0,8264, which rounds to 0,83: the printed
-    # value is the truncated one (docs/coverage.md, case 2).
+    # The standard prints r^2 = 0,82. The data of Table E.9 give 0,8264, which rounds to 0,83; the
+    # adjusted coefficient is 0,8167 (docs/coverage.md, notes).
     assert fit.r_squared == pytest.approx(0.8264, abs=5e-5)
 
 

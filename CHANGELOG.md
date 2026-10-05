@@ -1,5 +1,31 @@
 # Changelog
 
+## 0.1.7 (2026-10-05)
+
+No calculation changes. This version corrects a statement of 0.1.6 about the standard.
+
+- **The stopping criterion of ISO 13528:2022 is the one that depends on the origin of the results.** C.3.1 of the
+  2022 edition, its NOTE 1 and example E.3 word the criterion as no change in the third significant figures of
+  the robust mean and of the robust standard deviation. 0.1.6 was written from quotations of the 2015 edition
+  (third significant figure of s* and "the equivalent figure" of x*) before the authors had the 2022 text of
+  C.3.1 before them; it called the 2015 wording the one "that the wording of C.3.1 supports" and withdrew the
+  statement of 0.1.5. That was wrong for the current edition. The finding of 0.1.5 stands: with the criterion
+  as ISO 13528:2022 words it, eleven results give s* = 1,328 in degrees Celsius and, in kelvin, stop after one
+  iteration at s* = 0,297 with four action signals. With the wording quoted from the 2015 edition they give
+  1,328 in both units. Both wordings reproduce Annex E.
+- The criteria are now named after the editions: `tol="iso2022"` and `tol="iso2015"`. The names of 0.1.6,
+  `"sig3-of-x"` and `"sig3"`, are still accepted with the meaning they had there. The default (convergence)
+  is unchanged.
+- The whole standard was compared with the test data: every number typed from Annex E and Table B.1, every
+  printed value used as an expectation and every constant agrees with ISO 13528:2022. Corrections to the
+  documentation that came out of this: Grubbs' and Cochran's tests are cited from 6.6.3 (not 6.6.2); Algorithm A
+  covers Formulae (C.5) to (C.10); `kernel_density` includes the factor 1/sigma_k that Formula (22) omits;
+  Table E.10 itself (NOTE 2) says robust; 9.8.3 gives u(x_pt) as lower limit only where it meets 9.2.1; other
+  explanations of the printed r^2 of E.8 are named; the PA scores of Table E.7 are tested to half a unit.
+- `crosscheck/php_evaluate_round.json` and a test: a simulated round of 20 participants evaluated end to end
+  by the function that the LAKSiS platform calls for a round (PHP engine 1.6.0) and by `round_record`; assigned
+  value, uncertainty, sigma_pt, z, z', zeta, E_n and signals agree. 136 tests.
+
 ## 0.1.6 (2026-10-05)
 
 This version withdraws a statement of 0.1.5 and corrects the defect behind it.

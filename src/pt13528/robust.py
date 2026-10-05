@@ -78,19 +78,23 @@ def niqr(x: Iterable[float], quantile_method: str = "linear") -> float:
     return float(NIQR_FACTOR * (q3 - q1))
 
 
+_RULES = {"iso2022": "iso2022", "iso2015": "iso2015",
+          "sig3-of-x": "iso2022", "sig3": "iso2015"}      # names used in 0.1.6, kept with their 0.1.6 meaning
+
+
 def _stopping(tol):
     if isinstance(tol, str):
-        if tol not in ("sig3", "sig3-of-x"):
-            raise ValueError("tol must be a positive number, 'sig3' or 'sig3-of-x'")
-        return tol
+        if tol not in _RULES:
+            raise ValueError("tol must be a positive number, 'iso2022' or 'iso2015'")
+        return _RULES[tol]
     if isinstance(tol, bool) or not isinstance(tol, (int, float)) or not (math.isfinite(tol) and tol > 0):
-        raise ValueError("tol must be a positive number, 'sig3' or 'sig3-of-x'")
+        raise ValueError("tol must be a positive number, 'iso2022' or 'iso2015'")
     return float(tol)
 
 
 def algorithm_a(x: Iterable[float], tol: str | float = DEFAULT_TOL, max_iter: int = 100_000,
                 update_scale: bool = True, scale: float | None = None) -> RobustResult:
-    """C.3.1 / C.3.2 - Algorithm A (Formulae C.6 to C.10).
+    """C.3.1 / C.3.2 - Algorithm A (Formulae C.5 to C.10).
 
     Returns the robust mean x* (``location``) and robust standard deviation
     s* (``scale``).
@@ -100,18 +104,20 @@ def algorithm_a(x: Iterable[float], tol: str | float = DEFAULT_TOL, max_iter: in
         fall below ``tol`` times s*. This criterion is relative, so the
         result depends neither on the unit nor on the origin of the data.
 
-        ``"sig3"`` is the three-figure criterion of the standard read as
-        "the third significant figure of s* and the equivalent figure of x*"
-        (the same decimal place) no longer change. It stops before
-        convergence, and because significant figures depend on the unit, so
-        does its result (see docs/coverage.md). It reproduces the worked
-        examples of Annex E.
+        ``"iso2022"`` is the stopping criterion of ISO 13528:2022, C.3.1:
+        no change in the third significant figures of x* and of s*. It
+        stops before convergence, and because significant figures depend on
+        the unit and on the origin of the results, so does its result (see
+        docs/coverage.md). It reproduces the worked examples of Annex E.
 
-        ``"sig3-of-x"`` is the same criterion read as "the third significant
-        figures of x* and of s*" (the wording of example E.3). It reproduces
-        Annex E as well, but its result also depends on the origin of the
-        data. Versions up to 0.1.5 implemented ``"sig3"`` in this way; it is
-        kept to reproduce their results and is not recommended.
+        ``"iso2015"`` is the criterion as the 2015 edition is quoted in the
+        literature: no change in the third significant figure of s* and in
+        the equivalent figure (the same decimal place) of x*. It reproduces
+        Annex E as well and does not depend on the origin, but still on the
+        unit.
+
+        The names ``"sig3-of-x"`` and ``"sig3"`` of version 0.1.6 are
+        accepted for ``"iso2022"`` and ``"iso2015"``.
 
     When a large majority of the results is identical, the iteration can
     drive s* towards zero. This is detected and returned as ``scale=0.0``
@@ -148,11 +154,11 @@ def algorithm_a(x: Iterable[float], tol: str | float = DEFAULT_TOL, max_iter: in
         w = np.clip(a, lo, hi)
         new_x = float(w.mean())
         new_s = float(ALG_A_FACTOR * np.sqrt(np.sum((w - new_x) ** 2) / (p - 1))) if update_scale else s_star
-        if tol == "sig3":                   # third figure of s*, equivalent figure (same decimal place) of x*
+        if tol == "iso2015":                # third figure of s*, equivalent figure (same decimal place) of x*
             d = 2 - int(math.floor(math.log10(m * new_s))) if new_s > 0 else 0
             done = (round(c + m * new_x, d) == round(c + m * x_star, d)
                     and _sig3(m * new_s) == _sig3(m * s_star))
-        elif tol == "sig3-of-x":
+        elif tol == "iso2022":              # third significant figures of x* and of s*
             done = (_sig3(c + m * new_x) == _sig3(c + m * x_star)
                     and _sig3(m * new_s) == _sig3(m * s_star))
         else:
@@ -186,8 +192,9 @@ def algorithm_s(w: Iterable[float], nu: int, tol: str | float = DEFAULT_TOL, max
 
     nu is the degrees of freedom of each w_i (1 for ranges of duplicates,
     m - 1 for standard deviations of m results); Table C.1 covers nu = 1..10.
-    A float ``tol`` is relative to w*, as in :func:`algorithm_a`; ``"sig3"``
-    stops when the third significant figure of w* no longer changes.
+    A float ``tol`` is relative to w*, as in :func:`algorithm_a`; ``"iso2022"``
+    (or ``"iso2015"``, the two do not differ here) stops when the third
+    significant figure of w* no longer changes.
     """
     tol = _stopping(tol)
     if isinstance(nu, bool) or nu not in _ALG_S:

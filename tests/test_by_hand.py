@@ -237,7 +237,7 @@ def test_algorithm_s_other_degrees_of_freedom(nu, eta, xi):
 
 def test_algorithm_s_three_figure_rule():
     w = [0.2, 0.5, 0.1, 0.4, 0.3, 0.6, 2.0]
-    r, full = robust.algorithm_s(w, 1, tol="sig3"), robust.algorithm_s(w, 1)
+    r, full = robust.algorithm_s(w, 1, tol="iso2022"), robust.algorithm_s(w, 1)
     assert 1 < r.iterations < full.iterations
     assert r.scale == pytest.approx(0.5403, abs=5e-5) and full.scale == pytest.approx(0.5409, abs=5e-5)
 

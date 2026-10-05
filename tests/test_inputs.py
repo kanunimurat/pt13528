@@ -48,31 +48,33 @@ def test_default_depends_neither_on_the_unit_nor_on_the_origin():
 X11 = [18.2, 18.2, 18.4, 18.4, 18.4, 18.4, 18.6, 19.8, 20.5, 20.9, 22.3]
 
 
-def test_three_figure_rule_of_c_3_1_and_the_reading_of_earlier_versions():
-    """Read as "third significant figure of s* and the equivalent figure (the same decimal place)
-    of x*", the criterion gives the same s* for the eleven results in degrees Celsius and in kelvin.
-    Read as "third significant figures of x* and s*" ("sig3-of-x", the only reading up to 0.1.5), the
-    figure tested in kelvin is the units digit of x*: the iteration stops after one step with an s*
-    that is 78 % too small, and four results get an action signal."""
+def test_stopping_criteria_of_the_2022_and_2015_editions():
+    """ISO 13528:2022, C.3.1 stops on the third significant figures of x* and s* ("iso2022"). For the
+    eleven results in kelvin the figure tested in x* is the units digit: the iteration stops after one
+    step with an s* that is 78 % too small, and four results get an action signal. The criterion as
+    quoted from the 2015 edition ("iso2015": third figure of s*, equivalent figure of x*) gives the same
+    s* in degrees Celsius and in kelvin."""
     k = [v + 273.15 for v in X11]
     full = robust.algorithm_a(X11)
     assert full.scale == pytest.approx(1.3299, abs=5e-5)
     assert robust.algorithm_a(k).scale == pytest.approx(full.scale, rel=1e-9)
-    celsius, kelvin = robust.algorithm_a(X11, tol="sig3"), robust.algorithm_a(k, tol="sig3")
+    celsius, kelvin = robust.algorithm_a(X11, tol="iso2015"), robust.algorithm_a(k, tol="iso2015")
     assert celsius.scale == pytest.approx(1.328, abs=5e-4) and celsius.iterations == 13
     assert kelvin.scale == pytest.approx(celsius.scale, rel=1e-9) and kelvin.iterations == 13
-    assert record.round_record(k, tol="sig3").counts["action"] == 0
-    old = robust.algorithm_a(k, tol="sig3-of-x")
+    assert record.round_record(k, tol="iso2015").counts["action"] == 0
+    old = robust.algorithm_a(k, tol="iso2022")
     assert old.iterations == 1 and old.scale == pytest.approx(0.297, abs=5e-4)
-    assert record.round_record(k, tol="sig3-of-x").counts["action"] == 4
-    assert robust.algorithm_a(X11, tol="sig3-of-x").scale == pytest.approx(celsius.scale, rel=1e-12)
+    assert record.round_record(k, tol="iso2022").counts["action"] == 4
+    assert robust.algorithm_a(X11, tol="iso2022").scale == pytest.approx(celsius.scale, rel=1e-12)
+    # the names of version 0.1.6 keep their meaning
+    assert robust.algorithm_a(k, tol="sig3-of-x") == old and robust.algorithm_a(k, tol="sig3") == kelvin
 
 
 def test_three_figure_rule_depends_on_the_unit():
     """Significant figures depend on the unit, so the rule of C.3.1 stops at a different iterate
     after a change of unit: results in inches and the same results in millimetres."""
     x = [0.52, 0.55, 0.61, 0.48, 0.50, 0.57, 0.93, 0.49, 0.53, 0.60]
-    inch, mm = robust.algorithm_a(x, tol="sig3"), robust.algorithm_a([25.4 * v for v in x], tol="sig3")
+    inch, mm = robust.algorithm_a(x, tol="iso2015"), robust.algorithm_a([25.4 * v for v in x], tol="iso2015")
     full = robust.algorithm_a(x)
     assert robust.algorithm_a([25.4 * v for v in x]).scale / 25.4 == pytest.approx(full.scale, rel=1e-9)
     assert inch.iterations != mm.iterations
@@ -87,7 +89,7 @@ def test_invalid_stopping_criterion(tol):
         robust.algorithm_s([0.1, 0.2, 0.3], 1, tol=tol)
 
 
-@pytest.mark.parametrize("tol", ["sig3", "sig3-of-x", DEFAULT])
+@pytest.mark.parametrize("tol", ["iso2022", "iso2015", DEFAULT])
 def test_slow_collapse_is_detected(tol):
     """Five of seven results identical and two symmetric ones: s* shrinks by 1,8 % per iteration, which
     took more than 1000 iterations to reach the collapse threshold in 0.1.5."""
@@ -164,7 +166,7 @@ def test_scores_reject_non_finite_values():
         scores.uncertainty_negligible(0.1, sigma_pt=0.0)
 
 
-@pytest.mark.parametrize("tol", ["sig3", 1e-12])
+@pytest.mark.parametrize("tol", ["iso2022", "iso2015", 1e-12])
 def test_large_majority_of_identical_results(tol):
     r = robust.algorithm_a([5, 5, 5, 5, 5, 5, 9], tol=tol)
     assert r.scale == 0.0 and r.degenerate and r.location == pytest.approx(5.0)
@@ -214,7 +216,7 @@ def test_hampel_iterative_with_two_distant_groups():
     assert math.isfinite(robust.hampel(x, 1.0, "iterative"))
 
 
-@pytest.mark.parametrize("tol", ["sig3", 1e-10, 1e-12])
+@pytest.mark.parametrize("tol", ["iso2022", 1e-10, 1e-12])
 @pytest.mark.parametrize("x", [
     [10.0] * 9 + [10.000001, 9.999998],
     [1000.0] * 9 + [1000.001, 999.998],

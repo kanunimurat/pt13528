@@ -46,43 +46,8 @@
   "of 200": 0,
   "of 5000": 0
  },
- "sets with a different Algorithm A result, engine 1.5.0 against tol='sig3-of-x', of 5000": 1,
- "three-figure rule, third figure of s* and equivalent figure of x* (sig3)": {
-  "sets": 5200,
-  "against convergence": {
-   "x* differs in the third significant figure": 99,
-   "s* differs in the third significant figure": 2417,
-   "relative difference of s*: median, 95th percentile, maximum": [
-    0.0008238758221872185,
-    0.005062437278434969,
-    0.03151098700309903
-   ],
-   "median iterations: rule, convergence": [
-    6.0,
-    28.0
-   ],
-   "z signals (acceptable, warning, action) that change: results, of results, sets": [
-    28,
-    120754,
-    28
-   ]
-  },
-  "after a change of unit (x 25,4) or of origin (+ 273,15)": {
-   "sets in which s* changes: unit, origin": [
-    4113,
-    5
-   ],
-   "z signals that change: unit, origin": [
-    38,
-    0
-   ],
-   "largest relative error of s* against convergence: unit, origin": [
-    0.06506031776681878,
-    0.031510987003105534
-   ]
-  }
- },
- "three-figure rule, third figures of x* and s* (sig3-of-x; versions up to 0.1.5, PHP engine 1.5.0)": {
+ "sets with a different Algorithm A result, engine 1.5.0 against tol='iso2022', of 5000": 1,
+ "criterion of ISO 13528:2022, third significant figures of x* and s* (iso2022)": {
   "sets": 5200,
   "against convergence": {
    "x* differs in the third significant figure": 108,
@@ -114,6 +79,41 @@
    "largest relative error of s* against convergence: unit, origin": [
     0.1758857345378052,
     0.32295082801838043
+   ]
+  }
+ },
+ "criterion quoted from the 2015 edition, third figure of s* and equivalent figure of x* (iso2015)": {
+  "sets": 5200,
+  "against convergence": {
+   "x* differs in the third significant figure": 99,
+   "s* differs in the third significant figure": 2417,
+   "relative difference of s*: median, 95th percentile, maximum": [
+    0.0008238758221872185,
+    0.005062437278434969,
+    0.03151098700309903
+   ],
+   "median iterations: rule, convergence": [
+    6.0,
+    28.0
+   ],
+   "z signals (acceptable, warning, action) that change: results, of results, sets": [
+    28,
+    120754,
+    28
+   ]
+  },
+  "after a change of unit (x 25,4) or of origin (+ 273,15)": {
+   "sets in which s* changes: unit, origin": [
+    4113,
+    5
+   ],
+   "z signals that change: unit, origin": [
+    38,
+    0
+   ],
+   "largest relative error of s* against convergence: unit, origin": [
+    0.06506031776681878,
+    0.031510987003105534
    ]
   }
  }

@@ -1,0 +1,374 @@
+{
+    "input": {
+        "participants": [
+            {
+                "participant_id": "S01",
+                "value": 53.049999999999997,
+                "uncertainty": 1.53,
+                "coverage_factor": 2
+            },
+            {
+                "participant_id": "S02",
+                "value": 51.630000000000003,
+                "uncertainty": 1.9299999999999999,
+                "coverage_factor": 2
+            },
+            {
+                "participant_id": "S03",
+                "value": 50.549999999999997,
+                "uncertainty": 1.3400000000000001,
+                "coverage_factor": 2
+            },
+            {
+                "participant_id": "S04",
+                "value": 58.899999999999999,
+                "uncertainty": 2.1699999999999999,
+                "coverage_factor": 2
+            },
+            {
+                "participant_id": "S05",
+                "value": 51.909999999999997,
+                "uncertainty": 0.80000000000000004,
+                "coverage_factor": 2
+            },
+            {
+                "participant_id": "S06",
+                "value": 51.659999999999997,
+                "uncertainty": 2.0299999999999998,
+                "coverage_factor": 2
+            },
+            {
+                "participant_id": "S07",
+                "value": 51.090000000000003,
+                "uncertainty": 1.03,
+                "coverage_factor": 2
+            },
+            {
+                "participant_id": "S08",
+                "value": 49.740000000000002,
+                "uncertainty": 1.96,
+                "coverage_factor": 2
+            },
+            {
+                "participant_id": "S09",
+                "value": 50.659999999999997,
+                "uncertainty": 0.90000000000000002,
+                "coverage_factor": 2
+            },
+            {
+                "participant_id": "S10",
+                "value": 53.969999999999999,
+                "uncertainty": 1.8,
+                "coverage_factor": 2
+            },
+            {
+                "participant_id": "S11",
+                "value": 49.670000000000002,
+                "uncertainty": 1.8500000000000001,
+                "coverage_factor": 2
+            },
+            {
+                "participant_id": "S12",
+                "value": 46.100000000000001,
+                "uncertainty": 0.91000000000000003,
+                "coverage_factor": 2
+            },
+            {
+                "participant_id": "S13",
+                "value": 52.770000000000003,
+                "uncertainty": 1.3300000000000001,
+                "coverage_factor": 2
+            },
+            {
+                "participant_id": "S14",
+                "value": 50.18,
+                "uncertainty": 1.8100000000000001,
+                "coverage_factor": 2
+            },
+            {
+                "participant_id": "S15",
+                "value": 50.530000000000001,
+                "uncertainty": 1.1899999999999999,
+                "coverage_factor": 2
+            },
+            {
+                "participant_id": "S16",
+                "value": 53.770000000000003,
+                "uncertainty": 1.6200000000000001,
+                "coverage_factor": 2
+            },
+            {
+                "participant_id": "S17",
+                "value": 56.399999999999999,
+                "uncertainty": 2.2400000000000002,
+                "coverage_factor": 2
+            },
+            {
+                "participant_id": "S18",
+                "value": 53.009999999999998,
+                "uncertainty": 1.24,
+                "coverage_factor": 2
+            },
+            {
+                "participant_id": "S19",
+                "value": 48.490000000000002,
+                "uncertainty": 1.1200000000000001,
+                "coverage_factor": 2
+            },
+            {
+                "participant_id": "S20",
+                "value": 50.799999999999997,
+                "uncertainty": 1.6899999999999999,
+                "coverage_factor": 2
+            }
+        ],
+        "scheme": {
+            "scoring_bands": 3,
+            "assigned_value_method": "consensus",
+            "sigma_pt_method": "data_robust",
+            "min_participants": 12
+        }
+    },
+    "php": {
+        "engine_version": "1.6.0",
+        "p": 20,
+        "x_pt": 51.574723036012941,
+        "u_x_pt": 0.61310964264536194,
+        "sigma_pt": 2.1935277417850134,
+        "robust_mean": 51.574723036012941,
+        "robust_sd": 2.1935277417850134,
+        "median": 51.359999999999999,
+        "mad": 2.2467450000000011,
+        "niqr": 1.9107007499999951,
+        "algo_a_iterations": 24,
+        "uncertainty_negligible": true,
+        "distribution": {
+            "satisfactory": 17,
+            "questionable": 2,
+            "unsatisfactory": 1,
+            "unscored": 0
+        },
+        "results": [
+            {
+                "participant_id": "S01",
+                "value": 53.049999999999997,
+                "z": 0.67255906359612738,
+                "z_prime": 0.64773277297268717,
+                "zeta": 1.5048140876637617,
+                "en": 0.75240704383188084,
+                "classification": "satisfactory",
+                "zeta_class": "satisfactory",
+                "en_class": "satisfactory"
+            },
+            {
+                "participant_id": "S02",
+                "value": 51.630000000000003,
+                "z": 0.025200029584344096,
+                "z_prime": 0.024269816474383085,
+                "zeta": 0.048348727803139813,
+                "en": 0.024174363901569906,
+                "classification": "satisfactory",
+                "zeta_class": "satisfactory",
+                "en_class": "satisfactory"
+            },
+            {
+                "participant_id": "S03",
+                "value": 50.549999999999997,
+                "z": -0.46715754557955175,
+                "z_prime": -0.44991327720038754,
+                "zeta": -1.1283173574858183,
+                "en": -0.56415867874290915,
+                "classification": "satisfactory",
+                "zeta_class": "satisfactory",
+                "en_class": "satisfactory"
+            },
+            {
+                "participant_id": "S04",
+                "value": 58.899999999999999,
+                "z": 3.3394959290672168,
+                "z_prime": 3.2162245303776826,
+                "zeta": 5.8778752486632957,
+                "en": 2.9389376243316478,
+                "classification": "unsatisfactory",
+                "zeta_class": "unsatisfactory",
+                "en_class": "unsatisfactory"
+            },
+            {
+                "participant_id": "S05",
+                "value": 51.909999999999997,
+                "z": 0.15284828981201742,
+                "z_prime": 0.14720617409376482,
+                "zeta": 0.45799469258421271,
+                "en": 0.22899734629210636,
+                "classification": "satisfactory",
+                "zeta_class": "satisfactory",
+                "en_class": "satisfactory"
+            },
+            {
+                "participant_id": "S06",
+                "value": 51.659999999999997,
+                "z": 0.038876628894449525,
+                "z_prime": 0.037441569076457362,
+                "zeta": 0.071914958654969066,
+                "en": 0.035957479327484533,
+                "classification": "satisfactory",
+                "zeta_class": "satisfactory",
+                "en_class": "satisfactory"
+            },
+            {
+                "participant_id": "S07",
+                "value": 51.090000000000003,
+                "z": -0.22097875799760219,
+                "z_prime": -0.21282173036300067,
+                "zeta": -0.60537034222825525,
+                "en": -0.30268517111412763,
+                "classification": "satisfactory",
+                "zeta_class": "satisfactory",
+                "en_class": "satisfactory"
+            },
+            {
+                "participant_id": "S08",
+                "value": 49.740000000000002,
+                "z": -0.83642572695246953,
+                "z_prime": -0.80555059745646163,
+                "zeta": -1.5871499932856401,
+                "en": -0.79357499664282005,
+                "classification": "satisfactory",
+                "zeta_class": "satisfactory",
+                "en_class": "satisfactory"
+            },
+            {
+                "participant_id": "S09",
+                "value": 50.659999999999997,
+                "z": -0.41701001477582211,
+                "z_prime": -0.4016168509927725,
+                "zeta": -1.2027467304720223,
+                "en": -0.60137336523601115,
+                "classification": "satisfactory",
+                "zeta_class": "satisfactory",
+                "en_class": "satisfactory"
+            },
+            {
+                "participant_id": "S10",
+                "value": 53.969999999999999,
+                "z": 1.091974775772778,
+                "z_prime": 1.0516665194363792,
+                "zeta": 2.1995359998540489,
+                "en": 1.0997679999270245,
+                "classification": "satisfactory",
+                "zeta_class": "questionable",
+                "en_class": "unsatisfactory"
+            },
+            {
+                "participant_id": "S11",
+                "value": 49.670000000000002,
+                "z": -0.86833779200938865,
+                "z_prime": -0.83628468686130786,
+                "zeta": -1.7163648525705246,
+                "en": -0.85818242628526231,
+                "classification": "satisfactory",
+                "zeta_class": "satisfactory",
+                "en_class": "satisfactory"
+            },
+            {
+                "participant_id": "S12",
+                "value": 46.100000000000001,
+                "z": -2.4958531099122587,
+                "z_prime": -2.4037232465084584,
+                "zeta": -7.170584094179584,
+                "en": -3.585292047089792,
+                "classification": "questionable",
+                "zeta_class": "unsatisfactory",
+                "en_class": "unsatisfactory"
+            },
+            {
+                "participant_id": "S13",
+                "value": 52.770000000000003,
+                "z": 0.54491080336845399,
+                "z_prime": 0.52479641535330535,
+                "zeta": 1.321471515393162,
+                "en": 0.66073575769658099,
+                "classification": "satisfactory",
+                "zeta_class": "satisfactory",
+                "en_class": "satisfactory"
+            },
+            {
+                "participant_id": "S14",
+                "value": 50.18,
+                "z": -0.6358356037375511,
+                "z_prime": -0.61236489262600147,
+                "zeta": -1.2759011423154907,
+                "en": -0.63795057115774534,
+                "classification": "satisfactory",
+                "zeta_class": "satisfactory",
+                "en_class": "satisfactory"
+            },
+            {
+                "participant_id": "S15",
+                "value": 50.530000000000001,
+                "z": -0.47627527845295536,
+                "z_prime": -0.45869444560177036,
+                "zeta": -1.2228157676695077,
+                "en": -0.61140788383475386,
+                "classification": "satisfactory",
+                "zeta_class": "satisfactory",
+                "en_class": "satisfactory"
+            },
+            {
+                "participant_id": "S16",
+                "value": 53.770000000000003,
+                "z": 1.0007974470387255,
+                "z_prime": 0.96385483542253525,
+                "zeta": 2.1609700558678373,
+                "en": 1.0804850279339187,
+                "classification": "satisfactory",
+                "zeta_class": "questionable",
+                "en_class": "unsatisfactory"
+            },
+            {
+                "participant_id": "S17",
+                "value": 56.399999999999999,
+                "z": 2.1997793198915381,
+                "z_prime": 2.1185784802046079,
+                "zeta": 3.7790968721539588,
+                "en": 1.8895484360769794,
+                "classification": "questionable",
+                "zeta_class": "unsatisfactory",
+                "en_class": "unsatisfactory"
+            },
+            {
+                "participant_id": "S18",
+                "value": 53.009999999999998,
+                "z": 0.65432359784931682,
+                "z_prime": 0.6301704361699183,
+                "zeta": 1.6460470264287379,
+                "en": 0.82302351321436895,
+                "classification": "satisfactory",
+                "zeta_class": "satisfactory",
+                "en_class": "satisfactory"
+            },
+            {
+                "participant_id": "S19",
+                "value": 48.490000000000002,
+                "z": -1.4062840315403091,
+                "z_prime": -1.354373622542999,
+                "zeta": -3.7149071197238981,
+                "en": -1.857453559861949,
+                "classification": "satisfactory",
+                "zeta_class": "unsatisfactory",
+                "en_class": "unsatisfactory"
+            },
+            {
+                "participant_id": "S20",
+                "value": 50.799999999999997,
+                "z": -0.35318588466198381,
+                "z_prime": -0.34014867218308009,
+                "zeta": -0.74207444923865051,
+                "en": -0.37103722461932526,
+                "classification": "satisfactory",
+                "zeta_class": "satisfactory",
+                "en_class": "satisfactory"
+            }
+        ]
+    }
+}

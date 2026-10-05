@@ -32,7 +32,7 @@ def reproduced():
         r = robust.algorithm_a(dat)
         add("E.1", f"x* ({k})", xs, r.location, 2)
         if k == "ignored":       # printed 7,23 is the value of the three-figure rule; convergence gives 7,24 (see notes())
-            add("E.1", f"s* ({k}), three-figure rule", ss, robust.algorithm_a(dat, tol="sig3").scale, 2)
+            add("E.1", f"s* ({k}), three-figure rule", ss, robust.algorithm_a(dat, tol="iso2022").scale, 2)
         else:
             add("E.1", f"s* ({k})", ss, r.scale, 2)
     h = hm.homogeneity(E.E2_HOMOGENEITY)
@@ -111,7 +111,7 @@ def inconsistent():
     as 9.8 words them, and to the expanded uncertainty U_lab.
     """
     dat, xs, ss = E.E1["half"]
-    rule = robust.algorithm_a(dat, tol="sig3")
+    rule = robust.algorithm_a(dat, tol="iso2022")
     full = robust.algorithm_a(dat, tol=1e-12)
     a12 = robust.algorithm_a(E.E12_A)
     u_min, u_max = E.E4_BIG_U / 2, 1.5 * robust.algorithm_a([r[1] for r in E.E4]).scale
@@ -144,9 +144,9 @@ def notes():
     n = len(E.E8_AV)
     return {
         "E.1 third column s*: printed, three-figure rule, convergence":
-            (ss, robust.algorithm_a(dat, tol="sig3").scale, robust.algorithm_a(dat, tol=1e-12).scale),
+            (ss, robust.algorithm_a(dat, tol="iso2022").scale, robust.algorithm_a(dat, tol=1e-12).scale),
         "E.1 first column s*: printed, three-figure rule, convergence":
-            (s1, robust.algorithm_a(d1, tol="sig3").scale, robust.algorithm_a(d1, tol=1e-12).scale),
+            (s1, robust.algorithm_a(d1, tol="iso2022").scale, robust.algorithm_a(d1, tol=1e-12).scale),
         "E.3 Table E.5 u(x_pt) of the median row: printed, with nIQR, with MADe":
             (0.0086, av.consensus(E.E3, "median").u_x_pt, av.consensus(E.E3, "median", median_scale="made").u_x_pt),
         "E.8 coefficient of determination: printed, plain, adjusted":
