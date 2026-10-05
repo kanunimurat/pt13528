@@ -8,7 +8,7 @@ from typing import Iterable
 
 import numpy as np
 from scipy import stats
-from ._common import _arr
+from ._common import _arr, _finite, _nonneg
 
 __all__ = ["grubbs_critical", "grubbs", "cochran_critical", "cochran"]
 
@@ -16,6 +16,10 @@ __all__ = ["grubbs_critical", "grubbs", "cochran_critical", "cochran"]
 def grubbs_critical(n: int, alpha: float = 0.01) -> float:
     """6.6.3 NOTE 1, D.1.2 - critical value of Grubbs' test for one outlying observation, as tabulated
     in ISO 5725-2 (two-sided: alpha / (2n) in the t quantile)."""
+    if isinstance(n, bool) or int(n) != n or n < 3:
+        raise ValueError("n must be an integer of at least 3")
+    if not 0 < alpha < 1:
+        raise ValueError("alpha must lie between 0 and 1")
     t = stats.t.ppf(1 - alpha / (2 * n), n - 2)
     return float((n - 1) / math.sqrt(n) * math.sqrt(t * t / (n - 2 + t * t)))
 
@@ -35,6 +39,12 @@ def grubbs(x: Iterable[float], alpha: float = 0.01):
 
 def cochran_critical(k: int, n: int, alpha: float = 0.01) -> float:
     """B.2.1 c), 6.6.3 NOTE 2 - critical value of Cochran's test of ISO 5725-2 for k variances, each from n results."""
+    if isinstance(k, bool) or int(k) != k or k < 2:
+        raise ValueError("k must be an integer of at least 2")
+    if isinstance(n, bool) or int(n) != n or n < 2:
+        raise ValueError("n must be an integer of at least 2")
+    if not 0 < alpha < 1:
+        raise ValueError("alpha must lie between 0 and 1")
     f = stats.f.ppf(1 - alpha / k, n - 1, (k - 1) * (n - 1))
     return float(f / (f + k - 1))
 

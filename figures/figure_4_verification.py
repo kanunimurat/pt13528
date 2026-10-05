@@ -81,7 +81,7 @@ ax.set_xlim(-0.7, xa + len(ties_) - 0.3); ax.set_ylabel("largest |difference|", 
 ptitle(2, 26.3, "c", "Printed results that do not follow from the text, and the 2026 amendment", "status after ISO 13528:2022/Amd 1:2026")
 tab = [("Table E.1, third column, $x^*$", "printed 23.95; both stopping rules give 23.96", "open", ORANGE),
        ("Table E.10, $z$ scores", "text names Algorithm A, numbers are arithmetic", "open", ORANGE),
-       ("Table E.6, flags", "follow the limits of Clause 9.8 for $U$, not for $u$ as worded", "open", ORANGE),
+       ("Table E.6, flags", "limits not stated; those of Clause 9.8 fit for $U$, not for $u$", "unclear", "#8A8A8A"),
        ("Formula (C.18), $h$", "undefined for $p$ = 2, 3; now $\\lfloor p/2 \\rfloor + 1$", "corrected", GREEN),
        ("Formula (C.19), factor", "2.2219; now 2.2191", "corrected", GREEN),
        ("Table E.12 (example E.14)", "one assigned value corrected; footnote on rounding added", "corrected", GREEN)]

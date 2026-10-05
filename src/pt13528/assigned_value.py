@@ -9,7 +9,7 @@ from typing import Callable, Iterable, NamedTuple, Optional
 import numpy as np
 
 from . import robust
-from ._common import _arr
+from ._common import _arr, _finite, _nonneg
 
 __all__ = [
     "AssignedValue", "combine_uncertainty", "from_crm_comparison", "consensus",
@@ -28,6 +28,7 @@ class AssignedValue(NamedTuple):
 
 def combine_uncertainty(u_char: float, u_hom: float = 0.0, u_trans: float = 0.0, u_stab: float = 0.0) -> float:
     """7.2.2, Formula (3) - u(x_pt) = sqrt(u_char^2 + u_hom^2 + u_trans^2 + u_stab^2)."""
+    _nonneg(u_char, u_hom, u_trans, u_stab)
     return math.sqrt(u_char ** 2 + u_hom ** 2 + u_trans ** 2 + u_stab ** 2)
 
 
@@ -37,6 +38,8 @@ def from_crm_comparison(x_crm: float, u_crm: float, differences: Iterable[float]
     ``differences`` are d_i, PT item average minus CRM average on sample i.
     u_d is the standard deviation of d_i divided by sqrt(n) (Table E.8).
     """
+    _finite(x_crm)
+    _nonneg(u_crm)
     d = _arr(differences)
     if d.size < 2:
         raise ValueError("at least two differences are required")
@@ -47,6 +50,7 @@ def from_crm_comparison(x_crm: float, u_crm: float, differences: Iterable[float]
 
 def u_robust(scale: float, p: int, factor: float = 1.25) -> float:
     """7.7.7, Formula (6) - u(x_pt) = 1,25 s* / sqrt(p). NOTE 2 allows another factor."""
+    _nonneg(scale, factor)
     if p < 1:
         raise ValueError("p must be positive")
     return factor * scale / math.sqrt(p)
@@ -95,6 +99,8 @@ class Comparison(NamedTuple):
 
 def compare_with_reference(x_ref: float, u_ref: float, x_pt: float, u_x_pt: float) -> Comparison:
     """7.8, Formula (7) - x_diff = x_ref - x_pt against u_diff; investigate when |x_diff| > 2 u_diff."""
+    _finite(x_ref, x_pt)
+    _nonneg(u_ref, u_x_pt)
     x_diff = x_ref - x_pt
     u_diff = math.hypot(u_ref, u_x_pt)
     ratio = abs(x_diff) / u_diff if u_diff > 0 else math.inf

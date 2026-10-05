@@ -12,7 +12,7 @@ from typing import Iterable, Sequence
 import numpy as np
 from scipy.stats import norm
 
-from ._common import DEFAULT_TOL, _arr
+from ._common import DEFAULT_TOL, _arr, _finite
 
 __all__ = [
     "median", "made", "niqr", "algorithm_a", "algorithm_s", "qn", "q_method",
@@ -78,17 +78,17 @@ def niqr(x: Iterable[float], quantile_method: str = "linear") -> float:
     return float(NIQR_FACTOR * (q3 - q1))
 
 
-_RULES = {"iso2022": "iso2022", "iso2015": "iso2015",
-          "sig3-of-x": "iso2022", "sig3": "iso2015"}      # names used in 0.1.6, kept with their 0.1.6 meaning
+_RULES = {"iso2022": "iso2022", "equivalent-figure": "equivalent-figure",
+          "sig3-of-x": "iso2022", "sig3": "equivalent-figure"}      # names used in 0.1.6, kept with their 0.1.6 meaning
 
 
 def _stopping(tol):
     if isinstance(tol, str):
         if tol not in _RULES:
-            raise ValueError("tol must be a positive number, 'iso2022' or 'iso2015'")
+            raise ValueError("tol must be a positive number, 'iso2022' or 'equivalent-figure'")
         return _RULES[tol]
     if isinstance(tol, bool) or not isinstance(tol, (int, float)) or not (math.isfinite(tol) and tol > 0):
-        raise ValueError("tol must be a positive number, 'iso2022' or 'iso2015'")
+        raise ValueError("tol must be a positive number, 'iso2022' or 'equivalent-figure'")
     return float(tol)
 
 
@@ -110,14 +110,15 @@ def algorithm_a(x: Iterable[float], tol: str | float = DEFAULT_TOL, max_iter: in
         the unit and on the origin of the results, so does its result (see
         docs/coverage.md). It reproduces the worked examples of Annex E.
 
-        ``"iso2015"`` is the criterion as the 2015 edition is quoted in the
-        literature: no change in the third significant figure of s* and in
-        the equivalent figure (the same decimal place) of x*. It reproduces
-        Annex E as well and does not depend on the origin, but still on the
-        unit.
+        ``"equivalent-figure"`` is a variant: no change in the third
+        significant figure of s* and in the same decimal place of x*. The
+        wording "the equivalent figure" is quoted in the literature from
+        the 2005 edition of ISO 13528; the authors have not seen that
+        edition. It reproduces Annex E as well and does not depend on the
+        origin, but still on the unit.
 
         The names ``"sig3-of-x"`` and ``"sig3"`` of version 0.1.6 are
-        accepted for ``"iso2022"`` and ``"iso2015"``.
+        accepted for ``"iso2022"`` and ``"equivalent-figure"``.
 
     When a large majority of the results is identical, the iteration can
     drive s* towards zero. This is detected and returned as ``scale=0.0``
@@ -134,8 +135,8 @@ def algorithm_a(x: Iterable[float], tol: str | float = DEFAULT_TOL, max_iter: in
     p = a.size
     if p == 1:
         return RobustResult(location=float(a[0]), scale=0.0, iterations=0, converged=True, degenerate=True)
-    if scale is not None and not (math.isfinite(scale) and scale >= 0):
-        raise ValueError("scale must be finite and not negative")
+    if scale is not None and not (math.isfinite(scale) and scale > 0):
+        raise ValueError("a given scale must be finite and positive")
     c = float(np.median(a))                 # iterate on x - median: identical results become exactly zero,
     a = a - c                               # so a collapsing s* is not masked by rounding noise of large x
     m = float(np.max(np.abs(a)))
@@ -154,7 +155,7 @@ def algorithm_a(x: Iterable[float], tol: str | float = DEFAULT_TOL, max_iter: in
         w = np.clip(a, lo, hi)
         new_x = float(w.mean())
         new_s = float(ALG_A_FACTOR * np.sqrt(np.sum((w - new_x) ** 2) / (p - 1))) if update_scale else s_star
-        if tol == "iso2015":                # third figure of s*, equivalent figure (same decimal place) of x*
+        if tol == "equivalent-figure":                # third figure of s*, equivalent figure (same decimal place) of x*
             d = 2 - int(math.floor(math.log10(m * new_s))) if new_s > 0 else 0
             done = (round(c + m * new_x, d) == round(c + m * x_star, d)
                     and _sig3(m * new_s) == _sig3(m * s_star))
@@ -193,7 +194,7 @@ def algorithm_s(w: Iterable[float], nu: int, tol: str | float = DEFAULT_TOL, max
     nu is the degrees of freedom of each w_i (1 for ranges of duplicates,
     m - 1 for standard deviations of m results); Table C.1 covers nu = 1..10.
     A float ``tol`` is relative to w*, as in :func:`algorithm_a`; ``"iso2022"``
-    (or ``"iso2015"``, the two do not differ here) stops when the third
+    (or ``"equivalent-figure"``, the two do not differ here) stops when the third
     significant figure of w* no longer changes.
     """
     tol = _stopping(tol)
@@ -400,4 +401,5 @@ def mean_abs_dev_sd(x: Iterable[float]) -> float:
 
 def sd_two_results(x1: float, x2: float) -> float:
     """D.1.4.2 NOTE 3 - dispersion estimate for p = 2: |x1 - x2| / sqrt(2)."""
+    _finite(x1, x2)
     return abs(x1 - x2) / math.sqrt(2.0)

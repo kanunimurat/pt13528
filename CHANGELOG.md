@@ -2,29 +2,44 @@
 
 ## 0.1.7 (2026-10-05)
 
-No calculation changes. This version corrects a statement of 0.1.6 about the standard.
+No change to the results of valid calls. This version corrects statements about the standard and tightens
+the checks of arguments.
 
 - **The stopping criterion of ISO 13528:2022 is the one that depends on the origin of the results.** C.3.1 of the
   2022 edition, its NOTE 1 and example E.3 word the criterion as no change in the third significant figures of
-  the robust mean and of the robust standard deviation. 0.1.6 was written from quotations of the 2015 edition
-  (third significant figure of s* and "the equivalent figure" of x*) before the authors had the 2022 text of
-  C.3.1 before them; it called the 2015 wording the one "that the wording of C.3.1 supports" and withdrew the
+  the robust mean and of the robust standard deviation. 0.1.6 was written from quotations of another wording
+  (third significant figure of s* and "the equivalent" figure of x*) before the authors had the 2022 text of
+  C.3.1 before them; it called that wording the one "that the wording of C.3.1 supports" and withdrew the
   statement of 0.1.5. That was wrong for the current edition. The finding of 0.1.5 stands: with the criterion
-  as ISO 13528:2022 words it, eleven results give s* = 1,328 in degrees Celsius and, in kelvin, stop after one
-  iteration at s* = 0,297 with four action signals. With the wording quoted from the 2015 edition they give
-  1,328 in both units. Both wordings reproduce Annex E.
-- The criteria are now named after the editions: `tol="iso2022"` and `tol="iso2015"`. The names of 0.1.6,
-  `"sig3-of-x"` and `"sig3"`, are still accepted with the meaning they had there. The default (convergence)
-  is unchanged.
+  as ISO 13528:2022 words it, eleven constructed results give s* = 1,328 in degrees Celsius and, in kelvin,
+  stop after one iteration at s* = 0,297 with four action signals. The second wording is quoted in the
+  literature from the 2005 edition, which the authors have not seen; read as the same decimal place it gives
+  1,328 in both units. Both reproduce Annex E.
+- The criteria are now `tol="iso2022"` and `tol="equivalent-figure"`. The names of 0.1.6, `"sig3-of-x"` and
+  `"sig3"`, are still accepted with the meaning they had there. The default (convergence) is unchanged.
+- **Table E.6 is no longer counted as a printed result that does not follow from the text.** The example
+  does not state the limits behind its flags. The limits that 9.8 suggests give 9 of 21 flags for the standard
+  uncertainty and 21 of 21 for the expanded uncertainty, but a range of other limits for the standard
+  uncertainty gives 21 of 21 as well. Two items remain (Table E.1, x* of the third column, and Table E.10);
+  `tests/printed_values.py` has `e6_flags()` for the third.
 - The whole standard was compared with the test data: every number typed from Annex E and Table B.1, every
   printed value used as an expectation and every constant agrees with ISO 13528:2022. Corrections to the
   documentation that came out of this: Grubbs' and Cochran's tests are cited from 6.6.3 (not 6.6.2); Algorithm A
   covers Formulae (C.5) to (C.10); `kernel_density` includes the factor 1/sigma_k that Formula (22) omits;
-  Table E.10 itself (NOTE 2) says robust; 9.8.3 gives u(x_pt) as lower limit only where it meets 9.2.1; other
-  explanations of the printed r^2 of E.8 are named; the PA scores of Table E.7 are tested to half a unit.
+  9.8.3 gives u(x_pt) as lower limit only where it meets 9.2.1; other explanations of the printed r^2 of E.8
+  are named; the PA scores of Table E.7 are tested to half a unit.
+- Arguments outside their domain are rejected instead of returning NaN: non-finite or negative standard
+  deviations and uncertainties in `from_precision`, `limit_sigma`, `combine_uncertainty`, `u_robust`,
+  `compare_with_reference`, `from_crm_comparison`, `expanded_sigma_pt`, `bandwidth`, `kernel_density`,
+  `repeatability_statistic`, `sd_two_results`, `z_reduction_factor` and `uncertainty_flag`; counts below the
+  minimum in `grubbs_critical`, `cochran_critical` and `expanded_criterion_factors`; `alpha` outside (0, 1);
+  a warning limit above the action limit in `classify_z`. A fixed scale of zero in `algorithm_a` was silently
+  replaced by the classical standard deviation and is now rejected. `ordinal_summary` sorted text categories
+  alphabetically; it now takes `order` and refuses text categories without it.
 - `crosscheck/php_evaluate_round.json` and a test: a simulated round of 20 participants evaluated end to end
   by the function that the LAKSiS platform calls for a round (PHP engine 1.6.0) and by `round_record`; assigned
-  value, uncertainty, sigma_pt, z, z', zeta, E_n and signals agree. 136 tests.
+  value, uncertainty, sigma_pt, z, z', zeta, E_n and signals agree. 138 tests.
+- README states how the code was written and reviewed.
 
 ## 0.1.6 (2026-10-05)
 

@@ -7,7 +7,7 @@ import math
 from typing import Iterable, NamedTuple, Optional
 
 import numpy as np
-from ._common import _arr
+from ._common import _arr, _finite, _nonneg
 
 __all__ = ["horwitz", "from_precision", "LinearFit", "fit_previous_rounds", "limit_sigma"]
 
@@ -25,6 +25,7 @@ def horwitz(c: float) -> float:
 
 def from_precision(sigma_R: float, sigma_r: float, m: int) -> float:
     """8.5.1, Formula (9) - sigma_pt = sqrt(sigma_R^2 - sigma_r^2 (1 - 1/m))."""
+    _nonneg(sigma_R, sigma_r)
     if m < 1:
         raise ValueError("m must be at least 1")
     v = sigma_R ** 2 - sigma_r ** 2 * (1.0 - 1.0 / m)
@@ -55,6 +56,9 @@ def fit_previous_rounds(assigned_values: Iterable[float], sds: Iterable[float]) 
 
 def limit_sigma(sigma: float, lower: Optional[float] = None, upper: Optional[float] = None) -> float:
     """8.6.2.1 and 8.6.2.2 - floor and ceiling on a sigma_pt derived from participant results."""
+    _nonneg(sigma, *[v for v in (lower, upper) if v is not None])
+    if lower is not None and upper is not None and lower > upper:
+        raise ValueError("lower must not exceed upper")
     if lower is not None:
         sigma = max(sigma, lower)
     if upper is not None:

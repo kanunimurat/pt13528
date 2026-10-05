@@ -8,7 +8,7 @@ from typing import Iterable, NamedTuple, Optional, Sequence
 
 import numpy as np
 from scipy import stats
-from ._common import _arr
+from ._common import _arr, _finite, _nonneg
 
 __all__ = [
     "Homogeneity", "homogeneity", "homogeneity_single", "expanded_criterion_factors",
@@ -39,6 +39,10 @@ def expanded_criterion_factors(g: int, m: int = 2) -> tuple[float, float]:
     F2 = (F_0,95(g - 1, g) - 1) / 2 for duplicates.
     F_m = (F_0,95(g - 1, g(m - 1)) - 1) / m for m > 2.
     """
+    if isinstance(g, bool) or int(g) != g or g < 2:
+        raise ValueError("g must be an integer of at least 2")
+    if isinstance(m, bool) or int(m) != m or m < 2:
+        raise ValueError("m must be an integer of at least 2")
     f1 = stats.chi2.ppf(0.95, g - 1) / (g - 1)
     f2 = (stats.f.ppf(0.95, g - 1, g * (m - 1)) - 1.0) / m
     return float(f1), float(f2)
@@ -52,6 +56,8 @@ def homogeneity(samples: Sequence[Sequence[float]], sigma_pt: Optional[float] = 
     m = 2 special case), the criterion of B.2.2, the expanded criterion of
     B.2.3 and the analysis-of-variance F test of B.2.4 a).
     """
+    if not 0 < alpha < 1:
+        raise ValueError("alpha must lie between 0 and 1")
     if isinstance(samples, (str, bytes, dict)):
         raise TypeError("a table of numbers is required")
     x = np.asarray(samples, dtype=float)
@@ -102,6 +108,7 @@ def homogeneity_single(values: Iterable[float], sigma_pt: Optional[float] = None
 
 def expanded_sigma_pt(sigma_pt: float, s_s: float) -> float:
     """B.2.5 a), Formula (B.3) - sigma'_pt = sqrt(sigma_pt^2 + s_s^2)."""
+    _nonneg(sigma_pt, s_s)
     return math.hypot(sigma_pt, s_s)
 
 

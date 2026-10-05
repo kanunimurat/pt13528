@@ -172,7 +172,7 @@ def main():
         "sets with a different Algorithm A result (convergence)": {"of 200": len(differing_200), "of 5000": len(differing_5000)},
         "sets with a different Algorithm A result, engine 1.5.0 against tol='iso2022', of 5000": len(differing_old),
         "criterion of ISO 13528:2022, third significant figures of x* and s* (iso2022)": rule_statistics(all_x, "iso2022"),
-        "criterion quoted from the 2015 edition, third figure of s* and equivalent figure of x* (iso2015)": rule_statistics(all_x, "iso2015"),
+        "variant: third figure of s* and the same decimal place of x* (equivalent-figure)": rule_statistics(all_x, "equivalent-figure"),
     }
     json.dump(res, open(os.path.join(HERE, "result.json"), "w"), indent=1)
     print(json.dumps(res, indent=1))

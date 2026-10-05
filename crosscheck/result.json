@@ -82,7 +82,7 @@
    ]
   }
  },
- "criterion quoted from the 2015 edition, third figure of s* and equivalent figure of x* (iso2015)": {
+ "variant: third figure of s* and the same decimal place of x* (equivalent-figure)": {
   "sets": 5200,
   "against convergence": {
    "x* differs in the third significant figure": 99,

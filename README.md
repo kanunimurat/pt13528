@@ -71,8 +71,8 @@ pytest
 
 - `tests/printed_values.py` lists 255 values printed in ISO 13528:2022 (227
   from the worked examples of Annex E, 28 from Table B.1) that the functions
-  of the library reproduce to half a unit of the last printed digit, and the
-  three printed items that do not follow from the text.
+  of the library reproduce to half a unit of the last printed digit, the two
+  printed items that do not follow from the text, and four further observations.
 - `tests/test_external.py` compares Algorithm A, Qn, MADe and nIQR with
   statsmodels, Algorithm A, Algorithm S and Qn with the R packages metRology,
   MASS and robustbase (stored reference values, `crosscheck/r_compare.R`),
@@ -88,6 +88,16 @@ pytest
   LAKSiS platform and measures the effect of the stopping rule of Algorithm A.
 
 `docs/coverage.md` gives the details.
+
+## How the code was written
+
+The code and the tests were written with the assistance of a large language
+model (Claude, Anthropic) and reviewed by the authors. A function was accepted
+only when it reproduced the values printed in the standard or values worked by
+hand. The reviews mentioned in `CHANGELOG.md` and `docs/coverage.md` were also
+carried out with a language model, on the instruction of the authors. Statements
+about the wording of the standard have changed between versions (see
+`CHANGELOG.md`); since 0.1.7 they are checked against the text of ISO 13528:2022.
 
 ## Scope
 

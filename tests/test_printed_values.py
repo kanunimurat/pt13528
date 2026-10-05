@@ -16,12 +16,18 @@ def test_all_listed_printed_values_are_reproduced_to_half_a_unit():
 
 def test_inconsistent_items():
     items = P.inconsistent()
-    assert len(items) == 3
+    assert len(items) == 2
     assert [i[1] for i in items].count("not reproduced") == 1
     rule, full = items[0][2]
     assert round(rule, 2) == round(full, 2) == 23.96 and items[0][3] == 23.95   # neither rule gives 23,95
     assert items[1][4] == pytest.approx(-37, abs=1)               # Table E.10: Algorithm A is 0,37 lower
-    assert items[2][2:4] == (9, 21)                               # Table E.6: flags follow U_lab
+
+
+def test_flags_of_table_e6_do_not_identify_the_limits():
+    with_u, with_U, (b_max, a_min, a_max, c_min) = P.e6_flags()
+    assert (with_u, with_U) == (9, 21)                            # limits of 9.8.3 and 9.8.4 as suggested
+    assert b_max < a_min <= a_max < c_min                         # so a range of limits for u_lab gives 21 of 21
+    assert (round(b_max, 4), round(a_min, 4), round(a_max, 4), round(c_min, 3)) == (0.0020, 0.0025, 0.0065, 0.015)
 
 
 def test_notes():

@@ -105,27 +105,34 @@ def inconsistent():
     Each entry: (item, kind, what the text gives, what is printed, deviation in
     units of the last printed digit or None). ``kind`` is "not reproduced"
     for a number that no reading of the text yields, and "text and table" where
-    the table follows a rule other than the one the text names. For Table E.6
-    the two entries are the numbers of printed flags (of 21) matched when the
-    limits of 9.8.3 and 9.8.4 are applied to the standard uncertainty u_lab,
-    as 9.8 words them, and to the expanded uncertainty U_lab.
+    the table follows a rule other than the one the text and the table name.
     """
     dat, xs, ss = E.E1["half"]
     rule = robust.algorithm_a(dat, tol="iso2022")
     full = robust.algorithm_a(dat, tol=1e-12)
     a12 = robust.algorithm_a(E.E12_A)
-    u_min, u_max = E.E4_BIG_U / 2, 1.5 * robust.algorithm_a([r[1] for r in E.E4]).scale
-    printed = [r[4] for r in E.E4]
-    flags_u = sum(scores.uncertainty_flag(r[2] / r[3], u_min, u_max) == f for r, f in zip(E.E4, printed))
-    flags_U = sum(scores.uncertainty_flag(r[2], u_min, u_max) == f for r, f in zip(E.E4, printed))
     return [
         ("E.1, Table E.1, third column, x*: neither stopping rule gives the printed value", "not reproduced",
          (round(rule.location, 4), round(full.location, 4)), xs, (rule.location - xs) * 100),
         ("E.12, Table E.10: text names Algorithm A, table uses the arithmetic mean and SD", "text and table",
          round(a12.location, 2), 11.54, (a12.location - 11.54) * 100),
-        ("E.4, Table E.6: flags follow the limits of 9.8 applied to U_lab, not to u_lab", "text and table",
-         flags_u, flags_U, None),
     ]
+
+
+def e6_flags():
+    """Table E.6: the example says that the flags follow 9.8 and states neither the limits nor the
+    meaning of the letters. Returns the numbers of printed flags (of 21) matched when the limits that
+    9.8.3 and 9.8.4 suggest (u(x_pt) and 1,5 s*) are compared with the standard uncertainty u_lab and
+    with the expanded uncertainty U_lab, and the intervals of limits for u_lab that give all 21 flags
+    (lower limit above the first number up to the second, upper limit from the third to below the fourth)."""
+    u_min, u_max = E.E4_BIG_U / 2, 1.5 * robust.algorithm_a([r[1] for r in E.E4]).scale
+    printed = [r[4] for r in E.E4]
+    u = [r[2] / r[3] for r in E.E4]
+    flags_u = sum(scores.uncertainty_flag(v, u_min, u_max) == f for v, f in zip(u, printed))
+    flags_U = sum(scores.uncertainty_flag(r[2], u_min, u_max) == f for r, f in zip(E.E4, printed))
+    b = [v for v, f in zip(u, printed) if f == "b"]; a = [v for v, f in zip(u, printed) if f == "a"]
+    c = [v for v, f in zip(u, printed) if f == "c"]
+    return flags_u, flags_U, (max(b), min(a), max(a), min(c))
 
 
 def notes():
@@ -136,7 +143,8 @@ def notes():
     rule, so Table E.1 follows no single stopping rule. E.3, Table E.5: the
     row "Median, nIQR (MADe)" prints one u(x_pt), which follows nIQR (MADe
     gives 0,0083). E.8: the text prints r^2 = 0,82, which equals the adjusted
-    coefficient of determination; the plain coefficient is 0,83.
+    coefficient of determination; the plain coefficient is 0,83. Table E.6 is
+    a fourth observation, see e6_flags().
     """
     dat, xs, ss = E.E1["half"]
     d1, _x1, s1 = E.E1["ignored"]
@@ -164,5 +172,6 @@ if __name__ == "__main__":
     print(by)
     for item in inconsistent():
         print(item)
+    print("Table E.6 flags:", e6_flags())
     for k, v in notes().items():
         print(k, [round(float(x), 4) for x in v])

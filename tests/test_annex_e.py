@@ -39,7 +39,7 @@ def test_e1_half_value_depends_on_stopping_rule():
     the converged value and the printed x* is the converged value truncated, not rounded. The
     third-significant-figure rule of C.3.1 stops earlier, at 23,96 / 8,59."""
     data, x_star, s_star = E.E1["half"]
-    for tol in ("iso2022", "iso2015", 1e-12):
+    for tol in ("iso2022", "equivalent-figure", 1e-12):
         r = robust.algorithm_a(data, tol=tol)
         assert r.location == pytest.approx(x_star, abs=0.011)
         assert r.scale == pytest.approx(s_star, abs=0.011)

@@ -6,18 +6,14 @@ from __future__ import annotations
 import math
 from typing import Optional
 
+from ._common import _finite, _nonneg
+
 __all__ = [
     "difference", "percent_difference", "percent_allowed", "delta_e_prime",
     "z_score", "z_prime_score", "zeta_score", "en_score", "z_reduction_factor",
     "classify_z", "classify_en", "classify_d", "uncertainty_negligible",
     "uncertainty_flag",
 ]
-
-
-def _finite(*values: float) -> None:
-    for v in values:
-        if isinstance(v, (str, bytes, bool)) or not math.isfinite(v):
-            raise ValueError("results, assigned values, standard deviations and uncertainties must be finite numbers")
 
 
 def difference(x: float, x_pt: float) -> float:
@@ -69,6 +65,9 @@ def z_prime_score(x: float, x_pt: float, sigma_pt: float, u_x_pt: float) -> floa
 
 def z_reduction_factor(sigma_pt: float, u_x_pt: float) -> float:
     """9.5.4, Formula (17) - constant ratio z'/z."""
+    _nonneg(sigma_pt, u_x_pt)
+    if sigma_pt == 0:
+        raise ValueError("sigma_pt must be positive")
     _finite(sigma_pt, u_x_pt)
     return sigma_pt / math.hypot(sigma_pt, u_x_pt)
 
@@ -107,6 +106,8 @@ def classify_z(score: Optional[float], action: float = 3.0, warning: Optional[fl
 
     Pass ``warning=None, action=2.0`` for the two-band rule of 9.4.2 NOTE 1.
     """
+    if warning is not None and warning > action:
+        raise ValueError("the warning limit must not exceed the action limit")
     if score is None:
         return "not scored"
     if score != score:
@@ -154,6 +155,9 @@ def uncertainty_flag(u_x: float, u_min: float, u_max: float) -> str:
     (u_min <= u <= u_max), 'b' (u < u_min) or 'c' (u > u_max); the letters
     follow Table E.6.
     """
+    _nonneg(u_x, u_min, u_max)
+    if u_min > u_max:
+        raise ValueError("u_min must not exceed u_max")
     _finite(u_x, u_min, u_max)
     if u_x < u_min:
         return "b"

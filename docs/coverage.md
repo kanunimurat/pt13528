@@ -92,40 +92,38 @@ E.14 is not covered, and E.15 is checked by equality of counts.
 
 ## Where a printed result does not follow from the text
 
-Three items remain after Amd 1:2026 (`inconsistent()` in the same file).
-
-One printed value is not reproduced by any reading of the text:
+Two items remain after Amd 1:2026 (`inconsistent()` in the same file).
 
 1. **E.1, Table E.1, third column (0,5 x '<' value), x\*.** Printed 23,95.
-   The three-figure rule of C.3.1 stops at 23,9601 and full convergence gives
-   23,9585; both round to 23,96. The iterates of x* fall monotonically from
-   24,375 to 23,9585, so no stopping point gives 23,95. The printed value
-   equals the converged one cut after the second decimal.
-
-Two items are mismatches between the text and the table:
-
+   The three-figure criterion of C.3.1 stops at 23,9601 and full convergence
+   gives 23,9585; both round to 23,96. The iterates of x* fall monotonically
+   from 24,375 to 23,9585, so no stopping point gives 23,95. The printed value
+   equals the converged one cut after the second decimal. The difference is
+   one unit of the last digit.
 2. **E.12, Table E.10.** The text states that the z scores use the robust
    mean and standard deviation of Algorithm A, and NOTE 2 of the table speaks
    of robust averages and standard deviations. The printed z scores and the
    "Average" and "Standard deviation" rows are reproduced by the arithmetic
    mean and standard deviation (11,54 / 3,29 and 7,66 / 2,90); Algorithm A
-   gives 11,17 / 2,69 and 7,27 / 2,36.
-3. **E.4, Table E.6, flags.** 9.8.3 and 9.8.4 give limits for a reported
-   standard uncertainty (u_min = u(x_pt) = 0,0041, u_max = 1,5 s* = 0,0247),
-   and the example states that the flags follow 9.8. The printed flags are
-   reproduced when these limits are compared with the expanded uncertainty
-   U_lab (21 of 21). Compared with u_lab = U_lab / k, 9 of 21 agree. The
-   standard does not define the letters a, b and c or state the limits used,
-   and 9.8.3 offers u(x_pt) as lower limit only where it meets the criterion
-   of 9.2.1, which it does not in this example (0,0041 against 0,3 sigma_pt =
-   0,0020); the reading above is the one that reproduces the table. The
-   match does not identify the limits closely: any lower limit above 0,004 up
-   to 0,005 and any upper limit from 0,013 to below 0,03 gives the same flags.
-   Versions up to 0.1.4 described this item wrongly as "not reproduced by the
-   limits of 9.8".
+   gives 11,17 / 2,69 and 7,27 / 2,36. The printed z scores have mean 0,00 and
+   standard deviation 1,00, as classical scores must.
 
-Three further observations are recorded by `notes()` and not counted:
+Four further observations are not counted, because the text leaves the
+matter open (`e6_flags()` and `notes()`):
 
+- **E.4, Table E.6, flags.** The example states that the flags follow 9.8 and
+  gives neither the limits nor the meaning of the letters a, b and c. 9.8.3
+  and 9.8.4 suggest limits for a reported standard uncertainty: u(x_pt) =
+  0,0041 as lower limit (only where it meets the criterion of 9.2.1, which it
+  does not here: 0,3 sigma_pt = 0,0020) and 1,5 s* = 0,0247 as upper limit.
+  Compared with u_lab = U_lab / k these limits give 9 of the 21 printed flags;
+  compared with the expanded uncertainty U_lab they give all 21. The flags do
+  not identify the limits: for u_lab, any lower limit above 0,0020 up to
+  0,0025 and any upper limit from 0,0065 to below 0,015 gives all 21 (for
+  example u(x_pt)/2, which for k = 2 is the same test as U_lab against
+  u(x_pt)). Versions up to 0.1.4 described this item as "not reproduced by
+  the limits of 9.8", and versions 0.1.5 to 0.1.6 counted it as a mismatch
+  between text and table; it is an unstated choice.
 - **Table E.1 follows no single stopping rule.** The printed s* of the first
   column (7,23) is the value of the three-figure rule (7,2296; convergence
   gives 7,2373). The printed s* of the third column (8,60) is the converged
@@ -160,42 +158,45 @@ Two cases of the 2022 edition are settled by the amendment:
 C.3.1 of ISO 13528:2022 lets the iteration stop when there is no change "in
 the third significant figures of the robust mean and robust standard
 deviation"; NOTE 1 to C.3.1 and example E.3 use the same words, and Amd 1:2026
-does not change them. The library iterates by default until the changes of x*
-and s* fall below 1e-10 s* (`robust.DEFAULT_TOL`). The criterion of the
-standard is `tol="iso2022"` in `algorithm_a`, `algorithm_s`, `consensus` and
-`round_record`.
+does not change them. The foreword of the 2022 edition lists its changes
+against the 2015 edition, and C.3.1 is not among them. The library iterates by
+default until the changes of x* and s* fall below 1e-10 s*
+(`robust.DEFAULT_TOL`). The criterion of the standard is `tol="iso2022"` in
+`algorithm_a`, `algorithm_s`, `consensus` and `round_record`. It is applied by
+rounding x* and s* to three significant figures and comparing successive
+iterates.
 
-The 2015 edition is quoted in the literature with a different wording: no
-change in the third significant figure of the robust standard deviation and
-in "the equivalent figure" of the robust average, that is, the same decimal
-place. This is `tol="iso2015"`. The authors have not seen the 2015 edition;
-the wording is taken from Szewczak and Bondarzewski (Accred Qual Assur
-2016;21:91-100) and from a report that reproduces the clause.
+A second wording occurs in the literature: no change in the third significant
+figure of the robust standard deviation and in "the equivalent" figure of the
+robust average (Szewczak and Bondarzewski, Accred Qual Assur 2016;21:91-100,
+who cite ISO 13528:2005 and ISO 5725-5:1998). Read as the same decimal place,
+this is `tol="equivalent-figure"`. The authors have not seen the 2005 edition
+and make no statement about its text.
 
 Both criteria give the same values for every worked example of Annex E. They
 differ in one property. Under the 2022 wording the figure that is tested in x*
 moves with the level of the results, so the result depends on their origin.
-Eleven results in degrees Celsius give s* = 1,328 under both criteria; the
-same results in kelvin give 1,328 under the 2015 wording, and under the 2022
-wording the iteration stops after one step at s* = 0,297 and four results get
-an action signal (`tests/test_inputs.py`). The converged value is 1,330 in
-both units.
+Eleven results constructed for the test (`tests/test_inputs.py`) give, in
+degrees Celsius, s* = 1,328 under both criteria; the same results in kelvin
+give 1,328 under the equivalent-figure variant, and under the 2022 wording the
+iteration stops after one step at s* = 0,297 and four results get an action
+signal. The converged value is 1,330 in both units.
 
 **History of this section.** Versions up to 0.1.5 implemented the 2022 wording
-under the name `"sig3"`, and 0.1.5 reported the dependence on the origin. An
-adversarial review then pointed to the quotations of the 2015 wording, and
-0.1.6, written before the authors had the 2022 text of C.3.1 before them,
-withdrew the statement and called the 2015 wording the one "that the wording
-of C.3.1 supports". That was wrong for the current edition, and 0.1.7 corrects
-it: the dependence on the origin is a property of the criterion as ISO
-13528:2022 words it. In 0.1.6 the names were `"sig3-of-x"` (2022 wording) and
-`"sig3"` (2015 wording); both are still accepted.
+under the name `"sig3"`, and 0.1.5 reported the dependence on the origin. A
+review then pointed to the second wording, and 0.1.6, written before the
+authors had the 2022 text of C.3.1 before them, withdrew the statement and
+called the second wording the one "that the wording of C.3.1 supports". That
+was wrong for the current edition, and 0.1.7 corrects it: the dependence on
+the origin is a property of the criterion as ISO 13528:2022 words it. In 0.1.6
+the names were `"sig3-of-x"` (2022 wording) and `"sig3"` (variant); both are
+still accepted.
 
 Measured on 5200 generated data sets (`crosscheck/compare.py`: 6 to 40
 results, normal with up to 20 % shifted results, half of the sets rounded to
 one decimal), against convergence:
 
-| | 2022 wording | 2015 wording |
+| | 2022 wording (`iso2022`) | variant (`equivalent-figure`) |
 |---|---|---|
 | median iterations (convergence: 28) | 6 | 6 |
 | sets in which s* differs in the third significant figure | 2594 (50 %) | 2417 (46 %) |
@@ -206,7 +207,11 @@ one decimal), against convergence:
 | after + 273,15: sets in which s* changes, signals that change, largest error | 135, 5, 32 % | 5, 0, 3,2 % |
 
 Signals are those of z scores with x_pt = x* and sigma_pt = s*. The shares
-depend on the generator.
+depend on the generator, and single sets on the implementation: where an
+iterate lies on a rounding boundary of the third figure, an implementation
+that does not scale the data internally can stop at another iteration (one
+of the 5200 sets). Under the variant, the five sets that change after the
+shift are such boundary cases.
 
 Other software stops differently again (`crosscheck/r_compare.py`): `algA` of
 the R package metRology stops by default at a relative change of s* of
