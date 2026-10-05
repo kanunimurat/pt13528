@@ -48,26 +48,32 @@ def test_default_depends_neither_on_the_unit_nor_on_the_origin():
 X11 = [18.2, 18.2, 18.4, 18.4, 18.4, 18.4, 18.6, 19.8, 20.5, 20.9, 22.3]
 
 
-def test_stopping_criterion_of_the_2022_edition_and_the_equivalent_figure_variant():
-    """ISO 13528:2022, C.3.1 stops on the third significant figures of x* and s* ("iso2022"). For the
-    eleven results in kelvin (constructed for this test) the figure tested in x* is the units digit: the
-    iteration stops after one step with an s* that is 78 % too small, and four results get an action
-    signal. The variant "equivalent-figure" (third figure of s*, the same decimal place in x*) gives
-    the same s* in degrees Celsius and in kelvin."""
+def test_stopping_criterion_of_the_2022_edition_and_its_variants():
+    """ISO 13528:2022, C.3.1: no change "from one iteration to the next" in the third significant
+    figures of x* and s* ("iso2022"). The starting values are not an iteration, so the first update is
+    not compared with them. An implementation that does compare them ("iso2022-from-start", the
+    behaviour of this library up to 0.1.7 under other names) stops after one update for the eleven
+    results in kelvin, constructed for this test: the start (291,55 and 0,2966) and the first update
+    (291,69 and 0,2968) agree to three figures, s* is 78 % too small and four results get an action
+    signal. "equivalent-figure" tests the same decimal place in x* as in s*."""
     k = [v + 273.15 for v in X11]
     full = robust.algorithm_a(X11)
     assert full.scale == pytest.approx(1.3299, abs=5e-5)
     assert robust.algorithm_a(k).scale == pytest.approx(full.scale, rel=1e-9)
-    celsius, kelvin = robust.algorithm_a(X11, tol="equivalent-figure"), robust.algorithm_a(k, tol="equivalent-figure")
-    assert celsius.scale == pytest.approx(1.328, abs=5e-4) and celsius.iterations == 13
-    assert kelvin.scale == pytest.approx(celsius.scale, rel=1e-9) and kelvin.iterations == 13
-    assert record.round_record(k, tol="equivalent-figure").counts["action"] == 0
-    old = robust.algorithm_a(k, tol="iso2022")
+    for tol in ("iso2022", "equivalent-figure"):
+        celsius, kelvin = robust.algorithm_a(X11, tol=tol), robust.algorithm_a(k, tol=tol)
+        assert celsius.scale == pytest.approx(1.328, abs=5e-4) and celsius.iterations == 13
+        assert kelvin.scale == pytest.approx(celsius.scale, rel=1e-9) and kelvin.iterations == 13
+        assert record.round_record(k, tol=tol).counts["action"] == 0
+    old = robust.algorithm_a(k, tol="iso2022-from-start")
     assert old.iterations == 1 and old.scale == pytest.approx(0.297, abs=5e-4)
-    assert record.round_record(k, tol="iso2022").counts["action"] == 4
-    assert robust.algorithm_a(X11, tol="iso2022").scale == pytest.approx(celsius.scale, rel=1e-12)
-    # the names of version 0.1.6 keep their meaning
-    assert robust.algorithm_a(k, tol="sig3-of-x") == old and robust.algorithm_a(k, tol="sig3") == kelvin
+    assert record.round_record(k, tol="iso2022-from-start").counts["action"] == 4
+    assert robust.algorithm_a(X11, tol="iso2022-from-start").scale == pytest.approx(1.328, abs=5e-4)
+    # the names of version 0.1.6 keep the behaviour they had there
+    assert robust.algorithm_a(k, tol="sig3-of-x") == old
+    assert robust.algorithm_a(k, tol="sig3") == robust.algorithm_a(k, tol="equivalent-figure")
+    # Algorithm S (C.4) words its criterion in the same way
+    assert robust.algorithm_s([0.5, 0.5, 0.5, 0.6, 0.7], 1, tol="iso2022").iterations >= 2
 
 
 def test_three_figure_rule_depends_on_the_unit():
@@ -273,3 +279,12 @@ def test_arguments_outside_their_domain_are_rejected():
         with pytest.raises(ValueError):
             call()
     assert graphics.ordinal_summary({"low": 3, "mid": 5, "high": 1}, order=["low", "mid", "high"])["median"] == "mid"
+
+
+def test_strings_and_booleans_are_not_numbers_and_identical_results_have_no_scale():
+    for bad in (["1", "2", "3", "9"], [True, False, True]):
+        with pytest.raises(TypeError):
+            robust.algorithm_a(bad)
+    for v in (0.1, 21.8, 2.675):
+        av = assigned_value.consensus([v] * 19, "mean")
+        assert av.scale == 0.0 and av.degenerate

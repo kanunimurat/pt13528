@@ -85,7 +85,7 @@ def consensus(x: Iterable[float], method: str = "algorithm_a", median_scale: str
     if method == "mean":
         if p < 2:
             raise ValueError("the standard deviation needs at least two results")
-        s = float(a.std(ddof=1))
+        s = float(a.std(ddof=1)) if np.ptp(a) > 0 else 0.0      # identical results: no rounding noise as a scale
         return AssignedValue(float(a.mean()), s / math.sqrt(p), method, s, p, not s > 0)
     raise ValueError("unknown method")
 

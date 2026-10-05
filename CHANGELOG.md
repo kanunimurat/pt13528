@@ -1,5 +1,28 @@
 # Changelog
 
+## 0.1.8 (2026-10-05)
+
+The default (convergence) and all results of the default path are unchanged. This version changes what the
+option `tol="iso2022"` does and corrects, once more, the description of the three-figure criterion.
+
+- **`tol="iso2022"` now follows the words of C.3.1: "no change from one iteration to the next".** The starting
+  values (median and MADe) are not an iteration, so the first update is no longer compared with them and the
+  earliest stop is after the second update. The same holds for `"equivalent-figure"` and for Algorithm S.
+  The earlier behaviour is kept as `tol="iso2022-from-start"`; the 0.1.6 name `"sig3-of-x"` maps to it.
+- **The kelvin example belongs to the implementation shortcut, not to the standard.** With the first update
+  compared with the starting values, eleven constructed results in kelvin stop after one update at
+  s* = 0,297 with four action signals. With the criterion as worded they give s* = 1,328 in kelvin and in
+  degrees Celsius. 0.1.5 and 0.1.7 presented the example as a property of the criterion of ISO 13528:2022;
+  that is withdrawn. What remains for the criterion as worded, on 5200 generated sets: it stops after a
+  median of 6 iterations against 28, s* differs from the converged value in the third figure in half of the
+  sets (by at most 3,7 %), 34 of 120 754 z signals change, a change of unit changes s* in 4164 sets and 43
+  signals, and a shift of the origin by 273,15 changes s* in 94 sets and no signal. `docs/coverage.md` gives
+  the three criteria side by side and the history of this section.
+- A sequence of strings or booleans is rejected as input. `consensus(x, "mean")` returns a scale of zero and
+  `degenerate=True` for identical results instead of rounding noise.
+- `docs/coverage.md`: the date on which the wording of C.3.1 was checked against the 2022 text is stated.
+- 140 tests.
+
 ## 0.1.7 (2026-10-05)
 
 No change to the results of valid calls. This version corrects statements about the standard and tightens

@@ -78,17 +78,17 @@ def niqr(x: Iterable[float], quantile_method: str = "linear") -> float:
     return float(NIQR_FACTOR * (q3 - q1))
 
 
-_RULES = {"iso2022": "iso2022", "equivalent-figure": "equivalent-figure",
-          "sig3-of-x": "iso2022", "sig3": "equivalent-figure"}      # names used in 0.1.6, kept with their 0.1.6 meaning
+_RULES = {"iso2022": "iso2022", "iso2022-from-start": "iso2022-from-start", "equivalent-figure": "equivalent-figure",
+          "sig3-of-x": "iso2022-from-start", "sig3": "equivalent-figure"}      # 0.1.6 names keep their 0.1.6 behaviour
 
 
 def _stopping(tol):
     if isinstance(tol, str):
         if tol not in _RULES:
-            raise ValueError("tol must be a positive number, 'iso2022' or 'equivalent-figure'")
+            raise ValueError("tol must be a positive number, 'iso2022', 'iso2022-from-start' or 'equivalent-figure'")
         return _RULES[tol]
     if isinstance(tol, bool) or not isinstance(tol, (int, float)) or not (math.isfinite(tol) and tol > 0):
-        raise ValueError("tol must be a positive number, 'iso2022' or 'equivalent-figure'")
+        raise ValueError("tol must be a positive number, 'iso2022', 'iso2022-from-start' or 'equivalent-figure'")
     return float(tol)
 
 
@@ -105,10 +105,18 @@ def algorithm_a(x: Iterable[float], tol: str | float = DEFAULT_TOL, max_iter: in
         result depends neither on the unit nor on the origin of the data.
 
         ``"iso2022"`` is the stopping criterion of ISO 13528:2022, C.3.1:
-        no change in the third significant figures of x* and of s*. It
+        no change "from one iteration to the next" in the third significant
+        figures of x* and of s*. The starting values (median, MADe) are not
+        an iteration, so the earliest stop is after the second update. It
         stops before convergence, and because significant figures depend on
         the unit and on the origin of the results, so does its result (see
         docs/coverage.md). It reproduces the worked examples of Annex E.
+
+        ``"iso2022-from-start"`` also compares the first update with the
+        starting values and can therefore stop after one update. This is
+        what ``"iso2022"`` did in 0.1.7 and what the library did by default
+        up to 0.1.4. For data far from zero it can stop at a scale that is
+        several times too small (see docs/coverage.md).
 
         ``"equivalent-figure"`` is a variant: no change in the third
         significant figure of s* and in the same decimal place of x*. The
@@ -118,7 +126,9 @@ def algorithm_a(x: Iterable[float], tol: str | float = DEFAULT_TOL, max_iter: in
         origin, but still on the unit.
 
         The names ``"sig3-of-x"`` and ``"sig3"`` of version 0.1.6 are
-        accepted for ``"iso2022"`` and ``"equivalent-figure"``.
+        accepted for ``"iso2022-from-start"`` and ``"equivalent-figure"``
+        (the latter did compare the first update with the starting values
+        in 0.1.6 and 0.1.7).
 
     When a large majority of the results is identical, the iteration can
     drive s* towards zero. This is detected and returned as ``scale=0.0``
@@ -159,12 +169,16 @@ def algorithm_a(x: Iterable[float], tol: str | float = DEFAULT_TOL, max_iter: in
             d = 2 - int(math.floor(math.log10(m * new_s))) if new_s > 0 else 0
             done = (round(c + m * new_x, d) == round(c + m * x_star, d)
                     and _sig3(m * new_s) == _sig3(m * s_star))
-        elif tol == "iso2022":              # third significant figures of x* and of s*
+        elif tol in ("iso2022", "iso2022-from-start"):   # third significant figures of x* and of s*
             done = (_sig3(c + m * new_x) == _sig3(c + m * x_star)
                     and _sig3(m * new_s) == _sig3(m * s_star))
+
         else:
             limit = max(tol * new_s, _EPS * abs(new_x))
             done = abs(new_x - x_star) < limit and abs(new_s - s_star) < limit
+        if it == 1 and tol in ("iso2022", "equivalent-figure"):
+            done = False                    # "from one iteration to the next": the starting values (median,
+                                            # MADe) are not an iteration (C.3.1, Table E.4)
         if update_scale:
             if new_s < _COLLAPSE * s_0:
                 return RobustResult(location=c + m * new_x, scale=0.0, iterations=it, converged=True, degenerate=True)
@@ -195,7 +209,8 @@ def algorithm_s(w: Iterable[float], nu: int, tol: str | float = DEFAULT_TOL, max
     m - 1 for standard deviations of m results); Table C.1 covers nu = 1..10.
     A float ``tol`` is relative to w*, as in :func:`algorithm_a`; ``"iso2022"``
     (or ``"equivalent-figure"``, the two do not differ here) stops when the third
-    significant figure of w* no longer changes.
+    significant figure of w* does not change from one iteration to the next;
+    ``"iso2022-from-start"`` also compares the first update with the starting value.
     """
     tol = _stopping(tol)
     if isinstance(nu, bool) or nu not in _ALG_S:
@@ -220,7 +235,7 @@ def algorithm_s(w: Iterable[float], nu: int, tol: str | float = DEFAULT_TOL, max
         if new < _COLLAPSE * w_0 or (new < w_star and not np.any(a[a <= psi] > 0)):
             return RobustResult(location=0.0, scale=0.0, iterations=it, converged=True, degenerate=True)
         if isinstance(tol, str):
-            done = _sig3(m * new) == _sig3(m * w_star)
+            done = _sig3(m * new) == _sig3(m * w_star) and (it > 1 or tol == "iso2022-from-start")
         else:
             done = abs(new - w_star) < max(tol * new, _EPS * new)
         w_star = new

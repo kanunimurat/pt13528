@@ -79,7 +79,7 @@ ax.text(xa - 0.75, 6e-1, f"Algorithm A agrees in all 5200 sets when both iterate
 ax.set_xlim(-0.7, xa + len(ties_) - 0.3); ax.set_ylabel("largest |difference|", fontsize=7.6, color=MID, labelpad=2); clean(ax)
 
 ptitle(2, 26.3, "c", "Printed results that do not follow from the text, and the 2026 amendment", "status after ISO 13528:2022/Amd 1:2026")
-tab = [("Table E.1, third column, $x^*$", "printed 23.95; both stopping rules give 23.96", "open", ORANGE),
+tab = [("Table E.1, third column, $x^*$", "printed 23.95; criterion and convergence give 23.96", "open", ORANGE),
        ("Table E.10, $z$ scores", "text names Algorithm A, numbers are arithmetic", "open", ORANGE),
        ("Table E.6, flags", "limits not stated; those of Clause 9.8 fit for $U$, not for $u$", "unclear", "#8A8A8A"),
        ("Formula (C.18), $h$", "undefined for $p$ = 2, 3; now $\\lfloor p/2 \\rfloor + 1$", "corrected", GREEN),

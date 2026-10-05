@@ -63,8 +63,10 @@ not implemented; the standard refers to the literature for both.
 ## Edition and amendment
 
 The library follows ISO 13528:2022 as amended by Amd 1:2026 (published
-2026-07-28). The consolidated text was compared with the 2022 edition clause
-by clause on 2026-10-03. The amendment changes five things that concern the
+2026-07-28). The clauses that the amendment changes were compared with the
+2022 edition on 2026-10-03; the wording of C.3.1, which the amendment does
+not change, was checked against the 2022 text only on 2026-10-05 (see the
+history of the stopping criterion below). The amendment changes five things that concern the
 calculations:
 
 | Place | 2022 edition | With Amd 1:2026 | Library |
@@ -155,63 +157,79 @@ Two cases of the 2022 edition are settled by the amendment:
 
 ## The stopping rule of Algorithm A
 
-C.3.1 of ISO 13528:2022 lets the iteration stop when there is no change "in
-the third significant figures of the robust mean and robust standard
-deviation"; NOTE 1 to C.3.1 and example E.3 use the same words, and Amd 1:2026
+C.3.1 of ISO 13528:2022 lets the iteration stop "when there is no change from
+one iteration to the next in the third significant figures of the robust mean
+and robust standard deviation"; NOTE 1 to C.3.1 and example E.3 name the same
+figures, C.4 words the criterion of Algorithm S in the same way, and Amd 1:2026
 does not change them. The foreword of the 2022 edition lists its changes
 against the 2015 edition, and C.3.1 is not among them. The library iterates by
 default until the changes of x* and s* fall below 1e-10 s*
-(`robust.DEFAULT_TOL`). The criterion of the standard is `tol="iso2022"` in
-`algorithm_a`, `algorithm_s`, `consensus` and `round_record`. It is applied by
-rounding x* and s* to three significant figures and comparing successive
-iterates.
+(`robust.DEFAULT_TOL`).
 
-A second wording occurs in the literature: no change in the third significant
-figure of the robust standard deviation and in "the equivalent" figure of the
-robust average (Szewczak and Bondarzewski, Accred Qual Assur 2016;21:91-100,
-who cite ISO 13528:2005 and ISO 5725-5:1998). Read as the same decimal place,
-this is `tol="equivalent-figure"`. The authors have not seen the 2005 edition
-and make no statement about its text.
+Three three-figure criteria are available as `tol` in `algorithm_a`,
+`algorithm_s`, `consensus` and `round_record`:
 
-Both criteria give the same values for every worked example of Annex E. They
-differ in one property. Under the 2022 wording the figure that is tested in x*
-moves with the level of the results, so the result depends on their origin.
-Eleven results constructed for the test (`tests/test_inputs.py`) give, in
-degrees Celsius, s* = 1,328 under both criteria; the same results in kelvin
-give 1,328 under the equivalent-figure variant, and under the 2022 wording the
-iteration stops after one step at s* = 0,297 and four results get an action
-signal. The converged value is 1,330 in both units.
+- `"iso2022"`: the criterion of the standard. x* and s* are rounded to three
+  significant figures and successive iterations are compared. The starting
+  values (median and MADe, Formulae C.5 and C.6) are not an iteration (Table
+  E.4 lists them apart from the "1st iteration"), so the first update is not
+  compared with them and the earliest stop is after the second update.
+- `"iso2022-from-start"`: the same, but the first update is also compared with
+  the starting values. This is a small step for an implementer and a large one
+  for the result: when median and MADe agree with the first update to three
+  figures, the iteration stops at once. The library did this up to 0.1.7 (as
+  default up to 0.1.4), and so did the PHP engine up to 1.5.0.
+- `"equivalent-figure"`: third significant figure of s* and the same decimal
+  place of x*. The wording "the equivalent" occurs in the literature (Szewczak
+  and Bondarzewski, Accred Qual Assur 2016;21:91-100, who cite ISO 13528:2005
+  and ISO 5725-5:1998). The authors have not seen the 2005 edition and make no
+  statement about its text.
 
-**History of this section.** Versions up to 0.1.5 implemented the 2022 wording
-under the name `"sig3"`, and 0.1.5 reported the dependence on the origin. A
-review then pointed to the second wording, and 0.1.6, written before the
-authors had the 2022 text of C.3.1 before them, withdrew the statement and
-called the second wording the one "that the wording of C.3.1 supports". That
-was wrong for the current edition, and 0.1.7 corrects it: the dependence on
-the origin is a property of the criterion as ISO 13528:2022 words it. In 0.1.6
-the names were `"sig3-of-x"` (2022 wording) and `"sig3"` (variant); both are
+All three give the same values for every worked example of Annex E. They
+differ away from the examples. Eleven results constructed for the test
+(`tests/test_inputs.py`) give s* = 1,328 in degrees Celsius under all three.
+In kelvin, `"iso2022"` and `"equivalent-figure"` give 1,328 again;
+`"iso2022-from-start"` stops after one update at s* = 0,297, because the start
+(291,55 and 0,2966) and the first update (291,69 and 0,2968) agree to three
+figures, and four results get an action signal. The converged value is 1,330
+in both units.
+
+**History of this section.** This is the part of the library that has changed
+most, and the record is kept here for that reason. Versions up to 0.1.5
+implemented `"iso2022-from-start"` under the name `"sig3"`, and 0.1.5 reported
+the kelvin example as a property of the criterion of the standard. 0.1.6,
+written from quotations of the "equivalent" wording before the authors had the
+2022 text of C.3.1 before them, withdrew that and called the second wording the
+one "that the wording of C.3.1 supports"; that was wrong for the current
+edition. 0.1.7 restored the statement of 0.1.5. A review then pointed out that
+the kelvin example depends on comparing the first update with the starting
+values, which the words "from one iteration to the next" do not cover. 0.1.8
+separates the two: the criterion as worded still stops before convergence and
+still depends on the unit and, to a small degree, on the origin of the
+results; the stop after one update belongs to the implementation shortcut and
+not to the standard. In 0.1.6 the names were `"sig3-of-x"` (now
+`"iso2022-from-start"`) and `"sig3"` (now `"equivalent-figure"`); both are
 still accepted.
 
 Measured on 5200 generated data sets (`crosscheck/compare.py`: 6 to 40
 results, normal with up to 20 % shifted results, half of the sets rounded to
 one decimal), against convergence:
 
-| | 2022 wording (`iso2022`) | variant (`equivalent-figure`) |
-|---|---|---|
-| median iterations (convergence: 28) | 6 | 6 |
-| sets in which s* differs in the third significant figure | 2594 (50 %) | 2417 (46 %) |
-| sets in which x* differs in the third significant figure | 108 | 99 |
-| relative difference of s*: median, 95th percentile, maximum | 0,09 %, 0,56 %, 10 % | 0,08 %, 0,51 %, 3,2 % |
-| z signals that change, of 120 754 results | 34 | 28 |
-| after x 25,4: sets in which s* changes, signals that change, largest error | 4171, 45, 18 % | 4113, 38, 6,5 % |
-| after + 273,15: sets in which s* changes, signals that change, largest error | 135, 5, 32 % | 5, 0, 3,2 % |
+| | `iso2022` | `iso2022-from-start` | `equivalent-figure` |
+|---|---|---|---|
+| median iterations (convergence: 28) | 6 | 6 | 6 |
+| sets in which s* differs in the third significant figure | 2585 (50 %) | 2594 (50 %) | 2417 (46 %) |
+| sets in which x* differs in the third significant figure | 104 | 108 | 99 |
+| relative difference of s*: median, 95th percentile, maximum | 0,09 %, 0,55 %, 3,7 % | 0,09 %, 0,56 %, 10 % | 0,08 %, 0,51 %, 3,2 % |
+| z signals that change, of 120 754 results | 34 | 34 | 28 |
+| after x 25,4: sets in which s* changes, signals that change, largest error | 4164, 43, 6,5 % | 4171, 45, 18 % | 4110, 38, 6,5 % |
+| after + 273,15: sets in which s* changes, signals that change, largest error | 94, 0, 3,7 % | 135, 5, 32 % | 5, 0, 3,2 % |
 
 Signals are those of z scores with x_pt = x* and sigma_pt = s*. The shares
 depend on the generator, and single sets on the implementation: where an
 iterate lies on a rounding boundary of the third figure, an implementation
 that does not scale the data internally can stop at another iteration (one
-of the 5200 sets). Under the variant, the five sets that change after the
-shift are such boundary cases.
+of the 5200 sets).
 
 Other software stops differently again (`crosscheck/r_compare.py`): `algA` of
 the R package metRology stops by default at a relative change of s* of

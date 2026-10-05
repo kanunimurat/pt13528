@@ -100,9 +100,10 @@ The code and the tests were written with the assistance of a large language
 model (Claude, Anthropic) and reviewed by the authors. A function was accepted
 only when it reproduced the values printed in the standard or values worked by
 hand. The reviews mentioned in `CHANGELOG.md` and `docs/coverage.md` were also
-carried out with a language model, on the instruction of the authors. Statements
-about the wording of the standard have changed between versions (see
-`CHANGELOG.md`); since 0.1.7 they are checked against the text of ISO 13528:2022.
+carried out with a language model, on the instruction of the authors. The description
+of the three-figure stopping criterion has changed in four versions (see the
+history in `docs/coverage.md`); since 0.1.7 statements about the standard are
+checked against the text of ISO 13528:2022.
 
 ## Scope
 

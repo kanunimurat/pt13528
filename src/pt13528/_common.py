@@ -14,7 +14,10 @@ DEFAULT_TOL = 1e-10                 # relative stopping tolerance of the iterati
 def _arr(x: Iterable[float]) -> np.ndarray:
     if isinstance(x, (str, bytes, dict)):
         raise TypeError("a sequence of numbers is required")
-    a = np.asarray(list(x), dtype=float)
+    x = list(x)
+    if any(isinstance(v, (str, bytes, bool, np.bool_)) for v in x):
+        raise TypeError("a sequence of numbers is required")
+    a = np.asarray(x, dtype=float)
     if a.ndim != 1 or a.size == 0:
         raise ValueError("a non-empty one-dimensional sequence is required")
     if not np.all(np.isfinite(a)):
