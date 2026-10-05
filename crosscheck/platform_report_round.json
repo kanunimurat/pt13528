@@ -1,0 +1,236 @@
+{
+ "note": "Simulated round (no real laboratory) of 19 participants with 10 replicates each, entered in the LAKSiS platform and evaluated to its round report with engine 1.6.1 on 2026-10-05. 'input' is what the report prints as participant means and standard deviations and as homogeneity and stability measurements; 'report' holds the values printed in the report. Participants appear under the codes of the report.",
+ "input": {
+  "participants": [
+   {
+    "code": "C",
+    "n": 10,
+    "mean": 148.44,
+    "sd": 2.0293
+   },
+   {
+    "code": "K",
+    "n": 10,
+    "mean": 170.08,
+    "sd": 2.0606
+   },
+   {
+    "code": "D",
+    "n": 10,
+    "mean": 146.13,
+    "sd": 1.3292
+   },
+   {
+    "code": "Ç",
+    "n": 10,
+    "mean": 154.45,
+    "sd": 2.9553
+   },
+   {
+    "code": "R",
+    "n": 10,
+    "mean": 150.61,
+    "sd": 1.9542
+   },
+   {
+    "code": "Y",
+    "n": 10,
+    "mean": 184.08,
+    "sd": 3.7124
+   },
+   {
+    "code": "U",
+    "n": 10,
+    "mean": 153.17,
+    "sd": 3.0793
+   },
+   {
+    "code": "P",
+    "n": 10,
+    "mean": 149.71,
+    "sd": 1.3153
+   },
+   {
+    "code": "F",
+    "n": 10,
+    "mean": 132.25,
+    "sd": 1.5911
+   },
+   {
+    "code": "G",
+    "n": 10,
+    "mean": 146.42,
+    "sd": 1.2709
+   },
+   {
+    "code": "T",
+    "n": 10,
+    "mean": 150.38,
+    "sd": 1.4343
+   },
+   {
+    "code": "B",
+    "n": 10,
+    "mean": 118.61,
+    "sd": 3.0105
+   },
+   {
+    "code": "Ü",
+    "n": 10,
+    "mean": 143.56,
+    "sd": 2.2594
+   },
+   {
+    "code": "J",
+    "n": 10,
+    "mean": 154.19,
+    "sd": 2.1682
+   },
+   {
+    "code": "H",
+    "n": 10,
+    "mean": 170.19,
+    "sd": 1.1551
+   },
+   {
+    "code": "A",
+    "n": 10,
+    "mean": 147.22,
+    "sd": 2.4494
+   },
+   {
+    "code": "E",
+    "n": 10,
+    "mean": 152.91,
+    "sd": 3.2057
+   },
+   {
+    "code": "Ş",
+    "n": 10,
+    "mean": 158.26,
+    "sd": 22.2993
+   },
+   {
+    "code": "V",
+    "n": 10,
+    "mean": 150.82,
+    "sd": 2.269
+   }
+  ],
+  "homogeneity": [
+   [
+    152.3,
+    151.9
+   ],
+   [
+    149.5,
+    150.3
+   ],
+   [
+    151.7,
+    151.8
+   ],
+   [
+    151.4,
+    152.9
+   ],
+   [
+    153.0,
+    150.7
+   ],
+   [
+    150.8,
+    151.9
+   ],
+   [
+    152.5,
+    152.8
+   ],
+   [
+    150.3,
+    149.3
+   ],
+   [
+    150.5,
+    152.0
+   ],
+   [
+    153.4,
+    151.0
+   ]
+  ],
+  "stability_start": [
+   153.0,
+   148.8,
+   151.6,
+   152.5,
+   151.6,
+   150.9,
+   148.6,
+   152.2,
+   151.8,
+   150.9
+  ],
+  "stability_end": [
+   146.5,
+   147.3,
+   146.9,
+   146.5,
+   147.1,
+   147.2,
+   146.2,
+   145.6,
+   146.3,
+   145.9
+  ]
+ },
+ "report": {
+  "engine_version": "1.6.1",
+  "x_pt": 151.3947,
+  "u_x_pt": 2.5342,
+  "sigma_pt": 8.837,
+  "median": 150.61,
+  "p": 19,
+  "algorithm_a_iterations": 102,
+  "uncertainty_negligible": true,
+  "z": {
+   "C": -0.33,
+   "K": 2.11,
+   "D": -0.6,
+   "Ç": 0.35,
+   "R": -0.09,
+   "Y": 3.7,
+   "U": 0.2,
+   "P": -0.19,
+   "F": -2.17,
+   "G": -0.56,
+   "T": -0.11,
+   "B": -3.71,
+   "Ü": -0.89,
+   "J": 0.32,
+   "H": 2.13,
+   "A": -0.47,
+   "E": 0.17,
+   "Ş": 0.78,
+   "V": -0.07
+  },
+  "cochran_statistic": 0.839,
+  "homogeneity": {
+   "s_w": 0.9659,
+   "s_s": 0.6763,
+   "criterion": 2.6511,
+   "F": 1.98,
+   "F_critical": 3.02,
+   "sufficient": true
+  },
+  "stability": {
+   "mean_1": 151.19,
+   "mean_2": 146.55,
+   "difference": 4.64,
+   "criterion": 2.6511,
+   "stable": false,
+   "t": 9.335,
+   "df": 11.7
+  }
+ }
+}

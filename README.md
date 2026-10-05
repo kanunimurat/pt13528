@@ -73,6 +73,9 @@ pytest
   from the worked examples of Annex E, 28 from Table B.1) that the functions
   of the library reproduce to half a unit of the last printed digit, the two
   printed items that do not follow from the text, and four further observations.
+  131 of these values belong to a published round (IMEP-111, examples E.4 and E.7:
+  Algorithm A, its uncertainty, the comparison with the reference value and the
+  scores of 21 participants).
 - `tests/test_external.py` compares Algorithm A, Qn, MADe and nIQR with
   statsmodels, Algorithm A, Algorithm S and Qn with the R packages metRology,
   MASS and robustbase (stored reference values, `crosscheck/r_compare.R`),
@@ -83,6 +86,8 @@ pytest
   independence of Algorithm A, Algorithm S, the Q method and the Hampel
   estimator from the unit and the origin of the data.
 - `tests/test_real_round.py` recomputes a real round from its formal report.
+- `tests/test_record.py` recomputes two simulated rounds (20 and 19 participants) that were evaluated by the
+  PHP engine and, for the second, through the platform to its round report.
 - `figures/` holds the scripts and seeds of the simulated examples shown in the article.
 - `crosscheck/compare.py` repeats the comparison with the PHP engine of the
   LAKSiS platform and measures the effect of the stopping rule of Algorithm A.

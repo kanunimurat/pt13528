@@ -38,7 +38,12 @@ the checks of arguments.
   alphabetically; it now takes `order` and refuses text categories without it.
 - `crosscheck/php_evaluate_round.json` and a test: a simulated round of 20 participants evaluated end to end
   by the function that the LAKSiS platform calls for a round (PHP engine 1.6.0) and by `round_record`; assigned
-  value, uncertainty, sigma_pt, z, z', zeta, E_n and signals agree. 138 tests.
+  value, uncertainty, sigma_pt, z, z', zeta, E_n and signals agree.
+- `crosscheck/platform_report_round.json` and a test: a simulated round of 19 participants with ten replicates
+  each, entered in the platform and evaluated to its round report (engine 1.6.1). From the input that the report
+  prints, the library reproduces the 34 values that it prints as results (assigned value by Algorithm A after
+  102 iterations, uncertainty, sigma_pt, median, 19 z scores, Cochran's statistic, homogeneity and stability
+  statistics of Annex B). 139 tests.
 - README states how the code was written and reviewed.
 
 ## 0.1.6 (2026-10-05)

@@ -301,6 +301,12 @@ rounds (hundreds of results, not tens of thousands).
   stored outputs (`php_5000_engine_1.5.0.json`) the library with
   `tol="iso2022"` differs in one of 5000 sets, where an iterate lies on a
   rounding boundary.
+- Two simulated rounds check the whole path (`tests/test_record.py`): 20 participants with reported
+  uncertainties through the `evaluate` function of the engine (`php_evaluate_round.json`), and 19
+  participants with ten replicates each through the platform to its round report
+  (`platform_report_round.json`; 34 printed values reproduced, Algorithm A needs 102 iterations to
+  converge and the criterion of C.3.1 would stop after 22 at s* = 8,80 against 8,84). They show
+  agreement of two implementations by one group at a realistic size, not use by others.
 - Until October 2026 both implementations shared a defect in the Q method:
   differences that are equal in exact arithmetic were not merged. The two
   agreed, so the comparison did not show it; a test of unit independence did.
