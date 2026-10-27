@@ -36,16 +36,28 @@ median, nIQR and MADe 1 each (E.3), Q/Hampel 2 (E.3: the Q method scale and the 
 Qn has no printed value. Two printed results are not reproduced (Table E.1, third column, x*; Table E.10);
 see `docs/coverage.md` and `crosscheck/annex_e_checks.py`.
 
-## Human check of the transcription
+## Check of the transcription
 
 The ledger (`tests/printed_values.py`) and the input data of the examples (`tests/annex_e_data.py`) were
-transcribed with the assistance of a language model. On 27 October 2026 a co-author who had not transcribed
-them read every number from the printed standard (ISO 13528:2022, English edition) and entered it next to the
-value in the files, on a check sheet generated from the test files: 257 printed results (the 255 values of the
-ledger and the two printed values of Table E.1, third column, that are not reproduced) and 414 input values of
-examples E.1 to E.13, 671 numbers in total. All 671 agreed. The robust average and standard deviation of example
-E.13 are printed in the continuation of Table E.11, not in the text of the example. The check sheet is kept by
-the authors; it reproduces numbers of the standard and is not distributed.
+transcribed with the assistance of a language model. They were checked in three ways.
+
+1. **Second extraction.** On 27 October 2026 a co-author who had not transcribed them extracted the same
+   numbers a second time from the standard (ISO 13528:2022, English edition) with a language model of the same
+   family (Claude Opus 5) and entered them next to the values in the files, on a check sheet generated from the
+   test files: 257 printed results (the 255 values of the ledger and the two printed values of Table E.1, third
+   column, that are not reproduced) and 414 input values of examples E.1 to E.13, 671 numbers in total. All 671
+   agreed. 22 values chosen at random were checked by eye against the printed standard, with no discrepancy.
+2. **The tests themselves.** The library computes each of the 255 values from the transcribed inputs. A
+   transcription error in a printed result, or in an input that affects it, would make the corresponding test
+   fail. Two extractions by models of the same family could share an error; this check does not depend on them.
+3. **Eye check of what the tests do not check.** The two printed values of Table E.1, third column, and the 40
+   inputs of example E.8 (Table E.9) are not checked by any test, and the observations on the standard rest on
+   them. These 42 numbers were read by eye from the printed standard on a sheet that did not show the values of
+   the files. All 42 agreed.
+
+The robust average and standard deviation of example E.13 are printed in the continuation of Table E.11, not
+in the text of the example. The check sheets are kept by the authors; they reproduce numbers of the standard
+and are not distributed.
 
 ## Functions without a printed example
 

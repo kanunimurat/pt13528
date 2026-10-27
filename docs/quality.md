@@ -79,8 +79,8 @@ documentation for part of the functions. The co-author was assisted in this revi
 the same family as the one that helped write the code, and checked its findings himself. The review is therefore
 not independent of the model, and no second person compared every function line by line with the formula of
 the standard. This is a limitation, and it is the reason why the evidence above is designed to be rerun by
-anyone. The transcription of the printed values and of the input data of the examples was checked
-in full by a human (`docs/verification.md`).
+anyone. The check of the transcription of the printed values and of the input data of the examples
+is described in `docs/verification.md`.
 
 Static analysis: pyflakes 4.0.3 found five unused imports and one unused variable in 0.1.8; they were removed
 in 0.1.9, which passes `python -m pyflakes src tests crosscheck` without findings. No static analysis tool is
