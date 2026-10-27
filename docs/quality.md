@@ -72,11 +72,19 @@ The full list with the class of each survivor is `docs/mutation_survivors_0.1.9.
 
 The code, the tests and the reviews were written with the assistance of a large language model, as declared in
 the article. Numerical correctness rests on the printed values of the standard, on the independent software
-(`docs/verification.md`) and on the hand-worked values of the tests. [Human review procedure: to be completed by
-the authors.]
+(`docs/verification.md`) and on the hand-worked values of the tests.
 
-No static analysis tool is part of the continuous integration; the code passes `python -m pyflakes`.
-[To be confirmed when run.]
+Human review of the code was carried out by a co-author, who ran the tests and checked the outputs and the
+documentation for part of the functions. The co-author was assisted in this review by Claude Opus 5, a model of
+the same family as the one that helped write the code, and checked its findings himself. The review is therefore
+not independent of the model, and no second person compared every function line by line with the formula of
+the standard. This is a limitation, and it is the reason why the evidence above is designed to be rerun by
+anyone. The transcription of the printed values and of the input data of the examples was checked
+in full by a human (`docs/verification.md`).
+
+Static analysis: pyflakes 4.0.3 found five unused imports and one unused variable in 0.1.8; they were removed
+in 0.1.9, which passes `python -m pyflakes src tests crosscheck` without findings. No static analysis tool is
+part of the continuous integration yet.
 
 ## Quality attributes
 

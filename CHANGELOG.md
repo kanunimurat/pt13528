@@ -28,6 +28,8 @@ the article describing the library, corrects two statements of the documentation
   to five results.
 - `docs/verification.md`: the evidence broken down by family of functions; `docs/quality.md`: coverage and
   mutation testing.
+- Unused imports (`sigma_pt`, `homogeneity`, `outliers`, `tests/printed_values.py`) removed after a pyflakes
+  check; no change to any result.
 
 ## 0.1.8 (2026-10-05)
 

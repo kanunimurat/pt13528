@@ -8,7 +8,7 @@ from typing import Iterable
 
 import numpy as np
 from scipy import stats
-from ._common import _arr, _finite, _nonneg
+from ._common import _arr
 
 __all__ = ["grubbs_critical", "grubbs", "cochran_critical", "cochran"]
 

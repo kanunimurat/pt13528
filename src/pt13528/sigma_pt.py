@@ -7,7 +7,7 @@ import math
 from typing import Iterable, NamedTuple, Optional
 
 import numpy as np
-from ._common import _arr, _finite, _nonneg
+from ._common import _arr, _nonneg
 
 __all__ = ["horwitz", "from_precision", "LinearFit", "fit_previous_rounds", "limit_sigma"]
 

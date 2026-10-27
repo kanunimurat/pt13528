@@ -30,7 +30,6 @@ def table_e1():
             q1, q3 = np.quantile(x, [0.25, 0.75]); xs, ss = med, 0.7413 * (q3 - q1)
         elif start == "mean_sd": xs, ss = x.mean(), x.std(ddof=1)
         hist = [(xs, ss)]
-        prev = None
         for it in range(1, max_iter + 1):
             d = delta_c * ss
             if round_dec is not None: d = round(d, round_dec)

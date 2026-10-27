@@ -11,7 +11,6 @@ quoted there are produced by this file and by nothing else.
 
 Run ``python tests/printed_values.py`` for a summary.
 """
-import numpy as np
 
 from pt13528 import assigned_value as av
 from pt13528 import homogeneity as hm

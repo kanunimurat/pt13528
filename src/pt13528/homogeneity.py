@@ -8,7 +8,7 @@ from typing import Iterable, NamedTuple, Optional, Sequence
 
 import numpy as np
 from scipy import stats
-from ._common import _arr, _finite, _nonneg
+from ._common import _arr, _nonneg
 
 __all__ = [
     "Homogeneity", "homogeneity", "homogeneity_single", "expanded_criterion_factors",
