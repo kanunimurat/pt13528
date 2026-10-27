@@ -22,7 +22,7 @@ method that the text of the example names.
 | Scores z, z′, ζ, En, D%, PA (Table E.7) | 126 | 126 | Table E.7 (input: Table E.6, example E.4) |
 | Arithmetic mean, SD and z (Table E.10, example E.12) | 62 | 0 | Table E.10; the text names Algorithm A, the table follows the arithmetic mean |
 | Factors F1, F2 of Table B.1, g = 7 to 20 | 28 | 28 | Table B.1; computed from the chi-squared and F quantiles, not stored |
-| Robust location and scale (Annex C) | 15 | 14 | E.1, E.3, E.7, E.13; s* of the first column of Table E.1 (7,23) only with the three-figure criterion |
+| Robust location and scale (Annex C) | 15 | 14 | Tables E.1, E.5, example E.7 text, Table E.11 (continued) for E.13; s* of the first column of Table E.1 (7,23) only with the three-figure criterion |
 | Homogeneity and stability (Annex B) | 8 | 8 | Tables E.2 and E.3 (example E.2) |
 | Uncertainty of the assigned value, comparison with a reference (7.7.7, 7.8) | 6 | 6 | E.3, E.7 |
 | Arithmetic mean, SD, u (E.3) | 3 | 3 | Table E.5 |
@@ -35,6 +35,17 @@ The 15 robust values are: Algorithm A 9 (E.1 four, E.3 two, E.7 two, E.13 one), 
 median, nIQR and MADe 1 each (E.3), Q/Hampel 2 (E.3: the Q method scale and the Hampel location).
 Qn has no printed value. Two printed results are not reproduced (Table E.1, third column, x*; Table E.10);
 see `docs/coverage.md` and `crosscheck/annex_e_checks.py`.
+
+## Human check of the transcription
+
+The ledger (`tests/printed_values.py`) and the input data of the examples (`tests/annex_e_data.py`) were
+transcribed with the assistance of a language model. On 27 October 2026 a co-author who had not transcribed
+them read every number from the printed standard (ISO 13528:2022, English edition) and entered it next to the
+value in the files, on a check sheet generated from the test files: 257 printed results (the 255 values of the
+ledger and the two printed values of Table E.1, third column, that are not reproduced) and 414 input values of
+examples E.1 to E.13, 671 numbers in total. All 671 agreed. The robust average and standard deviation of example
+E.13 are printed in the continuation of Table E.11, not in the text of the example. The check sheet is kept by
+the authors; it reproduces numbers of the standard and is not distributed.
 
 ## Functions without a printed example
 
