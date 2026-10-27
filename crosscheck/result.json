@@ -1,4 +1,5 @@
 {
+ "inputs regenerated identically by this NumPy version": true,
  "largest absolute difference, Python - PHP, 100 sets without ties": {
   "median": 0.0,
   "MADe": 0.0,

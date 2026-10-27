@@ -14,7 +14,7 @@ the formula, a published table or a simulation); **no** not implemented.
 | 7.7.6 | | bootstrap standard error | `assigned_value.bootstrap` | yes (Monte Carlo tolerance) | E.3, E.6 |
 | 7.7.7 | (6) | u(x_pt) = 1,25 s*/sqrt(p) | `assigned_value.u_robust`, `consensus` | yes | E.3, E.7 |
 | 7.8 | (7) | comparison with a reference value | `assigned_value.compare_with_reference` | yes | E.7 |
-| 8.3 | | regression on previous rounds | `sigma_pt.fit_previous_rounds` | yes | E.8 |
+| 8.3 | | regression on previous rounds | `sigma_pt.fit_previous_rounds` | yes* (E.8 prints only r², see the observations below; no value of E.8 is in the ledger) | |
 | 8.4 | (8) | Horwitz/Thompson model | `sigma_pt.horwitz` | yes | E.9 |
 | 8.5 | (9) | sigma_pt from a precision experiment | `sigma_pt.from_precision` | yes | E.10 |
 | 8.6.2 | | limits on sigma_pt | `sigma_pt.limit_sigma` | yes* | |
@@ -92,23 +92,37 @@ z scores, see item 2 below). Locations and scales from the estimators of Annex C
 15 of the values. `tests/test_printed_values.py` asserts the count and the tolerance.
 E.14 is not covered, and E.15 is checked by equality of counts.
 
-## Where a printed result does not follow from the text
+## Printed results that the library does not reproduce
 
 Two items remain after Amd 1:2026 (`inconsistent()` in the same file).
 
 1. **E.1, Table E.1, third column (0,5 x '<' value), x\*.** Printed 23,95.
    The three-figure criterion of C.3.1 stops at 23,9601 and full convergence
    gives 23,9585; both round to 23,96. The iterates of x* fall monotonically
-   from 24,375 to 23,9585, so no stopping point gives 23,95. The printed value
-   equals the converged one cut after the second decimal. The difference is
-   one unit of the last digit.
+   from 24,375 to 23,9585, so no stopping point gives 23,95. The difference is
+   one unit of the last digit, and the printed pair (23,95; 8,60) equals the
+   converged values cut after the second decimal. `crosscheck/annex_e_checks.py`
+   tries 324 hand-calculation scenarios (starting values median/MADe,
+   median/nIQR or mean/SD; MADe factor 1,483 or 1,4826; consistency factor
+   1,134, 1,13339 or 1; x* and s* rounded at every iteration to 1 to 4
+   decimals or 3 significant figures, or not; three stopping rules). None gives
+   the printed pair by rounding. Six give x* = 23,95 (start from mean and SD,
+   rounding to two decimals at every iteration), but then s* = 8,61. This item
+   is a one-unit difference consistent with truncation, not a contradiction of
+   the text; it is kept apart from item 2.
 2. **E.12, Table E.10.** The text states that the z scores use the robust
    mean and standard deviation of Algorithm A, and NOTE 2 of the table speaks
    of robust averages and standard deviations. The printed z scores and the
    "Average" and "Standard deviation" rows are reproduced by the arithmetic
    mean and standard deviation (11,54 / 3,29 and 7,66 / 2,90); Algorithm A
    gives 11,17 / 2,69 and 7,27 / 2,36. The printed z scores have mean 0,00 and
-   standard deviation 1,00, as classical scores must.
+   standard deviation 1,00, as classical scores must. Of 35 combinations of a
+   location (mean, median, Algorithm A with either stopping rule, Q/Hampel) and
+   a scale (SD, MADe, nIQR, s* with either rule, Qn, Q method), only the mean
+   and SD reproduce the printed rows; no other combination reproduces more than
+   one of the 29 z scores of either allergen (`crosscheck/annex_e_checks.py`).
+   These are the authors' reading of the 2022 text with Amd 1:2026; the
+   responsible committee has not confirmed them.
 
 Four further observations are not counted, because the text leaves the
 matter open (`e6_flags()` and `notes()`):
@@ -231,6 +245,28 @@ iterate lies on a rounding boundary of the third figure, an implementation
 that does not scale the data internally can stop at another iteration (one
 of the 5200 sets).
 
+Definitions: "differs in the third significant figure" means that the value of
+the rule and the converged value differ after both are rounded to three
+significant figures. A signal changes when the class of z (|z| <= 2,
+2 < |z| < 3, |z| >= 3) differs between z computed with x* and s* of the rule
+and z computed with the converged x* and s*. Multiplying the results by a power
+of ten does not change the criterion (one of 5200 sets differs after x 1000,
+where an iterate lies on a binary rounding boundary).
+
+A second generator (`crosscheck/stopping.py`, added in 0.1.9; 5000 sets, of
+which 1000 have p = 3 to 5; normal, t with 3 degrees of freedom or slightly
+skewed log-normal results; up to p/5 results shifted by 2, 3, 4 or 6 standard
+deviations; half of the sets rounded to about 0,1 standard deviation) gives
+the same picture with `iso2022`: s* differs in the third figure in 2132 sets
+(43 %; relative change median 0,07 %, 95th percentile 0,65 %, maximum 8,3 %),
+51 of 95 929 signals change, x 25,4 changes s* in 3320 sets and 56 signals,
++ 273,15 changes s* in 100 sets and 1 signal (`iso2022-from-start` 127 and 9,
+`equivalent-figure` 3 and 0). Of the 1000 sets with three to five results,
+s* differs in 71. The dependence on the unit is a property of the criterion as
+worded (it appears under all three readings); the dependence on the origin
+depends mainly on how the first update is treated. Results in
+`crosscheck/stopping_result.json`.
+
 Other software stops differently again (`crosscheck/r_compare.py`): `algA` of
 the R package metRology stops by default at a relative change of s* of
 1,2e-4 or after 25 iterations, and differs from its own converged result by up
@@ -305,20 +341,28 @@ rounds (hundreds of results, not tens of thousands).
   145 of the 200 sets and has not converged after its 30 iterations in the
   other 55. Qn agrees
   with `robustbase::Qn` to 7e-5.
-- The Q method, the Hampel estimator and Q/Hampel have no comparison with
-  code that the authors did not write. The Q method with ties is checked
-  against integer arithmetic and the Hampel estimator against a root search,
-  both written for the tests.
+- `crosscheck/robusto/` compares with the Go library Robusto 0.2.0, written
+  independently: in the 100 sets without ties the Q method agrees to machine
+  precision and the Q/Hampel location to 1e-10 s*; the Hampel estimator agrees
+  with the finite-step algorithm to 1e-10 s* in all 600 cases (Q, MADe and Qn
+  as fixed scales). In the 100 sets with ties the Q method of Robusto differs in
+  64 sets and equals the outputs of the PHP engine before its correction in all
+  200 sets: Robusto repeats the defect described below. The Q method with ties
+  is also checked against integer arithmetic and the Hampel estimator against a
+  root search, both written for the tests.
 - `crosscheck/compare.py` compares with the PHP engine of the LAKSiS platform
   (version 1.6.0) on 200 data sets (16 quantities) and on 5000 more
   (Algorithm A). The PHP engine comes from the same group, and several of its
   functions were written together with this library, so this shows agreement
   of two implementations and not independence. All quantities agree to below
   1e-10, and Algorithm A in all 5200 sets; both iterate to convergence. Engine
-  1.5.0 stopped on the third significant figures of x* and s*; against its
-  stored outputs (`php_5000_engine_1.5.0.json`) the library with
-  `tol="iso2022"` differs in one of 5000 sets, where an iterate lies on a
-  rounding boundary.
+  1.5.0 stopped on the third significant figures of x* and s* and also compared
+  the first update with the starting values; against its stored outputs
+  (`php_5000_engine_1.5.0.json`) the library with `tol="iso2022-from-start"`
+  differs in one of 5000 sets, where an iterate lies on a rounding boundary.
+  (Up to 0.1.8 this sentence and a comment in `compare.py` named `"iso2022"`;
+  the code compared with `"iso2022-from-start"`.) This comparison is a
+  regression check between two code bases of the same group, not a validation.
 - Two simulated rounds check the whole path (`tests/test_record.py`): 20 participants with reported
   uncertainties through the `evaluate` function of the engine (`php_evaluate_round.json`), and 19
   participants with ten replicates each through the platform to its round report

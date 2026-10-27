@@ -17,6 +17,7 @@ php_200.json holds the outputs after that correction.
 
 Run from the repository root:  python crosscheck/compare.py
 """
+import gzip
 import json
 import math
 import os
@@ -28,9 +29,10 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
 from pt13528 import homogeneity, robust, scores  # noqa: E402
 
 HERE = os.path.dirname(__file__)
+AGREE = 1e-10                      # absolute agreement threshold with the PHP engine (Algorithm A)
 
 
-def sets_200():
+def _generate_200():
     rng = np.random.default_rng(20261003)
     for c in range(200):
         p = int(rng.integers(6, 41))
@@ -48,7 +50,7 @@ def sets_200():
         yield x, hom, w, sc
 
 
-def sets_5000():
+def _generate_5000():
     rng = np.random.default_rng(7)
     for c in range(5000):
         p = int(rng.integers(6, 41))
@@ -61,10 +63,42 @@ def sets_5000():
         yield [float(v) for v in x]
 
 
+INPUTS = os.path.join(HERE, "inputs.json.gz")
+
+
+def _stored():
+    """Generated inputs as stored with 0.1.9. NumPy does not guarantee its random streams across versions,
+    so the comparison runs on the stored inputs; the generators above are kept to document how they were made."""
+    with gzip.open(INPUTS, "rt") as fh:
+        return json.load(fh)
+
+
+def sets_200():
+    for x, hom, w, sc in _stored()["sets_200"]:
+        yield x, hom, w, sc
+
+
+def sets_5000():
+    yield from _stored()["sets_5000"]
+
+
+def store_inputs():
+    data = {"numpy": np.__version__, "sets_200": [list(t) for t in _generate_200()], "sets_5000": list(_generate_5000())}
+    with gzip.open(INPUTS, "wt") as fh:
+        json.dump(data, fh)
+
+
+def check_inputs():
+    """True when this NumPy version regenerates the stored inputs exactly."""
+    st = _stored()
+    return [list(t) for t in _generate_200()] == st["sets_200"] and list(_generate_5000()) == st["sets_5000"]
+
+
 # php_200.json and php_5000.json are outputs of the PHP engine 1.6.0, which iterates Algorithms A and S
 # to convergence like the library. php_5000_engine_1.5.0.json holds the Algorithm A outputs of engine
-# 1.5.0, which stopped when the third significant figures of x* and of s* no longer changed (the
-# criterion "iso2022" of the library).
+# 1.5.0, which stopped when the third significant figures of x* and of s* no longer changed and also
+# compared the first update with the starting values (the option "iso2022-from-start" of the library,
+# not "iso2022"; corrected in 0.1.9).
 
 
 def python_200():
@@ -151,17 +185,18 @@ def main():
     before = json.load(open(os.path.join(HERE, "php_200_before_fix.json")))
     q_rel = [abs(a["Q method"] - b["Q method"]) / a["Q method"] for a, b in zip(py[1::2], before[1::2])]
     q_rel_0 = [abs(a["Q method"] - b["Q method"]) / a["Q method"] for a, b in zip(py[0::2], before[0::2])]
-    differing_200 = [i for i, (a, b) in enumerate(zip(py, php)) if abs(a["Algorithm A s*"] - b["Algorithm A s*"]) > 1e-9]
+    differing_200 = [i for i, (a, b) in enumerate(zip(py, php)) if abs(a["Algorithm A s*"] - b["Algorithm A s*"]) > AGREE]
     xs = list(sets_5000())
     php5 = json.load(open(os.path.join(HERE, "php_5000.json")))
     differing_5000 = [i for i, (x, b) in enumerate(zip(xs, php5))
-                      if (lambda a: abs(a.location - b[0]) > 1e-9 or abs(a.scale - b[1]) > 1e-9)(robust.algorithm_a(x))]
+                      if (lambda a: abs(a.location - b[0]) > AGREE or abs(a.scale - b[1]) > AGREE)(robust.algorithm_a(x))]
     old5 = json.load(open(os.path.join(HERE, "php_5000_engine_1.5.0.json")))
     differing_old = [i for i, (x, b) in enumerate(zip(xs, old5))
-                     if (lambda a: abs(a.location - b[0]) > 1e-9 or abs(a.scale - b[1]) > 1e-9)(robust.algorithm_a(x, tol="iso2022-from-start"))]
+                     if (lambda a: abs(a.location - b[0]) > AGREE or abs(a.scale - b[1]) > AGREE)(robust.algorithm_a(x, tol="iso2022-from-start"))]
     all_x = [s[0] for s in sets_200()] + xs
     q_diff = [r for r in q_rel if r > 1e-9]
     res = {
+        "inputs regenerated identically by this NumPy version": check_inputs(),
         "largest absolute difference, Python - PHP, 100 sets without ties": largest,
         "largest absolute difference, Python - PHP, 100 sets with ties": largest_ties,
         "Q method, PHP engine before the correction, 100 sets with ties: sets that differ by more than 1e-9, "
@@ -180,4 +215,6 @@ def main():
 
 
 if __name__ == "__main__":
+    if "--store-inputs" in sys.argv:
+        store_inputs()
     main()

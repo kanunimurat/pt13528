@@ -1,0 +1,619 @@
+mutant,module,function,class,original,mutant code
+pt13528._common.x__arr__mutmut_1,_common,arr,input check,"raise TypeError(""a sequence of numbers is required"")",raise TypeError(None)
+pt13528._common.x__arr__mutmut_12,_common,arr,input check,"a = np.asarray(x, dtype=float)","a = np.asarray(x, dtype=None)"
+pt13528._common.x__arr__mutmut_14,_common,arr,input check,"a = np.asarray(x, dtype=float)","a = np.asarray(x, )"
+pt13528._common.x__arr__mutmut_15,_common,arr,input check,if a.ndim != 1 or a.size == 0:,if a.ndim != 1 and a.size == 0:
+pt13528._common.x__arr__mutmut_2,_common,arr,message text,"raise TypeError(""a sequence of numbers is required"")","raise TypeError(""XXa sequence of numbers is requiredXX"")"
+pt13528._common.x__arr__mutmut_20,_common,arr,input check,"raise ValueError(""a non-empty one-dimensional sequence is required"")",raise ValueError(None)
+pt13528._common.x__arr__mutmut_21,_common,arr,message text,"raise ValueError(""a non-empty one-dimensional sequence is required"")","raise ValueError(""XXa non-empty one-dimensional sequence is requiredXX"")"
+pt13528._common.x__arr__mutmut_22,_common,arr,message text,"raise ValueError(""a non-empty one-dimensional sequence is required"")","raise ValueError(""A NON-EMPTY ONE-DIMENSIONAL SEQUENCE IS REQUIRED"")"
+pt13528._common.x__arr__mutmut_26,_common,arr,input check,"raise ValueError(""values must be finite"")",raise ValueError(None)
+pt13528._common.x__arr__mutmut_27,_common,arr,message text,"raise ValueError(""values must be finite"")","raise ValueError(""XXvalues must be finiteXX"")"
+pt13528._common.x__arr__mutmut_28,_common,arr,message text,"raise ValueError(""values must be finite"")","raise ValueError(""VALUES MUST BE FINITE"")"
+pt13528._common.x__arr__mutmut_3,_common,arr,message text,"raise TypeError(""a sequence of numbers is required"")","raise TypeError(""A SEQUENCE OF NUMBERS IS REQUIRED"")"
+pt13528._common.x__arr__mutmut_7,_common,arr,input check,"raise TypeError(""a sequence of numbers is required"")",raise TypeError(None)
+pt13528._common.x__arr__mutmut_8,_common,arr,message text,"raise TypeError(""a sequence of numbers is required"")","raise TypeError(""XXa sequence of numbers is requiredXX"")"
+pt13528._common.x__arr__mutmut_9,_common,arr,message text,"raise TypeError(""a sequence of numbers is required"")","raise TypeError(""A SEQUENCE OF NUMBERS IS REQUIRED"")"
+pt13528._common.x__finite__mutmut_4,_common,finite,input check,"raise ValueError(""results, assigned values, standard deviations and uncertainties must be finite numbers"")",raise ValueError(None)
+pt13528._common.x__finite__mutmut_5,_common,finite,message text,"raise ValueError(""results, assigned values, standard deviations and uncertainties must be finite numbers"")","raise ValueError(""XXresults, assigned values, standard deviations and uncertainties must be finite numbersXX"")"
+pt13528._common.x__finite__mutmut_6,_common,finite,message text,"raise ValueError(""results, assigned values, standard deviations and uncertainties must be finite numbers"")","raise ValueError(""RESULTS, ASSIGNED VALUES, STANDARD DEVIATIONS AND UNCERTAINTIES MUST BE FINITE NUMBERS"")"
+pt13528._common.x__nonneg__mutmut_4,_common,nonneg,input check,"raise ValueError(""standard deviations and uncertainties must not be negative"")",raise ValueError(None)
+pt13528._common.x__nonneg__mutmut_5,_common,nonneg,message text,"raise ValueError(""standard deviations and uncertainties must not be negative"")","raise ValueError(""XXstandard deviations and uncertainties must not be negativeXX"")"
+pt13528._common.x__nonneg__mutmut_6,_common,nonneg,message text,"raise ValueError(""standard deviations and uncertainties must not be negative"")","raise ValueError(""STANDARD DEVIATIONS AND UNCERTAINTIES MUST NOT BE NEGATIVE"")"
+pt13528.assigned_value.x_bootstrap__mutmut_1,assigned_value,bootstrap,default argument,"def bootstrap(x: Iterable[float], statistic: Callable[[np.ndarray], float], replicates: int = 1000,","def bootstrap(x: Iterable[float], statistic: Callable[[np.ndarray], float], replicates: int = 1001,"
+pt13528.assigned_value.x_bootstrap__mutmut_17,assigned_value,bootstrap,tolerance or iteration guard,"return AssignedValue(float(statistic(a)), float(reps.std(ddof=1)), ""bootstrap"", float(reps.mean()), int(a.size))","return AssignedValue(None, float(reps.std(ddof=1)), ""bootstrap"", float(reps.mean()), int(a.size))"
+pt13528.assigned_value.x_bootstrap__mutmut_19,assigned_value,bootstrap,tolerance or iteration guard,"return AssignedValue(float(statistic(a)), float(reps.std(ddof=1)), ""bootstrap"", float(reps.mean()), int(a.size))","return AssignedValue(float(statistic(a)), float(reps.std(ddof=1)), None, float(reps.mean()), int(a.size))"
+pt13528.assigned_value.x_bootstrap__mutmut_21,assigned_value,bootstrap,tolerance or iteration guard,"return AssignedValue(float(statistic(a)), float(reps.std(ddof=1)), ""bootstrap"", float(reps.mean()), int(a.size))","return AssignedValue(float(statistic(a)), float(reps.std(ddof=1)), ""bootstrap"", float(reps.mean()), None)"
+pt13528.assigned_value.x_bootstrap__mutmut_26,assigned_value,bootstrap,tolerance or iteration guard,"return AssignedValue(float(statistic(a)), float(reps.std(ddof=1)), ""bootstrap"", float(reps.mean()), int(a.size))","return AssignedValue(float(statistic(a)), float(reps.std(ddof=1)), ""bootstrap"", float(reps.mean()), )"
+pt13528.assigned_value.x_bootstrap__mutmut_31,assigned_value,bootstrap,tolerance or iteration guard,"return AssignedValue(float(statistic(a)), float(reps.std(ddof=1)), ""bootstrap"", float(reps.mean()), int(a.size))","return AssignedValue(float(statistic(a)), float(reps.std(ddof=2)), ""bootstrap"", float(reps.mean()), int(a.size))"
+pt13528.assigned_value.x_bootstrap__mutmut_32,assigned_value,bootstrap,message text,"return AssignedValue(float(statistic(a)), float(reps.std(ddof=1)), ""bootstrap"", float(reps.mean()), int(a.size))","return AssignedValue(float(statistic(a)), float(reps.std(ddof=1)), ""XXbootstrapXX"", float(reps.mean()), int(a.size))"
+pt13528.assigned_value.x_bootstrap__mutmut_33,assigned_value,bootstrap,message text,"return AssignedValue(float(statistic(a)), float(reps.std(ddof=1)), ""bootstrap"", float(reps.mean()), int(a.size))","return AssignedValue(float(statistic(a)), float(reps.std(ddof=1)), ""BOOTSTRAP"", float(reps.mean()), int(a.size))"
+pt13528.assigned_value.x_bootstrap__mutmut_5,assigned_value,bootstrap,unchecked result field,rng = np.random.default_rng(seed),rng = np.random.default_rng(None)
+pt13528.assigned_value.x_combine_uncertainty__mutmut_1,assigned_value,combine_uncertainty,default argument,"def combine_uncertainty(u_char: float, u_hom: float = 0.0, u_trans: float = 0.0, u_stab: float = 0.0) -> float:","def combine_uncertainty(u_char: float, u_hom: float = 1.0, u_trans: float = 0.0, u_stab: float = 0.0) -> float:"
+pt13528.assigned_value.x_compare_with_reference__mutmut_3,assigned_value,compare_with_reference,input check,"_finite(x_ref, x_pt)",_finite(x_pt)
+pt13528.assigned_value.x_compare_with_reference__mutmut_4,assigned_value,compare_with_reference,input check,"_finite(x_ref, x_pt)","_finite(x_ref, )"
+pt13528.assigned_value.x_compare_with_reference__mutmut_8,assigned_value,compare_with_reference,input check,"_nonneg(u_ref, u_x_pt)","_nonneg(u_ref, )"
+pt13528.assigned_value.x_consensus__mutmut_110,assigned_value,consensus,input check,"raise ValueError(""the standard deviation needs at least two results"")",raise ValueError(None)
+pt13528.assigned_value.x_consensus__mutmut_111,assigned_value,consensus,message text,"raise ValueError(""the standard deviation needs at least two results"")","raise ValueError(""XXthe standard deviation needs at least two resultsXX"")"
+pt13528.assigned_value.x_consensus__mutmut_112,assigned_value,consensus,message text,"raise ValueError(""the standard deviation needs at least two results"")","raise ValueError(""THE STANDARD DEVIATION NEEDS AT LEAST TWO RESULTS"")"
+pt13528.assigned_value.x_consensus__mutmut_14,assigned_value,consensus,input check,"raise ValueError(""median_scale is 'niqr' or 'made'"")",raise ValueError(None)
+pt13528.assigned_value.x_consensus__mutmut_141,assigned_value,consensus,input check,"raise ValueError(""unknown method"")",raise ValueError(None)
+pt13528.assigned_value.x_consensus__mutmut_142,assigned_value,consensus,message text,"raise ValueError(""unknown method"")","raise ValueError(""XXunknown methodXX"")"
+pt13528.assigned_value.x_consensus__mutmut_143,assigned_value,consensus,message text,"raise ValueError(""unknown method"")","raise ValueError(""UNKNOWN METHOD"")"
+pt13528.assigned_value.x_consensus__mutmut_15,assigned_value,consensus,message text,"raise ValueError(""median_scale is 'niqr' or 'made'"")","raise ValueError(""XXmedian_scale is 'niqr' or 'made'XX"")"
+pt13528.assigned_value.x_consensus__mutmut_16,assigned_value,consensus,message text,"raise ValueError(""median_scale is 'niqr' or 'made'"")","raise ValueError(""MEDIAN_SCALE IS 'NIQR' OR 'MADE'"")"
+pt13528.assigned_value.x_consensus__mutmut_26,assigned_value,consensus,input check,"raise RuntimeError(""Algorithm A did not converge"")",raise RuntimeError(None)
+pt13528.assigned_value.x_consensus__mutmut_27,assigned_value,consensus,message text,"raise RuntimeError(""Algorithm A did not converge"")","raise RuntimeError(""XXAlgorithm A did not convergeXX"")"
+pt13528.assigned_value.x_consensus__mutmut_28,assigned_value,consensus,message text,"raise RuntimeError(""Algorithm A did not converge"")","raise RuntimeError(""algorithm a did not converge"")"
+pt13528.assigned_value.x_consensus__mutmut_29,assigned_value,consensus,message text,"raise RuntimeError(""Algorithm A did not converge"")","raise RuntimeError(""ALGORITHM A DID NOT CONVERGE"")"
+pt13528.assigned_value.x_from_crm_comparison__mutmut_5,assigned_value,from_crm_comparison,input check,if d.size < 2:,if d.size <= 2:
+pt13528.assigned_value.x_from_crm_comparison__mutmut_6,assigned_value,from_crm_comparison,input check,if d.size < 2:,if d.size < 3:
+pt13528.assigned_value.x_from_crm_comparison__mutmut_7,assigned_value,from_crm_comparison,input check,"raise ValueError(""at least two differences are required"")",raise ValueError(None)
+pt13528.assigned_value.x_from_crm_comparison__mutmut_8,assigned_value,from_crm_comparison,message text,"raise ValueError(""at least two differences are required"")","raise ValueError(""XXat least two differences are requiredXX"")"
+pt13528.assigned_value.x_from_crm_comparison__mutmut_9,assigned_value,from_crm_comparison,message text,"raise ValueError(""at least two differences are required"")","raise ValueError(""AT LEAST TWO DIFFERENCES ARE REQUIRED"")"
+pt13528.assigned_value.x_kernel_mode__mutmut_1,assigned_value,kernel_mode,default argument,"def kernel_mode(x: Iterable[float], bandwidth: float, grid: int = 4096, cut: float = 3.0) -> float:","def kernel_mode(x: Iterable[float], bandwidth: float, grid: int = 4097, cut: float = 3.0) -> float:"
+pt13528.assigned_value.x_kernel_mode__mutmut_10,assigned_value,kernel_mode,message text,"raise ValueError(""bandwidth must be positive"")","raise ValueError(""BANDWIDTH MUST BE POSITIVE"")"
+pt13528.assigned_value.x_kernel_mode__mutmut_2,assigned_value,kernel_mode,default argument,"def kernel_mode(x: Iterable[float], bandwidth: float, grid: int = 4096, cut: float = 3.0) -> float:","def kernel_mode(x: Iterable[float], bandwidth: float, grid: int = 4096, cut: float = 4.0) -> float:"
+pt13528.assigned_value.x_kernel_mode__mutmut_8,assigned_value,kernel_mode,input check,"raise ValueError(""bandwidth must be positive"")",raise ValueError(None)
+pt13528.assigned_value.x_kernel_mode__mutmut_9,assigned_value,kernel_mode,message text,"raise ValueError(""bandwidth must be positive"")","raise ValueError(""XXbandwidth must be positiveXX"")"
+pt13528.assigned_value.x_u_robust__mutmut_10,assigned_value,u_robust,message text,"raise ValueError(""p must be positive"")","raise ValueError(""P MUST BE POSITIVE"")"
+pt13528.assigned_value.x_u_robust__mutmut_5,assigned_value,u_robust,input check,"_nonneg(scale, factor)","_nonneg(scale, )"
+pt13528.assigned_value.x_u_robust__mutmut_8,assigned_value,u_robust,input check,"raise ValueError(""p must be positive"")",raise ValueError(None)
+pt13528.assigned_value.x_u_robust__mutmut_9,assigned_value,u_robust,message text,"raise ValueError(""p must be positive"")","raise ValueError(""XXp must be positiveXX"")"
+pt13528.graphics.x_bandwidth__mutmut_1,graphics,bandwidth,input check,"if isinstance(p, bool) or int(p) != p or p < 1:","if isinstance(p, bool) or int(p) != p and p < 1:"
+pt13528.graphics.x_bandwidth__mutmut_16,graphics,bandwidth,input check,"raise ValueError(""the bandwidth cannot be derived from a zero standard deviation or delta_E"")",raise ValueError(None)
+pt13528.graphics.x_bandwidth__mutmut_17,graphics,bandwidth,message text,"raise ValueError(""the bandwidth cannot be derived from a zero standard deviation or delta_E"")","raise ValueError(""XXthe bandwidth cannot be derived from a zero standard deviation or delta_EXX"")"
+pt13528.graphics.x_bandwidth__mutmut_18,graphics,bandwidth,message text,"raise ValueError(""the bandwidth cannot be derived from a zero standard deviation or delta_E"")","raise ValueError(""the bandwidth cannot be derived from a zero standard deviation or delta_e"")"
+pt13528.graphics.x_bandwidth__mutmut_19,graphics,bandwidth,message text,"raise ValueError(""the bandwidth cannot be derived from a zero standard deviation or delta_E"")","raise ValueError(""THE BANDWIDTH CANNOT BE DERIVED FROM A ZERO STANDARD DEVIATION OR DELTA_E"")"
+pt13528.graphics.x_bandwidth__mutmut_2,graphics,bandwidth,input check,"if isinstance(p, bool) or int(p) != p or p < 1:","if isinstance(p, bool) and int(p) != p or p < 1:"
+pt13528.graphics.x_bandwidth__mutmut_32,graphics,bandwidth,input check,"raise ValueError(""give robust_sd, sigma_pt or delta_E"")",raise ValueError(None)
+pt13528.graphics.x_bandwidth__mutmut_33,graphics,bandwidth,message text,"raise ValueError(""give robust_sd, sigma_pt or delta_E"")","raise ValueError(""XXgive robust_sd, sigma_pt or delta_EXX"")"
+pt13528.graphics.x_bandwidth__mutmut_34,graphics,bandwidth,message text,"raise ValueError(""give robust_sd, sigma_pt or delta_E"")","raise ValueError(""give robust_sd, sigma_pt or delta_e"")"
+pt13528.graphics.x_bandwidth__mutmut_35,graphics,bandwidth,message text,"raise ValueError(""give robust_sd, sigma_pt or delta_E"")","raise ValueError(""GIVE ROBUST_SD, SIGMA_PT OR DELTA_E"")"
+pt13528.graphics.x_bandwidth__mutmut_5,graphics,bandwidth,input check,"if isinstance(p, bool) or int(p) != p or p < 1:","if isinstance(p, bool) or int(p) != p or p <= 1:"
+pt13528.graphics.x_bandwidth__mutmut_6,graphics,bandwidth,input check,"if isinstance(p, bool) or int(p) != p or p < 1:","if isinstance(p, bool) or int(p) != p or p < 2:"
+pt13528.graphics.x_bandwidth__mutmut_7,graphics,bandwidth,input check,"raise ValueError(""p must be an integer of at least 1"")",raise ValueError(None)
+pt13528.graphics.x_bandwidth__mutmut_8,graphics,bandwidth,message text,"raise ValueError(""p must be an integer of at least 1"")","raise ValueError(""XXp must be an integer of at least 1XX"")"
+pt13528.graphics.x_bandwidth__mutmut_9,graphics,bandwidth,message text,"raise ValueError(""p must be an integer of at least 1"")","raise ValueError(""P MUST BE AN INTEGER OF AT LEAST 1"")"
+pt13528.graphics.x_kernel_density__mutmut_1,graphics,kernel_density,default argument,"def kernel_density(x: Iterable[float], bandwidth: float, grid: int = 512, cut: float = 3.0):","def kernel_density(x: Iterable[float], bandwidth: float, grid: int = 513, cut: float = 3.0):"
+pt13528.graphics.x_kernel_density__mutmut_2,graphics,kernel_density,default argument,"def kernel_density(x: Iterable[float], bandwidth: float, grid: int = 512, cut: float = 3.0):","def kernel_density(x: Iterable[float], bandwidth: float, grid: int = 512, cut: float = 4.0):"
+pt13528.graphics.x_kernel_density__mutmut_6,graphics,kernel_density,input check,"raise ValueError(""bandwidth must be positive"")",raise ValueError(None)
+pt13528.graphics.x_kernel_density__mutmut_7,graphics,kernel_density,message text,"raise ValueError(""bandwidth must be positive"")","raise ValueError(""XXbandwidth must be positiveXX"")"
+pt13528.graphics.x_kernel_density__mutmut_8,graphics,kernel_density,message text,"raise ValueError(""bandwidth must be positive"")","raise ValueError(""BANDWIDTH MUST BE POSITIVE"")"
+pt13528.graphics.x_ordinal_summary__mutmut_1,graphics,ordinal_summary,input check,"if not isinstance(counts, dict) or not counts:","if not isinstance(counts, dict) and not counts:"
+pt13528.graphics.x_ordinal_summary__mutmut_10,graphics,ordinal_summary,message text,"raise ValueError(""give the order of text categories from lowest to highest"")","raise ValueError(""XXgive the order of text categories from lowest to highestXX"")"
+pt13528.graphics.x_ordinal_summary__mutmut_11,graphics,ordinal_summary,message text,"raise ValueError(""give the order of text categories from lowest to highest"")","raise ValueError(""GIVE THE ORDER OF TEXT CATEGORIES FROM LOWEST TO HIGHEST"")"
+pt13528.graphics.x_ordinal_summary__mutmut_21,graphics,ordinal_summary,input check,"raise ValueError(""order must list every category once"")",raise ValueError(None)
+pt13528.graphics.x_ordinal_summary__mutmut_22,graphics,ordinal_summary,message text,"raise ValueError(""order must list every category once"")","raise ValueError(""XXorder must list every category onceXX"")"
+pt13528.graphics.x_ordinal_summary__mutmut_23,graphics,ordinal_summary,message text,"raise ValueError(""order must list every category once"")","raise ValueError(""ORDER MUST LIST EVERY CATEGORY ONCE"")"
+pt13528.graphics.x_ordinal_summary__mutmut_24,graphics,ordinal_summary,input check,"if any(isinstance(v, bool) or v < 0 for v in counts.values()) or sum(counts.values()) <= 0:","if any(isinstance(v, bool) or v < 0 for v in counts.values()) and sum(counts.values()) <= 0:"
+pt13528.graphics.x_ordinal_summary__mutmut_26,graphics,ordinal_summary,input check,"if any(isinstance(v, bool) or v < 0 for v in counts.values()) or sum(counts.values()) <= 0:","if any(isinstance(v, bool) and v < 0 for v in counts.values()) or sum(counts.values()) <= 0:"
+pt13528.graphics.x_ordinal_summary__mutmut_27,graphics,ordinal_summary,input check,"if any(isinstance(v, bool) or v < 0 for v in counts.values()) or sum(counts.values()) <= 0:","if any(isinstance(v, bool) or v <= 0 for v in counts.values()) or sum(counts.values()) <= 0:"
+pt13528.graphics.x_ordinal_summary__mutmut_28,graphics,ordinal_summary,input check,"if any(isinstance(v, bool) or v < 0 for v in counts.values()) or sum(counts.values()) <= 0:","if any(isinstance(v, bool) or v < 1 for v in counts.values()) or sum(counts.values()) <= 0:"
+pt13528.graphics.x_ordinal_summary__mutmut_30,graphics,ordinal_summary,input check,"if any(isinstance(v, bool) or v < 0 for v in counts.values()) or sum(counts.values()) <= 0:","if any(isinstance(v, bool) or v < 0 for v in counts.values()) or sum(counts.values()) < 0:"
+pt13528.graphics.x_ordinal_summary__mutmut_31,graphics,ordinal_summary,input check,"if any(isinstance(v, bool) or v < 0 for v in counts.values()) or sum(counts.values()) <= 0:","if any(isinstance(v, bool) or v < 0 for v in counts.values()) or sum(counts.values()) <= 1:"
+pt13528.graphics.x_ordinal_summary__mutmut_32,graphics,ordinal_summary,input check,"raise ValueError(""counts must not be negative and must not all be zero"")",raise ValueError(None)
+pt13528.graphics.x_ordinal_summary__mutmut_33,graphics,ordinal_summary,message text,"raise ValueError(""counts must not be negative and must not all be zero"")","raise ValueError(""XXcounts must not be negative and must not all be zeroXX"")"
+pt13528.graphics.x_ordinal_summary__mutmut_34,graphics,ordinal_summary,message text,"raise ValueError(""counts must not be negative and must not all be zero"")","raise ValueError(""COUNTS MUST NOT BE NEGATIVE AND MUST NOT ALL BE ZERO"")"
+pt13528.graphics.x_ordinal_summary__mutmut_4,graphics,ordinal_summary,input check,"raise TypeError(""counts must be a non-empty mapping {category: count}"")",raise TypeError(None)
+pt13528.graphics.x_ordinal_summary__mutmut_45,graphics,ordinal_summary,numerical or logical,"cum, med = 0, cats[-1]","cum, med = 0, cats[+1]"
+pt13528.graphics.x_ordinal_summary__mutmut_46,graphics,ordinal_summary,numerical or logical,"cum, med = 0, cats[-1]","cum, med = 0, cats[-2]"
+pt13528.graphics.x_ordinal_summary__mutmut_5,graphics,ordinal_summary,message text,"raise TypeError(""counts must be a non-empty mapping {category: count}"")","raise TypeError(""XXcounts must be a non-empty mapping {category: count}XX"")"
+pt13528.graphics.x_ordinal_summary__mutmut_6,graphics,ordinal_summary,message text,"raise TypeError(""counts must be a non-empty mapping {category: count}"")","raise TypeError(""COUNTS MUST BE A NON-EMPTY MAPPING {CATEGORY: COUNT}"")"
+pt13528.graphics.x_ordinal_summary__mutmut_9,graphics,ordinal_summary,input check,"raise ValueError(""give the order of text categories from lowest to highest"")",raise ValueError(None)
+pt13528.graphics.x_repeatability_region__mutmut_2,graphics,repeatability_region,default argument,"def repeatability_region(x_star: float, w_star: float, m: int, level: float = 0.99, points: int = 201):","def repeatability_region(x_star: float, w_star: float, m: int, level: float = 0.99, points: int = 202):"
+pt13528.graphics.x_repeatability_statistic__mutmut_14,graphics,repeatability_statistic,input check,"raise ValueError(""sd_i and w_star must be positive"")",raise ValueError(None)
+pt13528.graphics.x_repeatability_statistic__mutmut_15,graphics,repeatability_statistic,message text,"raise ValueError(""sd_i and w_star must be positive"")","raise ValueError(""XXsd_i and w_star must be positiveXX"")"
+pt13528.graphics.x_repeatability_statistic__mutmut_16,graphics,repeatability_statistic,message text,"raise ValueError(""sd_i and w_star must be positive"")","raise ValueError(""SD_I AND W_STAR MUST BE POSITIVE"")"
+pt13528.graphics.x_repeatability_statistic__mutmut_17,graphics,repeatability_statistic,input check,"if isinstance(m, bool) or int(m) != m or m < 2:","if isinstance(m, bool) or int(m) != m and m < 2:"
+pt13528.graphics.x_repeatability_statistic__mutmut_18,graphics,repeatability_statistic,input check,"if isinstance(m, bool) or int(m) != m or m < 2:","if isinstance(m, bool) and int(m) != m or m < 2:"
+pt13528.graphics.x_repeatability_statistic__mutmut_21,graphics,repeatability_statistic,input check,"if isinstance(m, bool) or int(m) != m or m < 2:","if isinstance(m, bool) or int(m) != m or m <= 2:"
+pt13528.graphics.x_repeatability_statistic__mutmut_22,graphics,repeatability_statistic,input check,"if isinstance(m, bool) or int(m) != m or m < 2:","if isinstance(m, bool) or int(m) != m or m < 3:"
+pt13528.graphics.x_repeatability_statistic__mutmut_23,graphics,repeatability_statistic,input check,"raise ValueError(""m must be an integer of at least 2"")",raise ValueError(None)
+pt13528.graphics.x_repeatability_statistic__mutmut_24,graphics,repeatability_statistic,message text,"raise ValueError(""m must be an integer of at least 2"")","raise ValueError(""XXm must be an integer of at least 2XX"")"
+pt13528.graphics.x_repeatability_statistic__mutmut_25,graphics,repeatability_statistic,message text,"raise ValueError(""m must be an integer of at least 2"")","raise ValueError(""M MUST BE AN INTEGER OF AT LEAST 2"")"
+pt13528.graphics.x_repeatability_statistic__mutmut_3,graphics,repeatability_statistic,input check,"_finite(mean_i, x_star)",_finite(x_star)
+pt13528.graphics.x_repeatability_statistic__mutmut_4,graphics,repeatability_statistic,input check,"_finite(mean_i, x_star)","_finite(mean_i, )"
+pt13528.graphics.x_repeatability_statistic__mutmut_8,graphics,repeatability_statistic,input check,"_nonneg(sd_i, w_star)","_nonneg(sd_i, )"
+pt13528.homogeneity.x_expanded_criterion_factors__mutmut_10,homogeneity,expanded_criterion_factors,message text,"raise ValueError(""g must be an integer of at least 2"")","raise ValueError(""G MUST BE AN INTEGER OF AT LEAST 2"")"
+pt13528.homogeneity.x_expanded_criterion_factors__mutmut_11,homogeneity,expanded_criterion_factors,input check,"if isinstance(m, bool) or int(m) != m or m < 2:","if isinstance(m, bool) or int(m) != m and m < 2:"
+pt13528.homogeneity.x_expanded_criterion_factors__mutmut_12,homogeneity,expanded_criterion_factors,input check,"if isinstance(m, bool) or int(m) != m or m < 2:","if isinstance(m, bool) and int(m) != m or m < 2:"
+pt13528.homogeneity.x_expanded_criterion_factors__mutmut_17,homogeneity,expanded_criterion_factors,input check,"raise ValueError(""m must be an integer of at least 2"")",raise ValueError(None)
+pt13528.homogeneity.x_expanded_criterion_factors__mutmut_18,homogeneity,expanded_criterion_factors,message text,"raise ValueError(""m must be an integer of at least 2"")","raise ValueError(""XXm must be an integer of at least 2XX"")"
+pt13528.homogeneity.x_expanded_criterion_factors__mutmut_19,homogeneity,expanded_criterion_factors,message text,"raise ValueError(""m must be an integer of at least 2"")","raise ValueError(""M MUST BE AN INTEGER OF AT LEAST 2"")"
+pt13528.homogeneity.x_expanded_criterion_factors__mutmut_3,homogeneity,expanded_criterion_factors,input check,"if isinstance(g, bool) or int(g) != g or g < 2:","if isinstance(g, bool) and int(g) != g or g < 2:"
+pt13528.homogeneity.x_expanded_criterion_factors__mutmut_8,homogeneity,expanded_criterion_factors,input check,"raise ValueError(""g must be an integer of at least 2"")",raise ValueError(None)
+pt13528.homogeneity.x_expanded_criterion_factors__mutmut_9,homogeneity,expanded_criterion_factors,message text,"raise ValueError(""g must be an integer of at least 2"")","raise ValueError(""XXg must be an integer of at least 2XX"")"
+pt13528.homogeneity.x_expanded_sigma_pt__mutmut_4,homogeneity,expanded_sigma_pt,input check,"_nonneg(sigma_pt, s_s)","_nonneg(sigma_pt, )"
+pt13528.homogeneity.x_homogeneity__mutmut_10,homogeneity,homogeneity,input check,"raise TypeError(""a table of numbers is required"")",raise TypeError(None)
+pt13528.homogeneity.x_homogeneity__mutmut_104,homogeneity,homogeneity,unchecked result field,suff_exp = s_s <= exp_crit,suff_exp = None
+pt13528.homogeneity.x_homogeneity__mutmut_105,homogeneity,homogeneity,numerical or logical,suff_exp = s_s <= exp_crit,suff_exp = s_s < exp_crit
+pt13528.homogeneity.x_homogeneity__mutmut_11,homogeneity,homogeneity,message text,"raise TypeError(""a table of numbers is required"")","raise TypeError(""XXa table of numbers is requiredXX"")"
+pt13528.homogeneity.x_homogeneity__mutmut_12,homogeneity,homogeneity,message text,"raise TypeError(""a table of numbers is required"")","raise TypeError(""A TABLE OF NUMBERS IS REQUIRED"")"
+pt13528.homogeneity.x_homogeneity__mutmut_127,homogeneity,homogeneity,unchecked result field,f_sig = f_stat > f_crit,f_sig = None
+pt13528.homogeneity.x_homogeneity__mutmut_128,homogeneity,homogeneity,boundary (< or <=),f_sig = f_stat > f_crit,f_sig = f_stat >= f_crit
+pt13528.homogeneity.x_homogeneity__mutmut_129,homogeneity,homogeneity,unchecked result field,"return Homogeneity(g, m, float(item_mean.mean()), math.sqrt(s_x2), math.sqrt(s_w2), s_s,","return Homogeneity(None, m, float(item_mean.mean()), math.sqrt(s_x2), math.sqrt(s_w2), s_s,"
+pt13528.homogeneity.x_homogeneity__mutmut_138,homogeneity,homogeneity,unchecked result field,"crit, suff, exp_crit, suff_exp, f_stat, f_crit, f_sig)","crit, suff, exp_crit, None, f_stat, f_crit, f_sig)"
+pt13528.homogeneity.x_homogeneity__mutmut_141,homogeneity,homogeneity,unchecked result field,"crit, suff, exp_crit, suff_exp, f_stat, f_crit, f_sig)","crit, suff, exp_crit, suff_exp, f_stat, f_crit, None)"
+pt13528.homogeneity.x_homogeneity__mutmut_15,homogeneity,homogeneity,input check,"x = np.asarray(samples, dtype=float)","x = np.asarray(samples, dtype=None)"
+pt13528.homogeneity.x_homogeneity__mutmut_17,homogeneity,homogeneity,input check,"x = np.asarray(samples, dtype=float)","x = np.asarray(samples, )"
+pt13528.homogeneity.x_homogeneity__mutmut_18,homogeneity,homogeneity,input check,if x.ndim != 2 or x.shape[0] < 2 or x.shape[1] < 2:,if x.ndim != 2 or x.shape[0] < 2 and x.shape[1] < 2:
+pt13528.homogeneity.x_homogeneity__mutmut_19,homogeneity,homogeneity,input check,if x.ndim != 2 or x.shape[0] < 2 or x.shape[1] < 2:,if x.ndim != 2 and x.shape[0] < 2 or x.shape[1] < 2:
+pt13528.homogeneity.x_homogeneity__mutmut_22,homogeneity,homogeneity,input check,if x.ndim != 2 or x.shape[0] < 2 or x.shape[1] < 2:,if x.ndim != 2 or x.shape[1] < 2 or x.shape[1] < 2:
+pt13528.homogeneity.x_homogeneity__mutmut_28,homogeneity,homogeneity,input check,"raise ValueError(""samples must be g x m with g >= 2 and m >= 2 (balanced design)"")",raise ValueError(None)
+pt13528.homogeneity.x_homogeneity__mutmut_29,homogeneity,homogeneity,message text,"raise ValueError(""samples must be g x m with g >= 2 and m >= 2 (balanced design)"")","raise ValueError(""XXsamples must be g x m with g >= 2 and m >= 2 (balanced design)XX"")"
+pt13528.homogeneity.x_homogeneity__mutmut_30,homogeneity,homogeneity,message text,"raise ValueError(""samples must be g x m with g >= 2 and m >= 2 (balanced design)"")","raise ValueError(""SAMPLES MUST BE G X M WITH G >= 2 AND M >= 2 (BALANCED DESIGN)"")"
+pt13528.homogeneity.x_homogeneity__mutmut_34,homogeneity,homogeneity,input check,"raise ValueError(""values must be finite"")",raise ValueError(None)
+pt13528.homogeneity.x_homogeneity__mutmut_35,homogeneity,homogeneity,message text,"raise ValueError(""values must be finite"")","raise ValueError(""XXvalues must be finiteXX"")"
+pt13528.homogeneity.x_homogeneity__mutmut_36,homogeneity,homogeneity,message text,"raise ValueError(""values must be finite"")","raise ValueError(""VALUES MUST BE FINITE"")"
+pt13528.homogeneity.x_homogeneity__mutmut_47,homogeneity,homogeneity,numerical or logical,if (sigma_pt is not None and not sigma_pt > 0) or (delta_e is not None and not delta_e > 0):,if (sigma_pt is not None and not sigma_pt > 0) or (delta_e is not None and not delta_e > 1):
+pt13528.homogeneity.x_homogeneity__mutmut_48,homogeneity,homogeneity,input check,"raise ValueError(""sigma_pt and delta_E must be positive"")",raise ValueError(None)
+pt13528.homogeneity.x_homogeneity__mutmut_49,homogeneity,homogeneity,message text,"raise ValueError(""sigma_pt and delta_E must be positive"")","raise ValueError(""XXsigma_pt and delta_E must be positiveXX"")"
+pt13528.homogeneity.x_homogeneity__mutmut_50,homogeneity,homogeneity,message text,"raise ValueError(""sigma_pt and delta_E must be positive"")","raise ValueError(""sigma_pt and delta_e must be positive"")"
+pt13528.homogeneity.x_homogeneity__mutmut_51,homogeneity,homogeneity,message text,"raise ValueError(""sigma_pt and delta_E must be positive"")","raise ValueError(""SIGMA_PT AND DELTA_E MUST BE POSITIVE"")"
+pt13528.homogeneity.x_homogeneity__mutmut_7,homogeneity,homogeneity,input check,"raise ValueError(""alpha must lie between 0 and 1"")",raise ValueError(None)
+pt13528.homogeneity.x_homogeneity__mutmut_8,homogeneity,homogeneity,message text,"raise ValueError(""alpha must lie between 0 and 1"")","raise ValueError(""XXalpha must lie between 0 and 1XX"")"
+pt13528.homogeneity.x_homogeneity__mutmut_88,homogeneity,homogeneity,unchecked result field,exp_crit = suff = suff_exp = None,"exp_crit = suff = suff_exp = """""
+pt13528.homogeneity.x_homogeneity__mutmut_9,homogeneity,homogeneity,message text,"raise ValueError(""alpha must lie between 0 and 1"")","raise ValueError(""ALPHA MUST LIE BETWEEN 0 AND 1"")"
+pt13528.homogeneity.x_homogeneity__mutmut_91,homogeneity,homogeneity,numerical or logical,suff = s_s <= crit,suff = s_s < crit
+pt13528.homogeneity.x_homogeneity_single__mutmut_11,homogeneity,homogeneity_single,input check,"raise ValueError(""values must be finite"")",raise ValueError(None)
+pt13528.homogeneity.x_homogeneity_single__mutmut_12,homogeneity,homogeneity_single,message text,"raise ValueError(""values must be finite"")","raise ValueError(""XXvalues must be finiteXX"")"
+pt13528.homogeneity.x_homogeneity_single__mutmut_13,homogeneity,homogeneity_single,message text,"raise ValueError(""values must be finite"")","raise ValueError(""VALUES MUST BE FINITE"")"
+pt13528.homogeneity.x_homogeneity_single__mutmut_3,homogeneity,homogeneity_single,input check,if v.size < 2:,if v.size <= 2:
+pt13528.homogeneity.x_homogeneity_single__mutmut_4,homogeneity,homogeneity_single,input check,if v.size < 2:,if v.size < 3:
+pt13528.homogeneity.x_homogeneity_single__mutmut_5,homogeneity,homogeneity_single,input check,"raise ValueError(""at least two items are required"")",raise ValueError(None)
+pt13528.homogeneity.x_homogeneity_single__mutmut_6,homogeneity,homogeneity_single,message text,"raise ValueError(""at least two items are required"")","raise ValueError(""XXat least two items are requiredXX"")"
+pt13528.homogeneity.x_homogeneity_single__mutmut_7,homogeneity,homogeneity_single,message text,"raise ValueError(""at least two items are required"")","raise ValueError(""AT LEAST TWO ITEMS ARE REQUIRED"")"
+pt13528.homogeneity.x_stability__mutmut_17,homogeneity,stability,input check,"raise ValueError(""sigma_pt or delta_E must be a positive number"")",raise ValueError(None)
+pt13528.homogeneity.x_stability__mutmut_18,homogeneity,stability,message text,"raise ValueError(""sigma_pt or delta_E must be a positive number"")","raise ValueError(""XXsigma_pt or delta_E must be a positive numberXX"")"
+pt13528.homogeneity.x_stability__mutmut_19,homogeneity,stability,message text,"raise ValueError(""sigma_pt or delta_E must be a positive number"")","raise ValueError(""sigma_pt or delta_e must be a positive number"")"
+pt13528.homogeneity.x_stability__mutmut_20,homogeneity,stability,message text,"raise ValueError(""sigma_pt or delta_E must be a positive number"")","raise ValueError(""SIGMA_PT OR DELTA_E MUST BE A POSITIVE NUMBER"")"
+pt13528.homogeneity.x_stability__mutmut_28,homogeneity,stability,input check,"raise ValueError(""uncertainties must be finite and not negative"")",raise ValueError(None)
+pt13528.homogeneity.x_stability__mutmut_29,homogeneity,stability,message text,"raise ValueError(""uncertainties must be finite and not negative"")","raise ValueError(""XXuncertainties must be finite and not negativeXX"")"
+pt13528.homogeneity.x_stability__mutmut_30,homogeneity,stability,message text,"raise ValueError(""uncertainties must be finite and not negative"")","raise ValueError(""UNCERTAINTIES MUST BE FINITE AND NOT NEGATIVE"")"
+pt13528.homogeneity.x_stability__mutmut_35,homogeneity,stability,input check,if a.size == 0 or b.size == 0 or not (np.all(np.isfinite(a)) and np.all(np.isfinite(b))):,if a.size == 0 or b.size == 0 and not (np.all(np.isfinite(a)) and np.all(np.isfinite(b))):
+pt13528.homogeneity.x_stability__mutmut_36,homogeneity,stability,input check,if a.size == 0 or b.size == 0 or not (np.all(np.isfinite(a)) and np.all(np.isfinite(b))):,if a.size == 0 and b.size == 0 or not (np.all(np.isfinite(a)) and np.all(np.isfinite(b))):
+pt13528.homogeneity.x_stability__mutmut_4,homogeneity,stability,input check,"raise ValueError(""give sigma_pt or delta_E"")",raise ValueError(None)
+pt13528.homogeneity.x_stability__mutmut_42,homogeneity,stability,input check,if a.size == 0 or b.size == 0 or not (np.all(np.isfinite(a)) and np.all(np.isfinite(b))):,if a.size == 0 or b.size == 0 or not (np.all(np.isfinite(a)) or np.all(np.isfinite(b))):
+pt13528.homogeneity.x_stability__mutmut_47,homogeneity,stability,input check,"raise ValueError(""both occasions need at least one result and only finite values"")",raise ValueError(None)
+pt13528.homogeneity.x_stability__mutmut_48,homogeneity,stability,message text,"raise ValueError(""both occasions need at least one result and only finite values"")","raise ValueError(""XXboth occasions need at least one result and only finite valuesXX"")"
+pt13528.homogeneity.x_stability__mutmut_49,homogeneity,stability,message text,"raise ValueError(""both occasions need at least one result and only finite values"")","raise ValueError(""BOTH OCCASIONS NEED AT LEAST ONE RESULT AND ONLY FINITE VALUES"")"
+pt13528.homogeneity.x_stability__mutmut_5,homogeneity,stability,message text,"raise ValueError(""give sigma_pt or delta_E"")","raise ValueError(""XXgive sigma_pt or delta_EXX"")"
+pt13528.homogeneity.x_stability__mutmut_6,homogeneity,stability,message text,"raise ValueError(""give sigma_pt or delta_E"")","raise ValueError(""give sigma_pt or delta_e"")"
+pt13528.homogeneity.x_stability__mutmut_7,homogeneity,stability,message text,"raise ValueError(""give sigma_pt or delta_E"")","raise ValueError(""GIVE SIGMA_PT OR DELTA_E"")"
+pt13528.homogeneity.x_stability__mutmut_76,homogeneity,stability,numerical or logical,stable_exp = diff <= exp_crit,stable_exp = diff < exp_crit
+pt13528.homogeneity.x_stability_t_test__mutmut_10,homogeneity,stability_t_test,input check,if a.size < 2 or b.size < 2:,if a.size < 2 or b.size <= 2:
+pt13528.homogeneity.x_stability_t_test__mutmut_11,homogeneity,stability_t_test,input check,if a.size < 2 or b.size < 2:,if a.size < 2 or b.size < 3:
+pt13528.homogeneity.x_stability_t_test__mutmut_12,homogeneity,stability_t_test,input check,"raise ValueError(""at least two item means per occasion are required"")",raise ValueError(None)
+pt13528.homogeneity.x_stability_t_test__mutmut_13,homogeneity,stability_t_test,message text,"raise ValueError(""at least two item means per occasion are required"")","raise ValueError(""XXat least two item means per occasion are requiredXX"")"
+pt13528.homogeneity.x_stability_t_test__mutmut_14,homogeneity,stability_t_test,message text,"raise ValueError(""at least two item means per occasion are required"")","raise ValueError(""AT LEAST TWO ITEM MEANS PER OCCASION ARE REQUIRED"")"
+pt13528.homogeneity.x_stability_t_test__mutmut_26,homogeneity,stability_t_test,input check,"return float(res.statistic), float(res.df), float(res.pvalue), bool(res.pvalue < alpha)","return float(res.statistic), float(res.df), float(res.pvalue), bool(res.pvalue <= alpha)"
+pt13528.homogeneity.x_stability_t_test__mutmut_7,homogeneity,stability_t_test,input check,if a.size < 2 or b.size < 2:,if a.size < 2 and b.size < 2:
+pt13528.homogeneity.x_stability_t_test__mutmut_8,homogeneity,stability_t_test,input check,if a.size < 2 or b.size < 2:,if a.size <= 2 or b.size < 2:
+pt13528.homogeneity.x_stability_t_test__mutmut_9,homogeneity,stability_t_test,input check,if a.size < 2 or b.size < 2:,if a.size < 3 or b.size < 2:
+pt13528.outliers.x_cochran__mutmut_11,outliers,cochran,input check,"raise ValueError(""variances must be finite and not negative"")",raise ValueError(None)
+pt13528.outliers.x_cochran__mutmut_12,outliers,cochran,message text,"raise ValueError(""variances must be finite and not negative"")","raise ValueError(""XXvariances must be finite and not negativeXX"")"
+pt13528.outliers.x_cochran__mutmut_13,outliers,cochran,message text,"raise ValueError(""variances must be finite and not negative"")","raise ValueError(""VARIANCES MUST BE FINITE AND NOT NEGATIVE"")"
+pt13528.outliers.x_cochran__mutmut_16,outliers,cochran,input check,"raise ValueError(""all variances are zero"")",raise ValueError(None)
+pt13528.outliers.x_cochran__mutmut_17,outliers,cochran,message text,"raise ValueError(""all variances are zero"")","raise ValueError(""XXall variances are zeroXX"")"
+pt13528.outliers.x_cochran__mutmut_18,outliers,cochran,message text,"raise ValueError(""all variances are zero"")","raise ValueError(""ALL VARIANCES ARE ZERO"")"
+pt13528.outliers.x_cochran_critical__mutmut_1,outliers,cochran_critical,default argument,"def cochran_critical(k: int, n: int, alpha: float = 0.01) -> float:","def cochran_critical(k: int, n: int, alpha: float = 1.01) -> float:"
+pt13528.outliers.x_cochran_critical__mutmut_10,outliers,cochran_critical,message text,"raise ValueError(""k must be an integer of at least 2"")","raise ValueError(""K MUST BE AN INTEGER OF AT LEAST 2"")"
+pt13528.outliers.x_cochran_critical__mutmut_11,outliers,cochran_critical,input check,"if isinstance(n, bool) or int(n) != n or n < 2:","if isinstance(n, bool) or int(n) != n and n < 2:"
+pt13528.outliers.x_cochran_critical__mutmut_17,outliers,cochran_critical,input check,"raise ValueError(""n must be an integer of at least 2"")",raise ValueError(None)
+pt13528.outliers.x_cochran_critical__mutmut_18,outliers,cochran_critical,message text,"raise ValueError(""n must be an integer of at least 2"")","raise ValueError(""XXn must be an integer of at least 2XX"")"
+pt13528.outliers.x_cochran_critical__mutmut_19,outliers,cochran_critical,message text,"raise ValueError(""n must be an integer of at least 2"")","raise ValueError(""N MUST BE AN INTEGER OF AT LEAST 2"")"
+pt13528.outliers.x_cochran_critical__mutmut_25,outliers,cochran_critical,input check,"raise ValueError(""alpha must lie between 0 and 1"")",raise ValueError(None)
+pt13528.outliers.x_cochran_critical__mutmut_26,outliers,cochran_critical,message text,"raise ValueError(""alpha must lie between 0 and 1"")","raise ValueError(""XXalpha must lie between 0 and 1XX"")"
+pt13528.outliers.x_cochran_critical__mutmut_27,outliers,cochran_critical,message text,"raise ValueError(""alpha must lie between 0 and 1"")","raise ValueError(""ALPHA MUST LIE BETWEEN 0 AND 1"")"
+pt13528.outliers.x_cochran_critical__mutmut_3,outliers,cochran_critical,input check,"if isinstance(k, bool) or int(k) != k or k < 2:","if isinstance(k, bool) and int(k) != k or k < 2:"
+pt13528.outliers.x_cochran_critical__mutmut_6,outliers,cochran_critical,input check,"if isinstance(k, bool) or int(k) != k or k < 2:","if isinstance(k, bool) or int(k) != k or k <= 2:"
+pt13528.outliers.x_cochran_critical__mutmut_7,outliers,cochran_critical,input check,"if isinstance(k, bool) or int(k) != k or k < 2:","if isinstance(k, bool) or int(k) != k or k < 3:"
+pt13528.outliers.x_cochran_critical__mutmut_8,outliers,cochran_critical,input check,"raise ValueError(""k must be an integer of at least 2"")",raise ValueError(None)
+pt13528.outliers.x_cochran_critical__mutmut_9,outliers,cochran_critical,message text,"raise ValueError(""k must be an integer of at least 2"")","raise ValueError(""XXk must be an integer of at least 2XX"")"
+pt13528.outliers.x_grubbs__mutmut_12,outliers,grubbs,numerical or logical,s = a.std(ddof=1) if a.size > 1 else 0.0,s = a.std(ddof=1) if (a.size > 1) or True else 0.0
+pt13528.outliers.x_grubbs__mutmut_15,outliers,grubbs,boundary (< or <=),s = a.std(ddof=1) if a.size > 1 else 0.0,s = a.std(ddof=1) if a.size >= 1 else 0.0
+pt13528.outliers.x_grubbs__mutmut_16,outliers,grubbs,numerical or logical,s = a.std(ddof=1) if a.size > 1 else 0.0,s = a.std(ddof=1) if a.size > 2 else 0.0
+pt13528.outliers.x_grubbs__mutmut_17,outliers,grubbs,numerical or logical,s = a.std(ddof=1) if a.size > 1 else 0.0,s = a.std(ddof=1) if a.size > 1 else 1.0
+pt13528.outliers.x_grubbs__mutmut_23,outliers,grubbs,input check,"raise ValueError(""Grubbs' test needs at least three non-identical results"")",raise ValueError(None)
+pt13528.outliers.x_grubbs__mutmut_24,outliers,grubbs,message text,"raise ValueError(""Grubbs' test needs at least three non-identical results"")","raise ValueError(""XXGrubbs' test needs at least three non-identical resultsXX"")"
+pt13528.outliers.x_grubbs__mutmut_25,outliers,grubbs,message text,"raise ValueError(""Grubbs' test needs at least three non-identical results"")","raise ValueError(""grubbs' test needs at least three non-identical results"")"
+pt13528.outliers.x_grubbs__mutmut_26,outliers,grubbs,message text,"raise ValueError(""Grubbs' test needs at least three non-identical results"")","raise ValueError(""GRUBBS' TEST NEEDS AT LEAST THREE NON-IDENTICAL RESULTS"")"
+pt13528.outliers.x_grubbs__mutmut_7,outliers,grubbs,input check,"raise ValueError(""values must be finite"")",raise ValueError(None)
+pt13528.outliers.x_grubbs__mutmut_8,outliers,grubbs,message text,"raise ValueError(""values must be finite"")","raise ValueError(""XXvalues must be finiteXX"")"
+pt13528.outliers.x_grubbs__mutmut_9,outliers,grubbs,message text,"raise ValueError(""values must be finite"")","raise ValueError(""VALUES MUST BE FINITE"")"
+pt13528.outliers.x_grubbs_critical__mutmut_1,outliers,grubbs_critical,default argument,"def grubbs_critical(n: int, alpha: float = 0.01) -> float:","def grubbs_critical(n: int, alpha: float = 1.01) -> float:"
+pt13528.outliers.x_grubbs_critical__mutmut_10,outliers,grubbs_critical,message text,"raise ValueError(""n must be an integer of at least 3"")","raise ValueError(""N MUST BE AN INTEGER OF AT LEAST 3"")"
+pt13528.outliers.x_grubbs_critical__mutmut_16,outliers,grubbs_critical,input check,"raise ValueError(""alpha must lie between 0 and 1"")",raise ValueError(None)
+pt13528.outliers.x_grubbs_critical__mutmut_17,outliers,grubbs_critical,message text,"raise ValueError(""alpha must lie between 0 and 1"")","raise ValueError(""XXalpha must lie between 0 and 1XX"")"
+pt13528.outliers.x_grubbs_critical__mutmut_18,outliers,grubbs_critical,message text,"raise ValueError(""alpha must lie between 0 and 1"")","raise ValueError(""ALPHA MUST LIE BETWEEN 0 AND 1"")"
+pt13528.outliers.x_grubbs_critical__mutmut_3,outliers,grubbs_critical,input check,"if isinstance(n, bool) or int(n) != n or n < 3:","if isinstance(n, bool) and int(n) != n or n < 3:"
+pt13528.outliers.x_grubbs_critical__mutmut_8,outliers,grubbs_critical,input check,"raise ValueError(""n must be an integer of at least 3"")",raise ValueError(None)
+pt13528.outliers.x_grubbs_critical__mutmut_9,outliers,grubbs_critical,message text,"raise ValueError(""n must be an integer of at least 3"")","raise ValueError(""XXn must be an integer of at least 3XX"")"
+pt13528.record.x_round_record__mutmut_11,record,round_record,numerical or logical,if p < 1 or not np.all(np.isfinite(a)):,if p < 1 and not np.all(np.isfinite(a)):
+pt13528.record.x_round_record__mutmut_17,record,round_record,input check,"raise ValueError(""x must contain at least one result and only finite numbers"")",raise ValueError(None)
+pt13528.record.x_round_record__mutmut_179,record,round_record,numerical or logical,"scores.classify_z(s, action, warning), ui, zeta,","scores.classify_z(s, action, ), ui, zeta,"
+pt13528.record.x_round_record__mutmut_18,record,round_record,message text,"raise ValueError(""x must contain at least one result and only finite numbers"")","raise ValueError(""XXx must contain at least one result and only finite numbersXX"")"
+pt13528.record.x_round_record__mutmut_180,record,round_record,numerical or logical,"None if zeta is None else scores.classify_z(zeta, action, warning),","None if (zeta is None) and False else scores.classify_z(zeta, action, warning),"
+pt13528.record.x_round_record__mutmut_188,record,round_record,numerical or logical,"None if zeta is None else scores.classify_z(zeta, action, warning),","None if zeta is None else scores.classify_z(zeta, action, ),"
+pt13528.record.x_round_record__mutmut_19,record,round_record,message text,"raise ValueError(""x must contain at least one result and only finite numbers"")","raise ValueError(""X MUST CONTAIN AT LEAST ONE RESULT AND ONLY FINITE NUMBERS"")"
+pt13528.record.x_round_record__mutmut_206,record,round_record,unchecked result field,"""x_pt"": _METHOD_CLAUSE.get(method, ""7""),","""x_pt"": _METHOD_CLAUSE.get(method, None),"
+pt13528.record.x_round_record__mutmut_208,record,round_record,numerical or logical,"""x_pt"": _METHOD_CLAUSE.get(method, ""7""),","""x_pt"": _METHOD_CLAUSE.get(method, ),"
+pt13528.record.x_round_record__mutmut_209,record,round_record,message text,"""x_pt"": _METHOD_CLAUSE.get(method, ""7""),","""x_pt"": _METHOD_CLAUSE.get(method, ""XX7XX""),"
+pt13528.record.x_round_record__mutmut_218,record,round_record,message text,"""u_x_pt"": ""7.7.7, Formula (6)"" if method in (""algorithm_a"", ""median"", ""q_hampel"") else ""7.2"",","""u_x_pt"": ""7.7.7, Formula (6)"" if method in (""XXalgorithm_aXX"", ""median"", ""q_hampel"") else ""7.2"","
+pt13528.record.x_round_record__mutmut_219,record,round_record,message text,"""u_x_pt"": ""7.7.7, Formula (6)"" if method in (""algorithm_a"", ""median"", ""q_hampel"") else ""7.2"",","""u_x_pt"": ""7.7.7, Formula (6)"" if method in (""ALGORITHM_A"", ""median"", ""q_hampel"") else ""7.2"","
+pt13528.record.x_round_record__mutmut_22,record,round_record,tolerance or iteration guard,labels = [str(i + 1) for i in range(p)],labels = [str(None) for i in range(p)]
+pt13528.record.x_round_record__mutmut_222,record,round_record,message text,"""u_x_pt"": ""7.7.7, Formula (6)"" if method in (""algorithm_a"", ""median"", ""q_hampel"") else ""7.2"",","""u_x_pt"": ""7.7.7, Formula (6)"" if method in (""algorithm_a"", ""median"", ""XXq_hampelXX"") else ""7.2"","
+pt13528.record.x_round_record__mutmut_223,record,round_record,message text,"""u_x_pt"": ""7.7.7, Formula (6)"" if method in (""algorithm_a"", ""median"", ""q_hampel"") else ""7.2"",","""u_x_pt"": ""7.7.7, Formula (6)"" if method in (""algorithm_a"", ""median"", ""Q_HAMPEL"") else ""7.2"","
+pt13528.record.x_round_record__mutmut_23,record,round_record,tolerance or iteration guard,labels = [str(i + 1) for i in range(p)],labels = [str(i - 1) for i in range(p)]
+pt13528.record.x_round_record__mutmut_234,record,round_record,message text,"""uncertainty_negligible"": ""9.2.1, Formula (10)"",","""XXuncertainty_negligibleXX"": ""9.2.1, Formula (10)"","
+pt13528.record.x_round_record__mutmut_235,record,round_record,message text,"""uncertainty_negligible"": ""9.2.1, Formula (10)"",","""UNCERTAINTY_NEGLIGIBLE"": ""9.2.1, Formula (10)"","
+pt13528.record.x_round_record__mutmut_236,record,round_record,message text,"""uncertainty_negligible"": ""9.2.1, Formula (10)"",","""uncertainty_negligible"": ""XX9.2.1, Formula (10)XX"","
+pt13528.record.x_round_record__mutmut_237,record,round_record,message text,"""uncertainty_negligible"": ""9.2.1, Formula (10)"",","""uncertainty_negligible"": ""9.2.1, formula (10)"","
+pt13528.record.x_round_record__mutmut_238,record,round_record,message text,"""uncertainty_negligible"": ""9.2.1, Formula (10)"",","""uncertainty_negligible"": ""9.2.1, FORMULA (10)"","
+pt13528.record.x_round_record__mutmut_24,record,round_record,tolerance or iteration guard,labels = [str(i + 1) for i in range(p)],labels = [str(i + 2) for i in range(p)]
+pt13528.record.x_round_record__mutmut_252,record,round_record,message text,"""signal"": ""9.4.2"",","""XXsignalXX"": ""9.4.2"","
+pt13528.record.x_round_record__mutmut_253,record,round_record,message text,"""signal"": ""9.4.2"",","""SIGNAL"": ""9.4.2"","
+pt13528.record.x_round_record__mutmut_254,record,round_record,message text,"""signal"": ""9.4.2"",","""signal"": ""XX9.4.2XX"","
+pt13528.record.x_round_record__mutmut_255,record,round_record,message text,"""zeta"": ""9.6.1, Formula (19)"",","""XXzetaXX"": ""9.6.1, Formula (19)"","
+pt13528.record.x_round_record__mutmut_256,record,round_record,message text,"""zeta"": ""9.6.1, Formula (19)"",","""ZETA"": ""9.6.1, Formula (19)"","
+pt13528.record.x_round_record__mutmut_257,record,round_record,message text,"""zeta"": ""9.6.1, Formula (19)"",","""zeta"": ""XX9.6.1, Formula (19)XX"","
+pt13528.record.x_round_record__mutmut_258,record,round_record,message text,"""zeta"": ""9.6.1, Formula (19)"",","""zeta"": ""9.6.1, formula (19)"","
+pt13528.record.x_round_record__mutmut_259,record,round_record,message text,"""zeta"": ""9.6.1, Formula (19)"",","""zeta"": ""9.6.1, FORMULA (19)"","
+pt13528.record.x_round_record__mutmut_264,record,round_record,unchecked result field,"return RoundRecord(float(x_pt), float(u_x_pt), method, float(sigma_pt), source, p,","return RoundRecord(float(x_pt), float(u_x_pt), method, float(sigma_pt), None, p,"
+pt13528.record.x_round_record__mutmut_27,record,round_record,input check,"raise ValueError(""labels and x differ in length"")",raise ValueError(None)
+pt13528.record.x_round_record__mutmut_28,record,round_record,message text,"raise ValueError(""labels and x differ in length"")","raise ValueError(""XXlabels and x differ in lengthXX"")"
+pt13528.record.x_round_record__mutmut_29,record,round_record,message text,"raise ValueError(""labels and x differ in length"")","raise ValueError(""LABELS AND X DIFFER IN LENGTH"")"
+pt13528.record.x_round_record__mutmut_33,record,round_record,input check,"raise ValueError(""u_x and x differ in length"")",raise ValueError(None)
+pt13528.record.x_round_record__mutmut_34,record,round_record,message text,"raise ValueError(""u_x and x differ in length"")","raise ValueError(""XXu_x and x differ in lengthXX"")"
+pt13528.record.x_round_record__mutmut_35,record,round_record,message text,"raise ValueError(""u_x and x differ in length"")","raise ValueError(""U_X AND X DIFFER IN LENGTH"")"
+pt13528.record.x_round_record__mutmut_43,record,round_record,input check,"raise ValueError(""statistic is 'auto', 'z' or 'z_prime'"")",raise ValueError(None)
+pt13528.record.x_round_record__mutmut_44,record,round_record,message text,"raise ValueError(""statistic is 'auto', 'z' or 'z_prime'"")","raise ValueError(""XXstatistic is 'auto', 'z' or 'z_prime'XX"")"
+pt13528.record.x_round_record__mutmut_45,record,round_record,message text,"raise ValueError(""statistic is 'auto', 'z' or 'z_prime'"")","raise ValueError(""STATISTIC IS 'AUTO', 'Z' OR 'Z_PRIME'"")"
+pt13528.record.x_round_record__mutmut_48,record,round_record,input check,"raise ValueError(""u_x_pt is given without x_pt"")",raise ValueError(None)
+pt13528.record.x_round_record__mutmut_49,record,round_record,message text,"raise ValueError(""u_x_pt is given without x_pt"")","raise ValueError(""XXu_x_pt is given without x_ptXX"")"
+pt13528.record.x_round_record__mutmut_50,record,round_record,message text,"raise ValueError(""u_x_pt is given without x_pt"")","raise ValueError(""U_X_PT IS GIVEN WITHOUT X_PT"")"
+pt13528.record.x_round_record__mutmut_60,record,round_record,input check,"raise ValueError(""an assigned value needs its standard uncertainty u_x_pt (7.2)"")",raise ValueError(None)
+pt13528.record.x_round_record__mutmut_61,record,round_record,message text,"raise ValueError(""an assigned value needs its standard uncertainty u_x_pt (7.2)"")","raise ValueError(""XXan assigned value needs its standard uncertainty u_x_pt (7.2)XX"")"
+pt13528.record.x_round_record__mutmut_62,record,round_record,message text,"raise ValueError(""an assigned value needs its standard uncertainty u_x_pt (7.2)"")","raise ValueError(""AN ASSIGNED VALUE NEEDS ITS STANDARD UNCERTAINTY U_X_PT (7.2)"")"
+pt13528.record.x_round_record__mutmut_68,record,round_record,input check,"raise ValueError(""sigma_pt is required when x_pt is given"")",raise ValueError(None)
+pt13528.record.x_round_record__mutmut_69,record,round_record,message text,"raise ValueError(""sigma_pt is required when x_pt is given"")","raise ValueError(""XXsigma_pt is required when x_pt is givenXX"")"
+pt13528.record.x_round_record__mutmut_70,record,round_record,message text,"raise ValueError(""sigma_pt is required when x_pt is given"")","raise ValueError(""SIGMA_PT IS REQUIRED WHEN X_PT IS GIVEN"")"
+pt13528.record.x_round_record__mutmut_74,record,round_record,message text,"sigma_pt, source = float(scale), ""participant results of this round (8.6)""","sigma_pt, source = float(scale), ""PARTICIPANT RESULTS OF THIS ROUND (8.6)"""
+pt13528.record.x_round_record__mutmut_78,record,round_record,message text,"raise ValueError(""the standard deviation of the results is zero ""","raise ValueError(""XXthe standard deviation of the results is zero XX"""
+pt13528.record.x_round_record__mutmut_79,record,round_record,message text,"raise ValueError(""the standard deviation of the results is zero ""","raise ValueError(""THE STANDARD DEVIATION OF THE RESULTS IS ZERO """
+pt13528.record.x_round_record__mutmut_80,record,round_record,message text,"""(too many identical results); give sigma_pt"")","""XX(too many identical results); give sigma_ptXX"")"
+pt13528.record.x_round_record__mutmut_83,record,round_record,message text,"source = ""set by the provider (8.2 to 8.5)""","source = ""XXset by the provider (8.2 to 8.5)XX"""
+pt13528.record.x_round_record__mutmut_84,record,round_record,message text,"source = ""set by the provider (8.2 to 8.5)""","source = ""SET BY THE PROVIDER (8.2 TO 8.5)"""
+pt13528.record.x_round_record__mutmut_85,record,round_record,numerical or logical,if sigma_pt <= 0:,if sigma_pt < 0:
+pt13528.record.x_round_record__mutmut_87,record,round_record,input check,"raise ValueError(""sigma_pt must be positive"")",raise ValueError(None)
+pt13528.record.x_round_record__mutmut_88,record,round_record,message text,"raise ValueError(""sigma_pt must be positive"")","raise ValueError(""XXsigma_pt must be positiveXX"")"
+pt13528.record.x_round_record__mutmut_89,record,round_record,message text,"raise ValueError(""sigma_pt must be positive"")","raise ValueError(""SIGMA_PT MUST BE POSITIVE"")"
+pt13528.record.x_round_record__mutmut_92,record,round_record,input check,"raise ValueError(""u(x_pt) cannot be negative"")",raise ValueError(None)
+pt13528.record.x_round_record__mutmut_93,record,round_record,message text,"raise ValueError(""u(x_pt) cannot be negative"")","raise ValueError(""XXu(x_pt) cannot be negativeXX"")"
+pt13528.record.x_round_record__mutmut_94,record,round_record,message text,"raise ValueError(""u(x_pt) cannot be negative"")","raise ValueError(""U(X_PT) CANNOT BE NEGATIVE"")"
+pt13528.record.xǁRoundRecordǁsummary__mutmut_20,record,.RoundRecord.summary,message text,"d.update({""n_"" + k.replace("" "", ""_""): v for k, v in counts.items()})","d.update({""n_"" + k.replace(""XX XX"", ""_""): v for k, v in counts.items()})"
+pt13528.record.xǁRoundRecordǁsummary__mutmut_21,record,.RoundRecord.summary,message text,"d.update({""n_"" + k.replace("" "", ""_""): v for k, v in counts.items()})","d.update({""n_"" + k.replace("" "", ""XX_XX""): v for k, v in counts.items()})"
+pt13528.robust.x__psi__mutmut_10,robust,psi,numerical or logical,"out = np.where(a <= 1.5, q, np.where(a <= 3.0, 1.5 * np.sign(q),","out = np.where(a < 1.5, q, np.where(a <= 3.0, 1.5 * np.sign(q),"
+pt13528.robust.x__psi__mutmut_18,robust,psi,numerical or logical,"out = np.where(a <= 1.5, q, np.where(a <= 3.0, 1.5 * np.sign(q),","out = np.where(a <= 1.5, q, np.where(a < 3.0, 1.5 * np.sign(q),"
+pt13528.robust.x__psi__mutmut_20,robust,psi,numerical or logical,"out = np.where(a <= 1.5, q, np.where(a <= 3.0, 1.5 * np.sign(q),","out = np.where(a <= 1.5, q, np.where(a <= 3.0, 1.5 / np.sign(q),"
+pt13528.robust.x__psi__mutmut_29,robust,psi,numerical or logical,"np.where(a <= 4.5, (4.5 - a) * np.sign(q), 0.0)))","np.where(a < 4.5, (4.5 - a) * np.sign(q), 0.0)))"
+pt13528.robust.x__psi__mutmut_31,robust,psi,numerical or logical,"np.where(a <= 4.5, (4.5 - a) * np.sign(q), 0.0)))","np.where(a <= 4.5, (4.5 - a) / np.sign(q), 0.0)))"
+pt13528.robust.x__sig3__mutmut_2,robust,sig3,numerical or logical,if v == 0:,if v == 1:
+pt13528.robust.x__sig3__mutmut_3,robust,sig3,numerical or logical,return 0.0,return 1.0
+pt13528.robust.x__stopping__mutmut_13,robust,stopping,input check,"raise ValueError(""tol must be a positive number, 'iso2022', 'iso2022-from-start' or 'equivalent-figure'"")",raise ValueError(None)
+pt13528.robust.x__stopping__mutmut_14,robust,stopping,message text,"raise ValueError(""tol must be a positive number, 'iso2022', 'iso2022-from-start' or 'equivalent-figure'"")","raise ValueError(""XXtol must be a positive number, 'iso2022', 'iso2022-from-start' or 'equivalent-figure'XX"")"
+pt13528.robust.x__stopping__mutmut_15,robust,stopping,message text,"raise ValueError(""tol must be a positive number, 'iso2022', 'iso2022-from-start' or 'equivalent-figure'"")","raise ValueError(""TOL MUST BE A POSITIVE NUMBER, 'ISO2022', 'ISO2022-FROM-START' OR 'EQUIVALENT-FIGURE'"")"
+pt13528.robust.x__stopping__mutmut_2,robust,stopping,input check,"raise ValueError(""tol must be a positive number, 'iso2022', 'iso2022-from-start' or 'equivalent-figure'"")",raise ValueError(None)
+pt13528.robust.x__stopping__mutmut_3,robust,stopping,message text,"raise ValueError(""tol must be a positive number, 'iso2022', 'iso2022-from-start' or 'equivalent-figure'"")","raise ValueError(""XXtol must be a positive number, 'iso2022', 'iso2022-from-start' or 'equivalent-figure'XX"")"
+pt13528.robust.x__stopping__mutmut_4,robust,stopping,message text,"raise ValueError(""tol must be a positive number, 'iso2022', 'iso2022-from-start' or 'equivalent-figure'"")","raise ValueError(""TOL MUST BE A POSITIVE NUMBER, 'ISO2022', 'ISO2022-FROM-START' OR 'EQUIVALENT-FIGURE'"")"
+pt13528.robust.x_algorithm_a__mutmut_1,robust,algorithm_a,default argument,"def algorithm_a(x: Iterable[float], tol: str | float = DEFAULT_TOL, max_iter: int = 100_000,","def algorithm_a(x: Iterable[float], tol: str | float = DEFAULT_TOL, max_iter: int = 100001,"
+pt13528.robust.x_algorithm_a__mutmut_11,robust,algorithm_a,unchecked result field,"return RobustResult(location=float(a[0]), scale=0.0, iterations=0, converged=True, degenerate=True)","return RobustResult(location=None, scale=0.0, iterations=0, converged=True, degenerate=True)"
+pt13528.robust.x_algorithm_a__mutmut_12,robust,algorithm_a,unchecked result field,"return RobustResult(location=float(a[0]), scale=0.0, iterations=0, converged=True, degenerate=True)","return RobustResult(location=float(a[0]), scale=None, iterations=0, converged=True, degenerate=True)"
+pt13528.robust.x_algorithm_a__mutmut_121,robust,algorithm_a,unchecked result field,d = 2 - int(math.floor(math.log10(m * new_s))) if new_s > 0 else 0,d = None
+pt13528.robust.x_algorithm_a__mutmut_122,robust,algorithm_a,numerical or logical,d = 2 - int(math.floor(math.log10(m * new_s))) if new_s > 0 else 0,d = 2 - int(math.floor(math.log10(m * new_s))) if (new_s > 0) and False else 0
+pt13528.robust.x_algorithm_a__mutmut_123,robust,algorithm_a,numerical or logical,d = 2 - int(math.floor(math.log10(m * new_s))) if new_s > 0 else 0,d = 2 - int(math.floor(math.log10(m * new_s))) if (new_s > 0) or True else 0
+pt13528.robust.x_algorithm_a__mutmut_124,robust,algorithm_a,numerical or logical,d = 2 - int(math.floor(math.log10(m * new_s))) if new_s > 0 else 0,d = 2 + int(math.floor(math.log10(m * new_s))) if new_s > 0 else 0
+pt13528.robust.x_algorithm_a__mutmut_129,robust,algorithm_a,numerical or logical,d = 2 - int(math.floor(math.log10(m * new_s))) if new_s > 0 else 0,d = 2 - int(math.floor(math.log10(m / new_s))) if new_s > 0 else 0
+pt13528.robust.x_algorithm_a__mutmut_130,robust,algorithm_a,boundary (< or <=),d = 2 - int(math.floor(math.log10(m * new_s))) if new_s > 0 else 0,d = 2 - int(math.floor(math.log10(m * new_s))) if new_s >= 0 else 0
+pt13528.robust.x_algorithm_a__mutmut_131,robust,algorithm_a,numerical or logical,d = 2 - int(math.floor(math.log10(m * new_s))) if new_s > 0 else 0,d = 2 - int(math.floor(math.log10(m * new_s))) if new_s > 1 else 0
+pt13528.robust.x_algorithm_a__mutmut_132,robust,algorithm_a,numerical or logical,d = 2 - int(math.floor(math.log10(m * new_s))) if new_s > 0 else 0,d = 2 - int(math.floor(math.log10(m * new_s))) if new_s > 0 else 1
+pt13528.robust.x_algorithm_a__mutmut_14,robust,algorithm_a,unchecked result field,"return RobustResult(location=float(a[0]), scale=0.0, iterations=0, converged=True, degenerate=True)","return RobustResult(location=float(a[0]), scale=0.0, iterations=0, converged=None, degenerate=True)"
+pt13528.robust.x_algorithm_a__mutmut_16,robust,algorithm_a,numerical or logical,"return RobustResult(location=float(a[0]), scale=0.0, iterations=0, converged=True, degenerate=True)","return RobustResult(scale=0.0, iterations=0, converged=True, degenerate=True)"
+pt13528.robust.x_algorithm_a__mutmut_17,robust,algorithm_a,numerical or logical,"return RobustResult(location=float(a[0]), scale=0.0, iterations=0, converged=True, degenerate=True)","return RobustResult(location=float(a[0]), iterations=0, converged=True, degenerate=True)"
+pt13528.robust.x_algorithm_a__mutmut_184,robust,algorithm_a,numerical or logical,done = abs(new_x - x_star) < limit and abs(new_s - s_star) < limit,done = abs(new_x - x_star) <= limit and abs(new_s - s_star) < limit
+pt13528.robust.x_algorithm_a__mutmut_187,robust,algorithm_a,numerical or logical,done = abs(new_x - x_star) < limit and abs(new_s - s_star) < limit,done = abs(new_x - x_star) < limit and abs(new_s - s_star) <= limit
+pt13528.robust.x_algorithm_a__mutmut_19,robust,algorithm_a,numerical or logical,"return RobustResult(location=float(a[0]), scale=0.0, iterations=0, converged=True, degenerate=True)","return RobustResult(location=float(a[0]), scale=0.0, iterations=0, degenerate=True)"
+pt13528.robust.x_algorithm_a__mutmut_194,robust,algorithm_a,message text,"if it == 1 and tol in (""iso2022"", ""equivalent-figure""):","if it == 1 and tol in (""iso2022"", ""XXequivalent-figureXX""):"
+pt13528.robust.x_algorithm_a__mutmut_195,robust,algorithm_a,message text,"if it == 1 and tol in (""iso2022"", ""equivalent-figure""):","if it == 1 and tol in (""iso2022"", ""EQUIVALENT-FIGURE""):"
+pt13528.robust.x_algorithm_a__mutmut_196,robust,algorithm_a,unchecked result field,"done = False                    # ""from one iteration to the next"": the starting values (median,","done = None                    # ""from one iteration to the next"": the starting values (median,"
+pt13528.robust.x_algorithm_a__mutmut_198,robust,algorithm_a,tolerance or iteration guard,if new_s < _COLLAPSE * s_0:,if new_s <= _COLLAPSE * s_0:
+pt13528.robust.x_algorithm_a__mutmut_199,robust,algorithm_a,tolerance or iteration guard,if new_s < _COLLAPSE * s_0:,if new_s < _COLLAPSE / s_0:
+pt13528.robust.x_algorithm_a__mutmut_200,robust,algorithm_a,unchecked result field,"return RobustResult(location=c + m * new_x, scale=0.0, iterations=it, converged=True, degenerate=True)","return RobustResult(location=None, scale=0.0, iterations=it, converged=True, degenerate=True)"
+pt13528.robust.x_algorithm_a__mutmut_201,robust,algorithm_a,unchecked result field,"return RobustResult(location=c + m * new_x, scale=0.0, iterations=it, converged=True, degenerate=True)","return RobustResult(location=c + m * new_x, scale=None, iterations=it, converged=True, degenerate=True)"
+pt13528.robust.x_algorithm_a__mutmut_202,robust,algorithm_a,unchecked result field,"return RobustResult(location=c + m * new_x, scale=0.0, iterations=it, converged=True, degenerate=True)","return RobustResult(location=c + m * new_x, scale=0.0, iterations=None, converged=True, degenerate=True)"
+pt13528.robust.x_algorithm_a__mutmut_203,robust,algorithm_a,unchecked result field,"return RobustResult(location=c + m * new_x, scale=0.0, iterations=it, converged=True, degenerate=True)","return RobustResult(location=c + m * new_x, scale=0.0, iterations=it, converged=None, degenerate=True)"
+pt13528.robust.x_algorithm_a__mutmut_204,robust,algorithm_a,unchecked result field,"return RobustResult(location=c + m * new_x, scale=0.0, iterations=it, converged=True, degenerate=True)","return RobustResult(location=c + m * new_x, scale=0.0, iterations=it, converged=True, degenerate=None)"
+pt13528.robust.x_algorithm_a__mutmut_205,robust,algorithm_a,numerical or logical,"return RobustResult(location=c + m * new_x, scale=0.0, iterations=it, converged=True, degenerate=True)","return RobustResult(scale=0.0, iterations=it, converged=True, degenerate=True)"
+pt13528.robust.x_algorithm_a__mutmut_206,robust,algorithm_a,numerical or logical,"return RobustResult(location=c + m * new_x, scale=0.0, iterations=it, converged=True, degenerate=True)","return RobustResult(location=c + m * new_x, iterations=it, converged=True, degenerate=True)"
+pt13528.robust.x_algorithm_a__mutmut_207,robust,algorithm_a,numerical or logical,"return RobustResult(location=c + m * new_x, scale=0.0, iterations=it, converged=True, degenerate=True)","return RobustResult(location=c + m * new_x, scale=0.0, converged=True, degenerate=True)"
+pt13528.robust.x_algorithm_a__mutmut_208,robust,algorithm_a,numerical or logical,"return RobustResult(location=c + m * new_x, scale=0.0, iterations=it, converged=True, degenerate=True)","return RobustResult(location=c + m * new_x, scale=0.0, iterations=it, degenerate=True)"
+pt13528.robust.x_algorithm_a__mutmut_209,robust,algorithm_a,numerical or logical,"return RobustResult(location=c + m * new_x, scale=0.0, iterations=it, converged=True, degenerate=True)","return RobustResult(location=c + m * new_x, scale=0.0, iterations=it, converged=True, )"
+pt13528.robust.x_algorithm_a__mutmut_210,robust,algorithm_a,numerical or logical,"return RobustResult(location=c + m * new_x, scale=0.0, iterations=it, converged=True, degenerate=True)","return RobustResult(location=c - m * new_x, scale=0.0, iterations=it, converged=True, degenerate=True)"
+pt13528.robust.x_algorithm_a__mutmut_211,robust,algorithm_a,numerical or logical,"return RobustResult(location=c + m * new_x, scale=0.0, iterations=it, converged=True, degenerate=True)","return RobustResult(location=c + m / new_x, scale=0.0, iterations=it, converged=True, degenerate=True)"
+pt13528.robust.x_algorithm_a__mutmut_212,robust,algorithm_a,numerical or logical,"return RobustResult(location=c + m * new_x, scale=0.0, iterations=it, converged=True, degenerate=True)","return RobustResult(location=c + m * new_x, scale=1.0, iterations=it, converged=True, degenerate=True)"
+pt13528.robust.x_algorithm_a__mutmut_213,robust,algorithm_a,numerical or logical,"return RobustResult(location=c + m * new_x, scale=0.0, iterations=it, converged=True, degenerate=True)","return RobustResult(location=c + m * new_x, scale=0.0, iterations=it, converged=False, degenerate=True)"
+pt13528.robust.x_algorithm_a__mutmut_214,robust,algorithm_a,numerical or logical,"return RobustResult(location=c + m * new_x, scale=0.0, iterations=it, converged=True, degenerate=True)","return RobustResult(location=c + m * new_x, scale=0.0, iterations=it, converged=True, degenerate=False)"
+pt13528.robust.x_algorithm_a__mutmut_217,robust,algorithm_a,boundary (< or <=),inside = a[(a >= lo) & (a <= hi)],inside = a[(a > lo) & (a <= hi)]
+pt13528.robust.x_algorithm_a__mutmut_218,robust,algorithm_a,numerical or logical,inside = a[(a >= lo) & (a <= hi)],inside = a[(a >= lo) & (a < hi)]
+pt13528.robust.x_algorithm_a__mutmut_221,robust,algorithm_a,numerical or logical,if inside.size and inside[0] == inside[-1] and new_s < s_star:,if inside.size and inside[1] == inside[-1] and new_s < s_star:
+pt13528.robust.x_algorithm_a__mutmut_224,robust,algorithm_a,numerical or logical,if inside.size and inside[0] == inside[-1] and new_s < s_star:,if inside.size and inside[0] == inside[-2] and new_s < s_star:
+pt13528.robust.x_algorithm_a__mutmut_225,robust,algorithm_a,numerical or logical,if inside.size and inside[0] == inside[-1] and new_s < s_star:,if inside.size and inside[0] == inside[-1] and new_s <= s_star:
+pt13528.robust.x_algorithm_a__mutmut_23,robust,algorithm_a,numerical or logical,"return RobustResult(location=float(a[0]), scale=0.0, iterations=0, converged=True, degenerate=True)","return RobustResult(location=float(a[0]), scale=1.0, iterations=0, converged=True, degenerate=True)"
+pt13528.robust.x_algorithm_a__mutmut_232,robust,algorithm_a,tolerance or iteration guard,if ratio is not None and abs(r - ratio) <= 1e-12:,if ratio is not None and abs(r - ratio) < 1e-12:
+pt13528.robust.x_algorithm_a__mutmut_233,robust,algorithm_a,tolerance or iteration guard,if ratio is not None and abs(r - ratio) <= 1e-12:,if ratio is not None and abs(r - ratio) <= 1.000000000001:
+pt13528.robust.x_algorithm_a__mutmut_244,robust,algorithm_a,numerical or logical,"return RobustResult(location=c + m * float(inside[0]), scale=0.0, iterations=it,","return RobustResult(location=c - m * float(inside[0]), scale=0.0, iterations=it,"
+pt13528.robust.x_algorithm_a__mutmut_247,robust,algorithm_a,numerical or logical,"return RobustResult(location=c + m * float(inside[0]), scale=0.0, iterations=it,","return RobustResult(location=c + m * float(inside[1]), scale=0.0, iterations=it,"
+pt13528.robust.x_algorithm_a__mutmut_25,robust,algorithm_a,numerical or logical,"return RobustResult(location=float(a[0]), scale=0.0, iterations=0, converged=True, degenerate=True)","return RobustResult(location=float(a[0]), scale=0.0, iterations=0, converged=False, degenerate=True)"
+pt13528.robust.x_algorithm_a__mutmut_269,robust,algorithm_a,tolerance or iteration guard,"return RobustResult(location=c + m * x_star, scale=m * s_star, iterations=max_iter, converged=False,","return RobustResult(location=None, scale=m * s_star, iterations=max_iter, converged=False,"
+pt13528.robust.x_algorithm_a__mutmut_270,robust,algorithm_a,tolerance or iteration guard,"return RobustResult(location=c + m * x_star, scale=m * s_star, iterations=max_iter, converged=False,","return RobustResult(location=c + m * x_star, scale=None, iterations=max_iter, converged=False,"
+pt13528.robust.x_algorithm_a__mutmut_271,robust,algorithm_a,tolerance or iteration guard,"return RobustResult(location=c + m * x_star, scale=m * s_star, iterations=max_iter, converged=False,","return RobustResult(location=c + m * x_star, scale=m * s_star, iterations=None, converged=False,"
+pt13528.robust.x_algorithm_a__mutmut_272,robust,algorithm_a,tolerance or iteration guard,"return RobustResult(location=c + m * x_star, scale=m * s_star, iterations=max_iter, converged=False,","return RobustResult(location=c + m * x_star, scale=m * s_star, iterations=max_iter, converged=None,"
+pt13528.robust.x_algorithm_a__mutmut_273,robust,algorithm_a,unchecked result field,degenerate=False),degenerate=None)
+pt13528.robust.x_algorithm_a__mutmut_274,robust,algorithm_a,tolerance or iteration guard,"return RobustResult(location=c + m * x_star, scale=m * s_star, iterations=max_iter, converged=False,","return RobustResult(scale=m * s_star, iterations=max_iter, converged=False,"
+pt13528.robust.x_algorithm_a__mutmut_275,robust,algorithm_a,tolerance or iteration guard,"return RobustResult(location=c + m * x_star, scale=m * s_star, iterations=max_iter, converged=False,","return RobustResult(location=c + m * x_star, iterations=max_iter, converged=False,"
+pt13528.robust.x_algorithm_a__mutmut_276,robust,algorithm_a,tolerance or iteration guard,"return RobustResult(location=c + m * x_star, scale=m * s_star, iterations=max_iter, converged=False,","return RobustResult(location=c + m * x_star, scale=m * s_star, converged=False,"
+pt13528.robust.x_algorithm_a__mutmut_277,robust,algorithm_a,tolerance or iteration guard,"return RobustResult(location=c + m * x_star, scale=m * s_star, iterations=max_iter, converged=False, | degenerate=False)","return RobustResult(location=c + m * x_star, scale=m * s_star, iterations=max_iter, degenerate=False)"
+pt13528.robust.x_algorithm_a__mutmut_278,robust,algorithm_a,numerical or logical,degenerate=False),)
+pt13528.robust.x_algorithm_a__mutmut_279,robust,algorithm_a,tolerance or iteration guard,"return RobustResult(location=c + m * x_star, scale=m * s_star, iterations=max_iter, converged=False,","return RobustResult(location=c - m * x_star, scale=m * s_star, iterations=max_iter, converged=False,"
+pt13528.robust.x_algorithm_a__mutmut_280,robust,algorithm_a,tolerance or iteration guard,"return RobustResult(location=c + m * x_star, scale=m * s_star, iterations=max_iter, converged=False,","return RobustResult(location=c + m / x_star, scale=m * s_star, iterations=max_iter, converged=False,"
+pt13528.robust.x_algorithm_a__mutmut_281,robust,algorithm_a,tolerance or iteration guard,"return RobustResult(location=c + m * x_star, scale=m * s_star, iterations=max_iter, converged=False,","return RobustResult(location=c + m * x_star, scale=m / s_star, iterations=max_iter, converged=False,"
+pt13528.robust.x_algorithm_a__mutmut_282,robust,algorithm_a,tolerance or iteration guard,"return RobustResult(location=c + m * x_star, scale=m * s_star, iterations=max_iter, converged=False,","return RobustResult(location=c + m * x_star, scale=m * s_star, iterations=max_iter, converged=True,"
+pt13528.robust.x_algorithm_a__mutmut_283,robust,algorithm_a,numerical or logical,degenerate=False),degenerate=True)
+pt13528.robust.x_algorithm_a__mutmut_33,robust,algorithm_a,numerical or logical,if scale is not None and not (math.isfinite(scale) and scale > 0):,if scale is not None and not (math.isfinite(scale) and scale > 1):
+pt13528.robust.x_algorithm_a__mutmut_34,robust,algorithm_a,input check,"raise ValueError(""a given scale must be finite and positive"")",raise ValueError(None)
+pt13528.robust.x_algorithm_a__mutmut_35,robust,algorithm_a,message text,"raise ValueError(""a given scale must be finite and positive"")","raise ValueError(""XXa given scale must be finite and positiveXX"")"
+pt13528.robust.x_algorithm_a__mutmut_36,robust,algorithm_a,message text,"raise ValueError(""a given scale must be finite and positive"")","raise ValueError(""A GIVEN SCALE MUST BE FINITE AND POSITIVE"")"
+pt13528.robust.x_algorithm_a__mutmut_80,robust,algorithm_a,numerical or logical,"s_star = float(np.std(a, ddof=1))","s_star = float(np.std(a, ))"
+pt13528.robust.x_algorithm_a__mutmut_81,robust,algorithm_a,numerical or logical,"s_star = float(np.std(a, ddof=1))","s_star = float(np.std(a, ddof=2))"
+pt13528.robust.x_algorithm_a__mutmut_89,robust,algorithm_a,tolerance or iteration guard,"for it in range(1, max_iter + 1):","for it in range(1, max_iter - 1):"
+pt13528.robust.x_algorithm_a__mutmut_90,robust,algorithm_a,tolerance or iteration guard,"for it in range(1, max_iter + 1):","for it in range(1, max_iter + 2):"
+pt13528.robust.x_algorithm_s__mutmut_1,robust,algorithm_s,default argument,"def algorithm_s(w: Iterable[float], nu: int, tol: str | float = DEFAULT_TOL, max_iter: int = 100_000) -> RobustResult:","def algorithm_s(w: Iterable[float], nu: int, tol: str | float = DEFAULT_TOL, max_iter: int = 100001) -> RobustResult:"
+pt13528.robust.x_algorithm_s__mutmut_107,robust,algorithm_s,boundary (< or <=),"done = _sig3(m * new) == _sig3(m * w_star) and (it > 1 or tol == ""iso2022-from-start"")","done = _sig3(m * new) == _sig3(m * w_star) and (it >= 1 or tol == ""iso2022-from-start"")"
+pt13528.robust.x_algorithm_s__mutmut_108,robust,algorithm_s,numerical or logical,"done = _sig3(m * new) == _sig3(m * w_star) and (it > 1 or tol == ""iso2022-from-start"")","done = _sig3(m * new) == _sig3(m * w_star) and (it > 2 or tol == ""iso2022-from-start"")"
+pt13528.robust.x_algorithm_s__mutmut_109,robust,algorithm_s,numerical or logical,"done = _sig3(m * new) == _sig3(m * w_star) and (it > 1 or tol == ""iso2022-from-start"")","done = _sig3(m * new) == _sig3(m * w_star) and (it > 1 or tol != ""iso2022-from-start"")"
+pt13528.robust.x_algorithm_s__mutmut_110,robust,algorithm_s,message text,"done = _sig3(m * new) == _sig3(m * w_star) and (it > 1 or tol == ""iso2022-from-start"")","done = _sig3(m * new) == _sig3(m * w_star) and (it > 1 or tol == ""XXiso2022-from-startXX"")"
+pt13528.robust.x_algorithm_s__mutmut_111,robust,algorithm_s,message text,"done = _sig3(m * new) == _sig3(m * w_star) and (it > 1 or tol == ""iso2022-from-start"")","done = _sig3(m * new) == _sig3(m * w_star) and (it > 1 or tol == ""ISO2022-FROM-START"")"
+pt13528.robust.x_algorithm_s__mutmut_115,robust,algorithm_s,tolerance or iteration guard,"done = abs(new - w_star) < max(tol * new, _EPS * new)","done = abs(new - w_star) <= max(tol * new, _EPS * new)"
+pt13528.robust.x_algorithm_s__mutmut_120,robust,algorithm_s,tolerance or iteration guard,"done = abs(new - w_star) < max(tol * new, _EPS * new)","done = abs(new - w_star) < max(tol / new, _EPS * new)"
+pt13528.robust.x_algorithm_s__mutmut_121,robust,algorithm_s,tolerance or iteration guard,"done = abs(new - w_star) < max(tol * new, _EPS * new)","done = abs(new - w_star) < max(tol * new, _EPS / new)"
+pt13528.robust.x_algorithm_s__mutmut_126,robust,algorithm_s,unchecked result field,"return RobustResult(location=m * w_star, scale=m * w_star, iterations=it, converged=True,","return RobustResult(location=m * w_star, scale=m * w_star, iterations=it, converged=None,"
+pt13528.robust.x_algorithm_s__mutmut_127,robust,algorithm_s,unchecked result field,degenerate=False),degenerate=None)
+pt13528.robust.x_algorithm_s__mutmut_131,robust,algorithm_s,numerical or logical,"return RobustResult(location=m * w_star, scale=m * w_star, iterations=it, converged=True, | degenerate=False)","return RobustResult(location=m * w_star, scale=m * w_star, iterations=it, degenerate=False)"
+pt13528.robust.x_algorithm_s__mutmut_135,robust,algorithm_s,numerical or logical,"return RobustResult(location=m * w_star, scale=m * w_star, iterations=it, converged=True,","return RobustResult(location=m * w_star, scale=m * w_star, iterations=it, converged=False,"
+pt13528.robust.x_algorithm_s__mutmut_137,robust,algorithm_s,tolerance or iteration guard,"return RobustResult(location=m * w_star, scale=m * w_star, iterations=max_iter, converged=False,","return RobustResult(location=None, scale=m * w_star, iterations=max_iter, converged=False,"
+pt13528.robust.x_algorithm_s__mutmut_138,robust,algorithm_s,tolerance or iteration guard,"return RobustResult(location=m * w_star, scale=m * w_star, iterations=max_iter, converged=False,","return RobustResult(location=m * w_star, scale=None, iterations=max_iter, converged=False,"
+pt13528.robust.x_algorithm_s__mutmut_139,robust,algorithm_s,tolerance or iteration guard,"return RobustResult(location=m * w_star, scale=m * w_star, iterations=max_iter, converged=False,","return RobustResult(location=m * w_star, scale=m * w_star, iterations=None, converged=False,"
+pt13528.robust.x_algorithm_s__mutmut_140,robust,algorithm_s,tolerance or iteration guard,"return RobustResult(location=m * w_star, scale=m * w_star, iterations=max_iter, converged=False,","return RobustResult(location=m * w_star, scale=m * w_star, iterations=max_iter, converged=None,"
+pt13528.robust.x_algorithm_s__mutmut_141,robust,algorithm_s,unchecked result field,degenerate=False),degenerate=None)
+pt13528.robust.x_algorithm_s__mutmut_142,robust,algorithm_s,tolerance or iteration guard,"return RobustResult(location=m * w_star, scale=m * w_star, iterations=max_iter, converged=False,","return RobustResult(scale=m * w_star, iterations=max_iter, converged=False,"
+pt13528.robust.x_algorithm_s__mutmut_143,robust,algorithm_s,tolerance or iteration guard,"return RobustResult(location=m * w_star, scale=m * w_star, iterations=max_iter, converged=False,","return RobustResult(location=m * w_star, iterations=max_iter, converged=False,"
+pt13528.robust.x_algorithm_s__mutmut_144,robust,algorithm_s,tolerance or iteration guard,"return RobustResult(location=m * w_star, scale=m * w_star, iterations=max_iter, converged=False,","return RobustResult(location=m * w_star, scale=m * w_star, converged=False,"
+pt13528.robust.x_algorithm_s__mutmut_145,robust,algorithm_s,tolerance or iteration guard,"return RobustResult(location=m * w_star, scale=m * w_star, iterations=max_iter, converged=False, | degenerate=False)","return RobustResult(location=m * w_star, scale=m * w_star, iterations=max_iter, degenerate=False)"
+pt13528.robust.x_algorithm_s__mutmut_146,robust,algorithm_s,numerical or logical,degenerate=False),)
+pt13528.robust.x_algorithm_s__mutmut_147,robust,algorithm_s,tolerance or iteration guard,"return RobustResult(location=m * w_star, scale=m * w_star, iterations=max_iter, converged=False,","return RobustResult(location=m / w_star, scale=m * w_star, iterations=max_iter, converged=False,"
+pt13528.robust.x_algorithm_s__mutmut_148,robust,algorithm_s,tolerance or iteration guard,"return RobustResult(location=m * w_star, scale=m * w_star, iterations=max_iter, converged=False,","return RobustResult(location=m * w_star, scale=m / w_star, iterations=max_iter, converged=False,"
+pt13528.robust.x_algorithm_s__mutmut_149,robust,algorithm_s,tolerance or iteration guard,"return RobustResult(location=m * w_star, scale=m * w_star, iterations=max_iter, converged=False,","return RobustResult(location=m * w_star, scale=m * w_star, iterations=max_iter, converged=True,"
+pt13528.robust.x_algorithm_s__mutmut_150,robust,algorithm_s,numerical or logical,degenerate=False),degenerate=True)
+pt13528.robust.x_algorithm_s__mutmut_17,robust,algorithm_s,input check,"raise ValueError(""ranges and standard deviations cannot be negative"")",raise ValueError(None)
+pt13528.robust.x_algorithm_s__mutmut_18,robust,algorithm_s,message text,"raise ValueError(""ranges and standard deviations cannot be negative"")","raise ValueError(""XXranges and standard deviations cannot be negativeXX"")"
+pt13528.robust.x_algorithm_s__mutmut_19,robust,algorithm_s,message text,"raise ValueError(""ranges and standard deviations cannot be negative"")","raise ValueError(""RANGES AND STANDARD DEVIATIONS CANNOT BE NEGATIVE"")"
+pt13528.robust.x_algorithm_s__mutmut_22,robust,algorithm_s,numerical or logical,m = float(a[-1]),m = float(a[+1])
+pt13528.robust.x_algorithm_s__mutmut_23,robust,algorithm_s,numerical or logical,m = float(a[-1]),m = float(a[-2])
+pt13528.robust.x_algorithm_s__mutmut_4,robust,algorithm_s,input check,"if isinstance(nu, bool) or nu not in _ALG_S:","if isinstance(nu, bool) and nu not in _ALG_S:"
+pt13528.robust.x_algorithm_s__mutmut_52,robust,algorithm_s,numerical or logical,w_star = float(np.sqrt(np.mean(a ** 2))),w_star = float(np.sqrt(np.mean(a * 2)))
+pt13528.robust.x_algorithm_s__mutmut_53,robust,algorithm_s,numerical or logical,w_star = float(np.sqrt(np.mean(a ** 2))),w_star = float(np.sqrt(np.mean(a ** 3)))
+pt13528.robust.x_algorithm_s__mutmut_6,robust,algorithm_s,input check,"raise ValueError(""Table C.1 gives factors for nu = 1..10 only"")",raise ValueError(None)
+pt13528.robust.x_algorithm_s__mutmut_60,robust,algorithm_s,tolerance or iteration guard,"for it in range(1, max_iter + 1):","for it in range(1, max_iter - 1):"
+pt13528.robust.x_algorithm_s__mutmut_61,robust,algorithm_s,tolerance or iteration guard,"for it in range(1, max_iter + 1):","for it in range(1, max_iter + 2):"
+pt13528.robust.x_algorithm_s__mutmut_7,robust,algorithm_s,message text,"raise ValueError(""Table C.1 gives factors for nu = 1..10 only"")","raise ValueError(""XXTable C.1 gives factors for nu = 1..10 onlyXX"")"
+pt13528.robust.x_algorithm_s__mutmut_75,robust,algorithm_s,tolerance or iteration guard,if new < _COLLAPSE * w_0 or (new < w_star and not np.any(a[a <= psi] > 0)):,if new < _COLLAPSE * w_0 and (new < w_star and not np.any(a[a <= psi] > 0)):
+pt13528.robust.x_algorithm_s__mutmut_76,robust,algorithm_s,tolerance or iteration guard,if new < _COLLAPSE * w_0 or (new < w_star and not np.any(a[a <= psi] > 0)):,if new <= _COLLAPSE * w_0 or (new < w_star and not np.any(a[a <= psi] > 0)):
+pt13528.robust.x_algorithm_s__mutmut_77,robust,algorithm_s,tolerance or iteration guard,if new < _COLLAPSE * w_0 or (new < w_star and not np.any(a[a <= psi] > 0)):,if new < _COLLAPSE / w_0 or (new < w_star and not np.any(a[a <= psi] > 0)):
+pt13528.robust.x_algorithm_s__mutmut_79,robust,algorithm_s,tolerance or iteration guard,if new < _COLLAPSE * w_0 or (new < w_star and not np.any(a[a <= psi] > 0)):,if new < _COLLAPSE * w_0 or (new <= w_star and not np.any(a[a <= psi] > 0)):
+pt13528.robust.x_algorithm_s__mutmut_8,robust,algorithm_s,message text,"raise ValueError(""Table C.1 gives factors for nu = 1..10 only"")","raise ValueError(""table c.1 gives factors for nu = 1..10 only"")"
+pt13528.robust.x_algorithm_s__mutmut_82,robust,algorithm_s,tolerance or iteration guard,if new < _COLLAPSE * w_0 or (new < w_star and not np.any(a[a <= psi] > 0)):,if new < _COLLAPSE * w_0 or (new < w_star and not np.any(a[a < psi] > 0)):
+pt13528.robust.x_algorithm_s__mutmut_83,robust,algorithm_s,tolerance or iteration guard,if new < _COLLAPSE * w_0 or (new < w_star and not np.any(a[a <= psi] > 0)):,if new < _COLLAPSE * w_0 or (new < w_star and not np.any(a[a <= psi] >= 0)):
+pt13528.robust.x_algorithm_s__mutmut_86,robust,algorithm_s,unchecked result field,"return RobustResult(location=0.0, scale=0.0, iterations=it, converged=True, degenerate=True)","return RobustResult(location=0.0, scale=None, iterations=it, converged=True, degenerate=True)"
+pt13528.robust.x_algorithm_s__mutmut_87,robust,algorithm_s,unchecked result field,"return RobustResult(location=0.0, scale=0.0, iterations=it, converged=True, degenerate=True)","return RobustResult(location=0.0, scale=0.0, iterations=None, converged=True, degenerate=True)"
+pt13528.robust.x_algorithm_s__mutmut_88,robust,algorithm_s,unchecked result field,"return RobustResult(location=0.0, scale=0.0, iterations=it, converged=True, degenerate=True)","return RobustResult(location=0.0, scale=0.0, iterations=it, converged=None, degenerate=True)"
+pt13528.robust.x_algorithm_s__mutmut_9,robust,algorithm_s,message text,"raise ValueError(""Table C.1 gives factors for nu = 1..10 only"")","raise ValueError(""TABLE C.1 GIVES FACTORS FOR NU = 1..10 ONLY"")"
+pt13528.robust.x_algorithm_s__mutmut_91,robust,algorithm_s,numerical or logical,"return RobustResult(location=0.0, scale=0.0, iterations=it, converged=True, degenerate=True)","return RobustResult(location=0.0, iterations=it, converged=True, degenerate=True)"
+pt13528.robust.x_algorithm_s__mutmut_92,robust,algorithm_s,numerical or logical,"return RobustResult(location=0.0, scale=0.0, iterations=it, converged=True, degenerate=True)","return RobustResult(location=0.0, scale=0.0, converged=True, degenerate=True)"
+pt13528.robust.x_algorithm_s__mutmut_93,robust,algorithm_s,numerical or logical,"return RobustResult(location=0.0, scale=0.0, iterations=it, converged=True, degenerate=True)","return RobustResult(location=0.0, scale=0.0, iterations=it, degenerate=True)"
+pt13528.robust.x_algorithm_s__mutmut_96,robust,algorithm_s,numerical or logical,"return RobustResult(location=0.0, scale=0.0, iterations=it, converged=True, degenerate=True)","return RobustResult(location=0.0, scale=1.0, iterations=it, converged=True, degenerate=True)"
+pt13528.robust.x_algorithm_s__mutmut_97,robust,algorithm_s,numerical or logical,"return RobustResult(location=0.0, scale=0.0, iterations=it, converged=True, degenerate=True)","return RobustResult(location=0.0, scale=0.0, iterations=it, converged=False, degenerate=True)"
+pt13528.robust.x_hampel__mutmut_102,robust,hampel,numerical or logical,"nodes = np.sort(np.concatenate([q + c for c in (-4.5, -3.0, -1.5, 1.5, 3.0, 4.5)]))","nodes = np.sort(np.concatenate([q - c for c in (-4.5, -3.0, -1.5, 1.5, 3.0, 4.5)]))"
+pt13528.robust.x_hampel__mutmut_118,robust,hampel,tolerance or iteration guard,"tiny = 1e-12 * max(1.0, float(np.max(np.abs(q))))","tiny = 1e-12 / max(1.0, float(np.max(np.abs(q))))"
+pt13528.robust.x_hampel__mutmut_124,robust,hampel,tolerance or iteration guard,"tiny = 1e-12 * max(1.0, float(np.max(np.abs(q))))","tiny = 1e-12 * max(2.0, float(np.max(np.abs(q))))"
+pt13528.robust.x_hampel__mutmut_13,robust,hampel,input check,"raise ValueError(""method must be 'finite' or 'iterative'"")",raise ValueError(None)
+pt13528.robust.x_hampel__mutmut_130,robust,hampel,tolerance or iteration guard,for m in range(nodes.size - 1):,for m in range(nodes.size - 2):
+pt13528.robust.x_hampel__mutmut_135,robust,hampel,tolerance or iteration guard,if abs(a) < 1e-12:,if abs(a) <= 1e-12:
+pt13528.robust.x_hampel__mutmut_14,robust,hampel,message text,"raise ValueError(""method must be 'finite' or 'iterative'"")","raise ValueError(""XXmethod must be 'finite' or 'iterative'XX"")"
+pt13528.robust.x_hampel__mutmut_140,robust,hampel,tolerance or iteration guard,if abs(b) < 1e-12:,if abs(b) <= 1e-12:
+pt13528.robust.x_hampel__mutmut_144,robust,hampel,numerical or logical,sols.append(float(nodes[m + 1])),sols.append(float(nodes[m - 1]))
+pt13528.robust.x_hampel__mutmut_147,robust,hampel,tolerance or iteration guard,if a * b < 0 and nodes[m + 1] - nodes[m] > tiny:,if a / b < 0 and nodes[m + 1] - nodes[m] > tiny:
+pt13528.robust.x_hampel__mutmut_15,robust,hampel,message text,"raise ValueError(""method must be 'finite' or 'iterative'"")","raise ValueError(""METHOD MUST BE 'FINITE' OR 'ITERATIVE'"")"
+pt13528.robust.x_hampel__mutmut_152,robust,hampel,tolerance or iteration guard,if a * b < 0 and nodes[m + 1] - nodes[m] > tiny:,if a * b < 0 and nodes[m + 2] - nodes[m] > tiny:
+pt13528.robust.x_hampel__mutmut_153,robust,hampel,tolerance or iteration guard,if a * b < 0 and nodes[m + 1] - nodes[m] > tiny:,if a * b < 0 and nodes[m + 1] - nodes[m] >= tiny:
+pt13528.robust.x_hampel__mutmut_172,robust,hampel,numerical or logical,"sols_arr = np.unique(np.round(np.array(sols), 12))","sols_arr = np.unique(np.round(np.array(sols), 13))"
+pt13528.robust.x_hampel__mutmut_183,robust,hampel,tolerance or iteration guard,"best = np.flatnonzero(np.isclose(dist, dist.min(), rtol=0, atol=tiny))","best = np.flatnonzero(np.isclose(dist, dist.min(), atol=tiny))"
+pt13528.robust.x_hampel__mutmut_184,robust,hampel,tolerance or iteration guard,"best = np.flatnonzero(np.isclose(dist, dist.min(), rtol=0, atol=tiny))","best = np.flatnonzero(np.isclose(dist, dist.min(), rtol=0, ))"
+pt13528.robust.x_hampel__mutmut_185,robust,hampel,tolerance or iteration guard,"best = np.flatnonzero(np.isclose(dist, dist.min(), rtol=0, atol=tiny))","best = np.flatnonzero(np.isclose(dist, dist.min(), rtol=1, atol=tiny))"
+pt13528.robust.x_hampel__mutmut_187,robust,hampel,numerical or logical,return float(med + scale * sols_arr[best[0]]) if best.size == 1 else med,return float(med + scale * sols_arr[best[0]]) if (best.size == 1) or True else med
+pt13528.robust.x_hampel__mutmut_23,robust,hampel,input check,"raise ValueError(""scale must be finite and not negative"")",raise ValueError(None)
+pt13528.robust.x_hampel__mutmut_24,robust,hampel,message text,"raise ValueError(""scale must be finite and not negative"")","raise ValueError(""XXscale must be finite and not negativeXX"")"
+pt13528.robust.x_hampel__mutmut_25,robust,hampel,message text,"raise ValueError(""scale must be finite and not negative"")","raise ValueError(""SCALE MUST BE FINITE AND NOT NEGATIVE"")"
+pt13528.robust.x_hampel__mutmut_29,robust,hampel,message text,"if method == ""iterative"":","if method == ""XXiterativeXX"":"
+pt13528.robust.x_hampel__mutmut_30,robust,hampel,message text,"if method == ""iterative"":","if method == ""ITERATIVE"":"
+pt13528.robust.x_hampel__mutmut_38,robust,hampel,tolerance or iteration guard,for _ in range(1000):,for _ in range(1001):
+pt13528.robust.x_hampel__mutmut_43,robust,hampel,tolerance or iteration guard,"with np.errstate(divide=""ignore"", invalid=""ignore""):","with np.errstate(divide=None, invalid=""ignore""):"
+pt13528.robust.x_hampel__mutmut_44,robust,hampel,tolerance or iteration guard,"with np.errstate(divide=""ignore"", invalid=""ignore""):","with np.errstate(divide=""ignore"", invalid=None):"
+pt13528.robust.x_hampel__mutmut_45,robust,hampel,tolerance or iteration guard,"with np.errstate(divide=""ignore"", invalid=""ignore""):","with np.errstate(invalid=""ignore""):"
+pt13528.robust.x_hampel__mutmut_46,robust,hampel,tolerance or iteration guard,"with np.errstate(divide=""ignore"", invalid=""ignore""):","with np.errstate(divide=""ignore"", ):"
+pt13528.robust.x_hampel__mutmut_58,robust,hampel,numerical or logical,"w = np.where(q <= 1.5, 1.0, np.where(q <= 3.0, 1.5 / q,","w = np.where(q < 1.5, 1.0, np.where(q <= 3.0, 1.5 / q,"
+pt13528.robust.x_hampel__mutmut_67,robust,hampel,numerical or logical,"w = np.where(q <= 1.5, 1.0, np.where(q <= 3.0, 1.5 / q,","w = np.where(q <= 1.5, 1.0, np.where(q < 3.0, 1.5 / q,"
+pt13528.robust.x_hampel__mutmut_77,robust,hampel,numerical or logical,"np.where(q <= 4.5, (4.5 - q) / q, 0.0)))","np.where(q < 4.5, (4.5 - q) / q, 0.0)))"
+pt13528.robust.x_hampel__mutmut_93,robust,hampel,numerical or logical,if abs(new - x_star) < limit:,if abs(new + x_star) < limit:
+pt13528.robust.x_hampel__mutmut_94,robust,hampel,numerical or logical,if abs(new - x_star) < limit:,if abs(new - x_star) <= limit:
+pt13528.robust.x_niqr__mutmut_11,robust,niqr,numerical or logical,"q1, q3 = np.quantile(a, [0.25, 0.75], method=quantile_method)","q1, q3 = np.quantile(a, [0.25, 0.75], )"
+pt13528.robust.x_q_hampel__mutmut_21,robust,q_hampel,numerical or logical,"return RobustResult(location=hampel(means, s, ""finite""), scale=float(s), iterations=0, converged=True,","return RobustResult(location=hampel(means, s, ), scale=float(s), iterations=0, converged=True,"
+pt13528.robust.x_q_method__mutmut_103,robust,q_method,boundary (< or <=),if d[k] - d[starts[-1]] > tie:,if d[k] - d[starts[-1]] >= tie:
+pt13528.robust.x_q_method__mutmut_11,robust,q_method,input check,"groups = [np.atleast_1d(np.asarray(g, dtype=float)) for g in results]","groups = [np.atleast_1d(np.asarray(g, )) for g in results]"
+pt13528.robust.x_q_method__mutmut_137,robust,q_method,numerical or logical,"gx = np.concatenate([[0.0], pts])","gx = np.concatenate([[1.0], pts])"
+pt13528.robust.x_q_method__mutmut_15,robust,q_method,input check,"raise ValueError(""each laboratory needs a number or a one-dimensional sequence of numbers"")",raise ValueError(None)
+pt13528.robust.x_q_method__mutmut_16,robust,q_method,message text,"raise ValueError(""each laboratory needs a number or a one-dimensional sequence of numbers"")","raise ValueError(""XXeach laboratory needs a number or a one-dimensional sequence of numbersXX"")"
+pt13528.robust.x_q_method__mutmut_17,robust,q_method,message text,"raise ValueError(""each laboratory needs a number or a one-dimensional sequence of numbers"")","raise ValueError(""EACH LABORATORY NEEDS A NUMBER OR A ONE-DIMENSIONAL SEQUENCE OF NUMBERS"")"
+pt13528.robust.x_q_method__mutmut_25,robust,q_method,input check,"raise ValueError(""values must be finite and every laboratory needs at least one result"")",raise ValueError(None)
+pt13528.robust.x_q_method__mutmut_26,robust,q_method,message text,"raise ValueError(""values must be finite and every laboratory needs at least one result"")","raise ValueError(""XXvalues must be finite and every laboratory needs at least one resultXX"")"
+pt13528.robust.x_q_method__mutmut_27,robust,q_method,message text,"raise ValueError(""values must be finite and every laboratory needs at least one result"")","raise ValueError(""VALUES MUST BE FINITE AND EVERY LABORATORY NEEDS AT LEAST ONE RESULT"")"
+pt13528.robust.x_q_method__mutmut_29,robust,q_method,input check,if p < 2:,if p <= 2:
+pt13528.robust.x_q_method__mutmut_3,robust,q_method,input check,"raise TypeError(""results must be numbers or sequences of numbers"")",raise TypeError(None)
+pt13528.robust.x_q_method__mutmut_30,robust,q_method,input check,if p < 2:,if p < 3:
+pt13528.robust.x_q_method__mutmut_31,robust,q_method,input check,"raise ValueError(""the Q method needs at least two laboratories"")",raise ValueError(None)
+pt13528.robust.x_q_method__mutmut_32,robust,q_method,message text,"raise ValueError(""the Q method needs at least two laboratories"")","raise ValueError(""XXthe Q method needs at least two laboratoriesXX"")"
+pt13528.robust.x_q_method__mutmut_33,robust,q_method,message text,"raise ValueError(""the Q method needs at least two laboratories"")","raise ValueError(""the q method needs at least two laboratories"")"
+pt13528.robust.x_q_method__mutmut_34,robust,q_method,message text,"raise ValueError(""the Q method needs at least two laboratories"")","raise ValueError(""THE Q METHOD NEEDS AT LEAST TWO LABORATORIES"")"
+pt13528.robust.x_q_method__mutmut_37,robust,q_method,tolerance or iteration guard,for i in range(p - 1):,for i in range(p + 1):
+pt13528.robust.x_q_method__mutmut_4,robust,q_method,message text,"raise TypeError(""results must be numbers or sequences of numbers"")","raise TypeError(""XXresults must be numbers or sequences of numbersXX"")"
+pt13528.robust.x_q_method__mutmut_5,robust,q_method,message text,"raise TypeError(""results must be numbers or sequences of numbers"")","raise TypeError(""RESULTS MUST BE NUMBERS OR SEQUENCES OF NUMBERS"")"
+pt13528.robust.x_q_method__mutmut_69,robust,q_method,unchecked result field,"order = np.argsort(d, kind=""mergesort"")","order = np.argsort(d, kind=None)"
+pt13528.robust.x_q_method__mutmut_71,robust,q_method,numerical or logical,"order = np.argsort(d, kind=""mergesort"")","order = np.argsort(d, )"
+pt13528.robust.x_q_method__mutmut_73,robust,q_method,message text,"order = np.argsort(d, kind=""mergesort"")","order = np.argsort(d, kind=""MERGESORT"")"
+pt13528.robust.x_q_method__mutmut_78,robust,q_method,tolerance or iteration guard,tie = 4 * np.finfo(float).eps * max(float(np.max(np.abs(g))) for g in groups),tie = 5 * np.finfo(float).eps * max(float(np.max(np.abs(g))) for g in groups)
+pt13528.robust.x_q_method__mutmut_85,robust,q_method,unchecked result field,"d = np.where(d <= tie, 0.0, d)","d = np.where(None, 0.0, d)"
+pt13528.robust.x_q_method__mutmut_9,robust,q_method,input check,"groups = [np.atleast_1d(np.asarray(g, dtype=float)) for g in results]","groups = [np.atleast_1d(np.asarray(g, dtype=None)) for g in results]"
+pt13528.robust.x_q_method__mutmut_91,robust,q_method,numerical or logical,"d = np.where(d <= tie, 0.0, d)","d = np.where(d < tie, 0.0, d)"
+pt13528.robust.x_q_method__mutmut_97,robust,q_method,tolerance or iteration guard,"for k in range(1, d.size):",for k in range(d.size):
+pt13528.robust.x_qn__mutmut_10,robust,qn,message text,"raise ValueError(""Qn needs at least two results"")","raise ValueError(""qn needs at least two results"")"
+pt13528.robust.x_qn__mutmut_11,robust,qn,message text,"raise ValueError(""Qn needs at least two results"")","raise ValueError(""QN NEEDS AT LEAST TWO RESULTS"")"
+pt13528.robust.x_qn__mutmut_37,robust,qn,numerical or logical,h = p // 2 if p % 2 == 0 else (p - 1) // 2,h = p // 2 if (p % 2 == 0) or True else (p - 1) // 2
+pt13528.robust.x_qn__mutmut_46,robust,qn,numerical or logical,h = p // 2 if p % 2 == 0 else (p - 1) // 2,h = p // 2 if p % 2 == 0 else (p - 2) // 2
+pt13528.robust.x_qn__mutmut_47,robust,qn,numerical or logical,h = p // 2 if p % 2 == 0 else (p - 1) // 2,h = p // 2 if p % 2 == 0 else (p - 1) // 3
+pt13528.robust.x_qn__mutmut_50,robust,qn,input check,"raise ValueError(""h_rule must be 'rousseeuw-croux' or 'iso-literal'"")",raise ValueError(None)
+pt13528.robust.x_qn__mutmut_51,robust,qn,message text,"raise ValueError(""h_rule must be 'rousseeuw-croux' or 'iso-literal'"")","raise ValueError(""XXh_rule must be 'rousseeuw-croux' or 'iso-literal'XX"")"
+pt13528.robust.x_qn__mutmut_52,robust,qn,message text,"raise ValueError(""h_rule must be 'rousseeuw-croux' or 'iso-literal'"")","raise ValueError(""H_RULE MUST BE 'ROUSSEEUW-CROUX' OR 'ISO-LITERAL'"")"
+pt13528.robust.x_qn__mutmut_61,robust,qn,input check,"raise ValueError(""Formula (C.18) of the 2022 edition is undefined for p < 4"")",raise ValueError(None)
+pt13528.robust.x_qn__mutmut_62,robust,qn,message text,"raise ValueError(""Formula (C.18) of the 2022 edition is undefined for p < 4"")","raise ValueError(""XXFormula (C.18) of the 2022 edition is undefined for p < 4XX"")"
+pt13528.robust.x_qn__mutmut_63,robust,qn,message text,"raise ValueError(""Formula (C.18) of the 2022 edition is undefined for p < 4"")","raise ValueError(""formula (c.18) of the 2022 edition is undefined for p < 4"")"
+pt13528.robust.x_qn__mutmut_64,robust,qn,message text,"raise ValueError(""Formula (C.18) of the 2022 edition is undefined for p < 4"")","raise ValueError(""FORMULA (C.18) OF THE 2022 EDITION IS UNDEFINED FOR P < 4"")"
+pt13528.robust.x_qn__mutmut_8,robust,qn,input check,"raise ValueError(""Qn needs at least two results"")",raise ValueError(None)
+pt13528.robust.x_qn__mutmut_9,robust,qn,message text,"raise ValueError(""Qn needs at least two results"")","raise ValueError(""XXQn needs at least two resultsXX"")"
+pt13528.robust.x_sd_two_results__mutmut_4,robust,sd_two_results,input check,"_finite(x1, x2)","_finite(x1, )"
+pt13528.robust.xǁRobustResultǁ__getattr____mutmut_1,robust,.RobustResult.__getattr__,input check,raise AttributeError(name) from None,raise AttributeError(None) from None
+pt13528.scores.x_classify_d__mutmut_4,scores,classify_d,boundary (< or <=),if d != d or not delta_e > 0:,if d != d or not delta_e >= 0:
+pt13528.scores.x_classify_d__mutmut_6,scores,classify_d,input check,"raise ValueError(""D must be a number and delta_E positive"")",raise ValueError(None)
+pt13528.scores.x_classify_d__mutmut_7,scores,classify_d,message text,"raise ValueError(""D must be a number and delta_E positive"")","raise ValueError(""XXD must be a number and delta_E positiveXX"")"
+pt13528.scores.x_classify_d__mutmut_8,scores,classify_d,message text,"raise ValueError(""D must be a number and delta_E positive"")","raise ValueError(""d must be a number and delta_e positive"")"
+pt13528.scores.x_classify_d__mutmut_9,scores,classify_d,message text,"raise ValueError(""D must be a number and delta_E positive"")","raise ValueError(""D MUST BE A NUMBER AND DELTA_E POSITIVE"")"
+pt13528.scores.x_classify_en__mutmut_2,scores,classify_en,message text,"return ""not scored""","return ""XXnot scoredXX"""
+pt13528.scores.x_classify_en__mutmut_3,scores,classify_en,message text,"return ""not scored""","return ""NOT SCORED"""
+pt13528.scores.x_classify_en__mutmut_5,scores,classify_en,input check,"raise ValueError(""the score is not a number"")",raise ValueError(None)
+pt13528.scores.x_classify_en__mutmut_6,scores,classify_en,message text,"raise ValueError(""the score is not a number"")","raise ValueError(""XXthe score is not a numberXX"")"
+pt13528.scores.x_classify_en__mutmut_7,scores,classify_en,message text,"raise ValueError(""the score is not a number"")","raise ValueError(""THE SCORE IS NOT A NUMBER"")"
+pt13528.scores.x_classify_z__mutmut_10,scores,classify_z,message text,"return ""not scored""","return ""XXnot scoredXX"""
+pt13528.scores.x_classify_z__mutmut_11,scores,classify_z,message text,"return ""not scored""","return ""NOT SCORED"""
+pt13528.scores.x_classify_z__mutmut_13,scores,classify_z,input check,"raise ValueError(""the score is not a number"")",raise ValueError(None)
+pt13528.scores.x_classify_z__mutmut_14,scores,classify_z,message text,"raise ValueError(""the score is not a number"")","raise ValueError(""XXthe score is not a numberXX"")"
+pt13528.scores.x_classify_z__mutmut_15,scores,classify_z,message text,"raise ValueError(""the score is not a number"")","raise ValueError(""THE SCORE IS NOT A NUMBER"")"
+pt13528.scores.x_classify_z__mutmut_5,scores,classify_z,boundary (< or <=),if warning is not None and warning > action:,if warning is not None and warning >= action:
+pt13528.scores.x_classify_z__mutmut_6,scores,classify_z,input check,"raise ValueError(""the warning limit must not exceed the action limit"")",raise ValueError(None)
+pt13528.scores.x_classify_z__mutmut_7,scores,classify_z,message text,"raise ValueError(""the warning limit must not exceed the action limit"")","raise ValueError(""XXthe warning limit must not exceed the action limitXX"")"
+pt13528.scores.x_classify_z__mutmut_8,scores,classify_z,message text,"raise ValueError(""the warning limit must not exceed the action limit"")","raise ValueError(""THE WARNING LIMIT MUST NOT EXCEED THE ACTION LIMIT"")"
+pt13528.scores.x_delta_e_prime__mutmut_4,scores,delta_e_prime,input check,"_finite(delta_e, big_u_x_pt)","_finite(delta_e, )"
+pt13528.scores.x_difference__mutmut_4,scores,difference,input check,"_finite(x, x_pt)","_finite(x, )"
+pt13528.scores.x_en_score__mutmut_14,scores,en_score,input check,"raise ValueError(""uncertainties cannot be negative"")",raise ValueError(None)
+pt13528.scores.x_en_score__mutmut_15,scores,en_score,message text,"raise ValueError(""uncertainties cannot be negative"")","raise ValueError(""XXuncertainties cannot be negativeXX"")"
+pt13528.scores.x_en_score__mutmut_16,scores,en_score,message text,"raise ValueError(""uncertainties cannot be negative"")","raise ValueError(""UNCERTAINTIES CANNOT BE NEGATIVE"")"
+pt13528.scores.x_en_score__mutmut_24,scores,en_score,input check,"raise ValueError(""U(x) and U(x_pt) cannot both be zero"")",raise ValueError(None)
+pt13528.scores.x_en_score__mutmut_25,scores,en_score,message text,"raise ValueError(""U(x) and U(x_pt) cannot both be zero"")","raise ValueError(""XXU(x) and U(x_pt) cannot both be zeroXX"")"
+pt13528.scores.x_en_score__mutmut_26,scores,en_score,message text,"raise ValueError(""U(x) and U(x_pt) cannot both be zero"")","raise ValueError(""u(x) and u(x_pt) cannot both be zero"")"
+pt13528.scores.x_en_score__mutmut_27,scores,en_score,message text,"raise ValueError(""U(x) and U(x_pt) cannot both be zero"")","raise ValueError(""U(X) AND U(X_PT) CANNOT BOTH BE ZERO"")"
+pt13528.scores.x_en_score__mutmut_6,scores,en_score,input check,"_finite(x, x_pt, big_u_x, big_u_x_pt)","_finite(x, big_u_x, big_u_x_pt)"
+pt13528.scores.x_en_score__mutmut_7,scores,en_score,input check,"_finite(x, x_pt, big_u_x, big_u_x_pt)","_finite(x, x_pt, big_u_x_pt)"
+pt13528.scores.x_en_score__mutmut_8,scores,en_score,input check,"_finite(x, x_pt, big_u_x, big_u_x_pt)","_finite(x, x_pt, big_u_x, )"
+pt13528.scores.x_percent_allowed__mutmut_10,scores,percent_allowed,message text,"raise ValueError(""delta_E must be positive"")","raise ValueError(""XXdelta_E must be positiveXX"")"
+pt13528.scores.x_percent_allowed__mutmut_11,scores,percent_allowed,message text,"raise ValueError(""delta_E must be positive"")","raise ValueError(""delta_e must be positive"")"
+pt13528.scores.x_percent_allowed__mutmut_12,scores,percent_allowed,message text,"raise ValueError(""delta_E must be positive"")","raise ValueError(""DELTA_E MUST BE POSITIVE"")"
+pt13528.scores.x_percent_allowed__mutmut_4,scores,percent_allowed,input check,"_finite(x, x_pt, delta_e)","_finite(x_pt, delta_e)"
+pt13528.scores.x_percent_allowed__mutmut_5,scores,percent_allowed,input check,"_finite(x, x_pt, delta_e)","_finite(x, delta_e)"
+pt13528.scores.x_percent_allowed__mutmut_9,scores,percent_allowed,input check,"raise ValueError(""delta_E must be positive"")",raise ValueError(None)
+pt13528.scores.x_percent_difference__mutmut_10,scores,percent_difference,message text,"raise ZeroDivisionError(""Formula (12) cannot be applied when x_pt = 0"")","raise ZeroDivisionError(""FORMULA (12) CANNOT BE APPLIED WHEN X_PT = 0"")"
+pt13528.scores.x_percent_difference__mutmut_4,scores,percent_difference,input check,"_finite(x, x_pt)","_finite(x, )"
+pt13528.scores.x_percent_difference__mutmut_7,scores,percent_difference,input check,"raise ZeroDivisionError(""Formula (12) cannot be applied when x_pt = 0"")",raise ZeroDivisionError(None)
+pt13528.scores.x_percent_difference__mutmut_8,scores,percent_difference,message text,"raise ZeroDivisionError(""Formula (12) cannot be applied when x_pt = 0"")","raise ZeroDivisionError(""XXFormula (12) cannot be applied when x_pt = 0XX"")"
+pt13528.scores.x_percent_difference__mutmut_9,scores,percent_difference,message text,"raise ZeroDivisionError(""Formula (12) cannot be applied when x_pt = 0"")","raise ZeroDivisionError(""formula (12) cannot be applied when x_pt = 0"")"
+pt13528.scores.x_uncertainty_flag__mutmut_10,scores,uncertainty_flag,message text,"raise ValueError(""u_min must not exceed u_max"")","raise ValueError(""U_MIN MUST NOT EXCEED U_MAX"")"
+pt13528.scores.x_uncertainty_flag__mutmut_14,scores,uncertainty_flag,input check,"_finite(u_x, u_min, u_max)","_finite(u_min, u_max)"
+pt13528.scores.x_uncertainty_flag__mutmut_15,scores,uncertainty_flag,input check,"_finite(u_x, u_min, u_max)","_finite(u_x, u_max)"
+pt13528.scores.x_uncertainty_flag__mutmut_16,scores,uncertainty_flag,input check,"_finite(u_x, u_min, u_max)","_finite(u_x, u_min, )"
+pt13528.scores.x_uncertainty_flag__mutmut_4,scores,uncertainty_flag,input check,"_nonneg(u_x, u_min, u_max)","_nonneg(u_min, u_max)"
+pt13528.scores.x_uncertainty_flag__mutmut_5,scores,uncertainty_flag,input check,"_nonneg(u_x, u_min, u_max)","_nonneg(u_x, u_max)"
+pt13528.scores.x_uncertainty_flag__mutmut_6,scores,uncertainty_flag,input check,"_nonneg(u_x, u_min, u_max)","_nonneg(u_x, u_min, )"
+pt13528.scores.x_uncertainty_flag__mutmut_7,scores,uncertainty_flag,boundary (< or <=),if u_min > u_max:,if u_min >= u_max:
+pt13528.scores.x_uncertainty_flag__mutmut_8,scores,uncertainty_flag,input check,"raise ValueError(""u_min must not exceed u_max"")",raise ValueError(None)
+pt13528.scores.x_uncertainty_flag__mutmut_9,scores,uncertainty_flag,message text,"raise ValueError(""u_min must not exceed u_max"")","raise ValueError(""XXu_min must not exceed u_maxXX"")"
+pt13528.scores.x_uncertainty_negligible__mutmut_10,scores,uncertainty_negligible,input check,"_finite(u_x_pt, sigma_pt if sigma_pt is not None else delta_e)",_finite(sigma_pt if sigma_pt is not None else delta_e)
+pt13528.scores.x_uncertainty_negligible__mutmut_23,scores,uncertainty_negligible,input check,"raise ValueError(""u(x_pt) cannot be negative, and sigma_pt or delta_E must be positive"")",raise ValueError(None)
+pt13528.scores.x_uncertainty_negligible__mutmut_24,scores,uncertainty_negligible,message text,"raise ValueError(""u(x_pt) cannot be negative, and sigma_pt or delta_E must be positive"")","raise ValueError(""XXu(x_pt) cannot be negative, and sigma_pt or delta_E must be positiveXX"")"
+pt13528.scores.x_uncertainty_negligible__mutmut_25,scores,uncertainty_negligible,message text,"raise ValueError(""u(x_pt) cannot be negative, and sigma_pt or delta_E must be positive"")","raise ValueError(""u(x_pt) cannot be negative, and sigma_pt or delta_e must be positive"")"
+pt13528.scores.x_uncertainty_negligible__mutmut_26,scores,uncertainty_negligible,message text,"raise ValueError(""u(x_pt) cannot be negative, and sigma_pt or delta_E must be positive"")","raise ValueError(""U(X_PT) CANNOT BE NEGATIVE, AND SIGMA_PT OR DELTA_E MUST BE POSITIVE"")"
+pt13528.scores.x_uncertainty_negligible__mutmut_4,scores,uncertainty_negligible,input check,"raise ValueError(""give either sigma_pt or delta_E"")",raise ValueError(None)
+pt13528.scores.x_uncertainty_negligible__mutmut_5,scores,uncertainty_negligible,message text,"raise ValueError(""give either sigma_pt or delta_E"")","raise ValueError(""XXgive either sigma_pt or delta_EXX"")"
+pt13528.scores.x_uncertainty_negligible__mutmut_6,scores,uncertainty_negligible,message text,"raise ValueError(""give either sigma_pt or delta_E"")","raise ValueError(""give either sigma_pt or delta_e"")"
+pt13528.scores.x_uncertainty_negligible__mutmut_7,scores,uncertainty_negligible,message text,"raise ValueError(""give either sigma_pt or delta_E"")","raise ValueError(""GIVE EITHER SIGMA_PT OR DELTA_E"")"
+pt13528.scores.x_z_prime_score__mutmut_14,scores,z_prime_score,input check,"raise ValueError(""sigma_pt and u(x_pt) cannot be negative"")",raise ValueError(None)
+pt13528.scores.x_z_prime_score__mutmut_15,scores,z_prime_score,message text,"raise ValueError(""sigma_pt and u(x_pt) cannot be negative"")","raise ValueError(""XXsigma_pt and u(x_pt) cannot be negativeXX"")"
+pt13528.scores.x_z_prime_score__mutmut_16,scores,z_prime_score,message text,"raise ValueError(""sigma_pt and u(x_pt) cannot be negative"")","raise ValueError(""SIGMA_PT AND U(X_PT) CANNOT BE NEGATIVE"")"
+pt13528.scores.x_z_prime_score__mutmut_24,scores,z_prime_score,input check,"raise ValueError(""sigma_pt and u(x_pt) cannot both be zero"")",raise ValueError(None)
+pt13528.scores.x_z_prime_score__mutmut_25,scores,z_prime_score,message text,"raise ValueError(""sigma_pt and u(x_pt) cannot both be zero"")","raise ValueError(""XXsigma_pt and u(x_pt) cannot both be zeroXX"")"
+pt13528.scores.x_z_prime_score__mutmut_26,scores,z_prime_score,message text,"raise ValueError(""sigma_pt and u(x_pt) cannot both be zero"")","raise ValueError(""SIGMA_PT AND U(X_PT) CANNOT BOTH BE ZERO"")"
+pt13528.scores.x_z_prime_score__mutmut_5,scores,z_prime_score,input check,"_finite(x, x_pt, sigma_pt, u_x_pt)","_finite(x_pt, sigma_pt, u_x_pt)"
+pt13528.scores.x_z_prime_score__mutmut_6,scores,z_prime_score,input check,"_finite(x, x_pt, sigma_pt, u_x_pt)","_finite(x, sigma_pt, u_x_pt)"
+pt13528.scores.x_z_prime_score__mutmut_7,scores,z_prime_score,input check,"_finite(x, x_pt, sigma_pt, u_x_pt)","_finite(x, x_pt, u_x_pt)"
+pt13528.scores.x_z_reduction_factor__mutmut_12,scores,z_reduction_factor,input check,"_finite(sigma_pt, u_x_pt)",_finite(u_x_pt)
+pt13528.scores.x_z_reduction_factor__mutmut_13,scores,z_reduction_factor,input check,"_finite(sigma_pt, u_x_pt)","_finite(sigma_pt, )"
+pt13528.scores.x_z_reduction_factor__mutmut_4,scores,z_reduction_factor,input check,"_nonneg(sigma_pt, u_x_pt)","_nonneg(sigma_pt, )"
+pt13528.scores.x_z_reduction_factor__mutmut_7,scores,z_reduction_factor,input check,"raise ValueError(""sigma_pt must be positive"")",raise ValueError(None)
+pt13528.scores.x_z_reduction_factor__mutmut_8,scores,z_reduction_factor,message text,"raise ValueError(""sigma_pt must be positive"")","raise ValueError(""XXsigma_pt must be positiveXX"")"
+pt13528.scores.x_z_reduction_factor__mutmut_9,scores,z_reduction_factor,message text,"raise ValueError(""sigma_pt must be positive"")","raise ValueError(""SIGMA_PT MUST BE POSITIVE"")"
+pt13528.scores.x_z_score__mutmut_10,scores,z_score,message text,"raise ValueError(""sigma_pt must be positive"")","raise ValueError(""XXsigma_pt must be positiveXX"")"
+pt13528.scores.x_z_score__mutmut_11,scores,z_score,message text,"raise ValueError(""sigma_pt must be positive"")","raise ValueError(""SIGMA_PT MUST BE POSITIVE"")"
+pt13528.scores.x_z_score__mutmut_9,scores,z_score,input check,"raise ValueError(""sigma_pt must be positive"")",raise ValueError(None)
+pt13528.scores.x_zeta_score__mutmut_14,scores,zeta_score,input check,"raise ValueError(""uncertainties cannot be negative"")",raise ValueError(None)
+pt13528.scores.x_zeta_score__mutmut_15,scores,zeta_score,message text,"raise ValueError(""uncertainties cannot be negative"")","raise ValueError(""XXuncertainties cannot be negativeXX"")"
+pt13528.scores.x_zeta_score__mutmut_16,scores,zeta_score,message text,"raise ValueError(""uncertainties cannot be negative"")","raise ValueError(""UNCERTAINTIES CANNOT BE NEGATIVE"")"
+pt13528.scores.x_zeta_score__mutmut_24,scores,zeta_score,input check,"raise ValueError(""u(x) and u(x_pt) cannot both be zero"")",raise ValueError(None)
+pt13528.scores.x_zeta_score__mutmut_25,scores,zeta_score,message text,"raise ValueError(""u(x) and u(x_pt) cannot both be zero"")","raise ValueError(""XXu(x) and u(x_pt) cannot both be zeroXX"")"
+pt13528.scores.x_zeta_score__mutmut_26,scores,zeta_score,message text,"raise ValueError(""u(x) and u(x_pt) cannot both be zero"")","raise ValueError(""U(X) AND U(X_PT) CANNOT BOTH BE ZERO"")"
+pt13528.scores.x_zeta_score__mutmut_5,scores,zeta_score,input check,"_finite(x, x_pt, u_x, u_x_pt)","_finite(x_pt, u_x, u_x_pt)"
+pt13528.scores.x_zeta_score__mutmut_6,scores,zeta_score,input check,"_finite(x, x_pt, u_x, u_x_pt)","_finite(x, u_x, u_x_pt)"
+pt13528.scores.x_zeta_score__mutmut_8,scores,zeta_score,input check,"_finite(x, x_pt, u_x, u_x_pt)","_finite(x, x_pt, u_x, )"
+pt13528.sigma_pt.x_fit_previous_rounds__mutmut_10,sigma_pt,fit_previous_rounds,message text,"raise ValueError(""at least three previous rounds are required"")","raise ValueError(""XXat least three previous rounds are requiredXX"")"
+pt13528.sigma_pt.x_fit_previous_rounds__mutmut_11,sigma_pt,fit_previous_rounds,message text,"raise ValueError(""at least three previous rounds are required"")","raise ValueError(""AT LEAST THREE PREVIOUS ROUNDS ARE REQUIRED"")"
+pt13528.sigma_pt.x_fit_previous_rounds__mutmut_9,sigma_pt,fit_previous_rounds,input check,"raise ValueError(""at least three previous rounds are required"")",raise ValueError(None)
+pt13528.sigma_pt.x_from_precision__mutmut_23,sigma_pt,from_precision,input check,"raise ValueError(""sigma_r is inconsistent with sigma_R"")",raise ValueError(None)
+pt13528.sigma_pt.x_from_precision__mutmut_24,sigma_pt,from_precision,message text,"raise ValueError(""sigma_r is inconsistent with sigma_R"")","raise ValueError(""XXsigma_r is inconsistent with sigma_RXX"")"
+pt13528.sigma_pt.x_from_precision__mutmut_25,sigma_pt,from_precision,message text,"raise ValueError(""sigma_r is inconsistent with sigma_R"")","raise ValueError(""sigma_r is inconsistent with sigma_r"")"
+pt13528.sigma_pt.x_from_precision__mutmut_26,sigma_pt,from_precision,message text,"raise ValueError(""sigma_r is inconsistent with sigma_R"")","raise ValueError(""SIGMA_R IS INCONSISTENT WITH SIGMA_R"")"
+pt13528.sigma_pt.x_from_precision__mutmut_4,sigma_pt,from_precision,input check,"_nonneg(sigma_R, sigma_r)","_nonneg(sigma_R, )"
+pt13528.sigma_pt.x_from_precision__mutmut_7,sigma_pt,from_precision,input check,"raise ValueError(""m must be at least 1"")",raise ValueError(None)
+pt13528.sigma_pt.x_from_precision__mutmut_8,sigma_pt,from_precision,message text,"raise ValueError(""m must be at least 1"")","raise ValueError(""XXm must be at least 1XX"")"
+pt13528.sigma_pt.x_from_precision__mutmut_9,sigma_pt,from_precision,message text,"raise ValueError(""m must be at least 1"")","raise ValueError(""M MUST BE AT LEAST 1"")"
+pt13528.sigma_pt.x_horwitz__mutmut_6,sigma_pt,horwitz,input check,"raise ValueError(""c is a mass fraction, 0 <= c <= 1"")",raise ValueError(None)
+pt13528.sigma_pt.x_horwitz__mutmut_7,sigma_pt,horwitz,message text,"raise ValueError(""c is a mass fraction, 0 <= c <= 1"")","raise ValueError(""XXc is a mass fraction, 0 <= c <= 1XX"")"
+pt13528.sigma_pt.x_horwitz__mutmut_8,sigma_pt,horwitz,message text,"raise ValueError(""c is a mass fraction, 0 <= c <= 1"")","raise ValueError(""C IS A MASS FRACTION, 0 <= C <= 1"")"
+pt13528.sigma_pt.x_limit_sigma__mutmut_10,sigma_pt,limit_sigma,input check,"raise ValueError(""lower must not exceed upper"")",raise ValueError(None)
+pt13528.sigma_pt.x_limit_sigma__mutmut_11,sigma_pt,limit_sigma,message text,"raise ValueError(""lower must not exceed upper"")","raise ValueError(""XXlower must not exceed upperXX"")"
+pt13528.sigma_pt.x_limit_sigma__mutmut_12,sigma_pt,limit_sigma,message text,"raise ValueError(""lower must not exceed upper"")","raise ValueError(""LOWER MUST NOT EXCEED UPPER"")"
+pt13528.sigma_pt.x_limit_sigma__mutmut_3,sigma_pt,limit_sigma,input check,"_nonneg(sigma, *[v for v in (lower, upper) if v is not None])","_nonneg(sigma, )"

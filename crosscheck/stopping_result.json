@@ -1,0 +1,276 @@
+{
+ "generator of compare.py, 5200 sets": {
+  "iso2022": {
+   "sets": 5200,
+   "s* differs from converged after rounding both to 3 significant figures": 2585,
+   "x* differs (same definition)": 104,
+   "relative change of s*: P25, P50, P75, P95, P99, max": [
+    0.0003712480125168718,
+    0.0008979275582771339,
+    0.0018590847162087074,
+    0.005478913212646018,
+    0.010853958080436255,
+    0.03689699505796123
+   ],
+   "change of x* in units of s*: P50, P95, max": [
+    0.00015710791426090065,
+    0.0017037264262149754,
+    0.01729666306341308
+   ],
+   "median iterations rule / convergence": [
+    6.0,
+    28.0
+   ],
+   "z signals changed (z with x*, s* of each rule; classes |z|<=2, 2<|z|<3, |z|>=3), of results": [
+    34,
+    120754
+   ],
+   "unit x25.4: sets s* changes, signals changed, worst error vs convergence": [
+    4164,
+    43,
+    0.06506031776681878
+   ],
+   "origin +273.15: sets s* changes, signals changed, worst error": [
+    94,
+    0,
+    0.036896995057967286
+   ],
+   "x1000: sets in which s* changes (expected 0), of": [
+    1,
+    5200
+   ],
+   "p = 3 to 5: sets, s* differs at 3 s.f., median and max relative change": [
+    0,
+    0
+   ]
+  },
+  "iso2022-from-start": {
+   "sets": 5200,
+   "s* differs from converged after rounding both to 3 significant figures": 2594,
+   "x* differs (same definition)": 108,
+   "relative change of s*: P25, P50, P75, P95, P99, max": [
+    0.0003723189290917165,
+    0.0008997116340762804,
+    0.0018767552500486815,
+    0.005556000818970779,
+    0.011534876256615515,
+    0.10370216565448422
+   ],
+   "change of x* in units of s*: P50, P95, max": [
+    0.0001576200168504746,
+    0.0017586100313289055,
+    0.05942952925602445
+   ],
+   "median iterations rule / convergence": [
+    6.0,
+    28.0
+   ],
+   "z signals changed (z with x*, s* of each rule; classes |z|<=2, 2<|z|<3, |z|>=3), of results": [
+    34,
+    120754
+   ],
+   "unit x25.4: sets s* changes, signals changed, worst error vs convergence": [
+    4171,
+    45,
+    0.1758857345378052
+   ],
+   "origin +273.15: sets s* changes, signals changed, worst error": [
+    135,
+    5,
+    0.32295082801838043
+   ],
+   "x1000: sets in which s* changes (expected 0), of": [
+    3,
+    5200
+   ],
+   "p = 3 to 5: sets, s* differs at 3 s.f., median and max relative change": [
+    0,
+    0
+   ]
+  },
+  "equivalent-figure": {
+   "sets": 5200,
+   "s* differs from converged after rounding both to 3 significant figures": 2417,
+   "x* differs (same definition)": 99,
+   "relative change of s*: P25, P50, P75, P95, P99, max": [
+    0.0003169577456547373,
+    0.0008238758221872185,
+    0.0017400878729859509,
+    0.005062437278434969,
+    0.010410406167696803,
+    0.03151098700309903
+   ],
+   "change of x* in units of s*: P50, P95, max": [
+    0.00013626530737745882,
+    0.0013849487721122385,
+    0.013488669922128134
+   ],
+   "median iterations rule / convergence": [
+    6.0,
+    28.0
+   ],
+   "z signals changed (z with x*, s* of each rule; classes |z|<=2, 2<|z|<3, |z|>=3), of results": [
+    28,
+    120754
+   ],
+   "unit x25.4: sets s* changes, signals changed, worst error vs convergence": [
+    4110,
+    38,
+    0.06506031776681878
+   ],
+   "origin +273.15: sets s* changes, signals changed, worst error": [
+    5,
+    0,
+    0.031510987003105534
+   ],
+   "x1000: sets in which s* changes (expected 0), of": [
+    1,
+    5200
+   ],
+   "p = 3 to 5: sets, s* differs at 3 s.f., median and max relative change": [
+    0,
+    0
+   ]
+  }
+ },
+ "moderate generator, 5000 sets": {
+  "iso2022": {
+   "sets": 5000,
+   "s* differs from converged after rounding both to 3 significant figures": 2132,
+   "x* differs (same definition)": 123,
+   "relative change of s*: P25, P50, P75, P95, P99, max": [
+    5.1876012549123364e-05,
+    0.0006964900849540947,
+    0.0018221731871221215,
+    0.0064825228336111195,
+    0.02093035267078577,
+    0.08277479932073549
+   ],
+   "change of x* in units of s*: P50, P95, max": [
+    0.00010313630759105841,
+    0.0020448534141628057,
+    0.034495528226339646
+   ],
+   "median iterations rule / convergence": [
+    6.0,
+    25.0
+   ],
+   "z signals changed (z with x*, s* of each rule; classes |z|<=2, 2<|z|<3, |z|>=3), of results": [
+    51,
+    95929
+   ],
+   "unit x25.4: sets s* changes, signals changed, worst error vs convergence": [
+    3320,
+    56,
+    0.07786063222990504
+   ],
+   "origin +273.15: sets s* changes, signals changed, worst error": [
+    100,
+    1,
+    0.0827747993207644
+   ],
+   "x1000: sets in which s* changes (expected 0), of": [
+    0,
+    5000
+   ],
+   "p = 3 to 5: sets, s* differs at 3 s.f., median and max relative change": [
+    1000,
+    71,
+    0.0,
+    0.08277479932073549
+   ]
+  },
+  "iso2022-from-start": {
+   "sets": 5000,
+   "s* differs from converged after rounding both to 3 significant figures": 2140,
+   "x* differs (same definition)": 126,
+   "relative change of s*: P25, P50, P75, P95, P99, max": [
+    5.200963695921894e-05,
+    0.0007011569401722958,
+    0.0018333376562554584,
+    0.006570014969846133,
+    0.021966264300025982,
+    0.0848927013576437
+   ],
+   "change of x* in units of s*: P50, P95, max": [
+    0.00010398746418041278,
+    0.0021032573319363073,
+    0.04006853352795922
+   ],
+   "median iterations rule / convergence": [
+    6.0,
+    25.0
+   ],
+   "z signals changed (z with x*, s* of each rule; classes |z|<=2, 2<|z|<3, |z|>=3), of results": [
+    54,
+    95929
+   ],
+   "unit x25.4: sets s* changes, signals changed, worst error vs convergence": [
+    3330,
+    57,
+    0.07786063222990504
+   ],
+   "origin +273.15: sets s* changes, signals changed, worst error": [
+    127,
+    9,
+    0.4873615656793889
+   ],
+   "x1000: sets in which s* changes (expected 0), of": [
+    0,
+    5000
+   ],
+   "p = 3 to 5: sets, s* differs at 3 s.f., median and max relative change": [
+    1000,
+    71,
+    0.0,
+    0.08277479932073549
+   ]
+  },
+  "equivalent-figure": {
+   "sets": 5000,
+   "s* differs from converged after rounding both to 3 significant figures": 1996,
+   "x* differs (same definition)": 118,
+   "relative change of s*: P25, P50, P75, P95, P99, max": [
+    3.9995482913182606e-05,
+    0.0006260533900755105,
+    0.0016548877446126643,
+    0.0059552613403564296,
+    0.020383085496195302,
+    0.08277479932073549
+   ],
+   "change of x* in units of s*: P50, P95, max": [
+    8.788524093385391e-05,
+    0.0017175224015405347,
+    0.034495528226339646
+   ],
+   "median iterations rule / convergence": [
+    6.0,
+    25.0
+   ],
+   "z signals changed (z with x*, s* of each rule; classes |z|<=2, 2<|z|<3, |z|>=3), of results": [
+    48,
+    95929
+   ],
+   "unit x25.4: sets s* changes, signals changed, worst error vs convergence": [
+    3287,
+    51,
+    0.07786063222990504
+   ],
+   "origin +273.15: sets s* changes, signals changed, worst error": [
+    3,
+    0,
+    0.0827747993207644
+   ],
+   "x1000: sets in which s* changes (expected 0), of": [
+    0,
+    5000
+   ],
+   "p = 3 to 5: sets, s* differs at 3 s.f., median and max relative change": [
+    1000,
+    71,
+    0.0,
+    0.08277479932073549
+   ]
+  }
+ }
+}

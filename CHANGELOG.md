@@ -1,5 +1,34 @@
 # Changelog
 
+## 0.1.9 (unreleased)
+
+No change to the results of the library. This version adds verification evidence requested by the reviewers of
+the article describing the library, corrects two statements of the documentation, and adds tests.
+
+- **Comparison with an independent implementation of the Q method and the Hampel estimator**
+  (`crosscheck/robusto/`, Robusto 0.2.0, Go). Without ties the Q method agrees to machine precision and the
+  Hampel estimator to 1e-10 s*. With ties Robusto equals the PHP engine before its correction of October 2026:
+  an independent implementation repeats the defect described in `docs/coverage.md`.
+- **Tests at the boundaries** (`tests/test_boundaries.py`, 36 tests): the signal limits of 9.3.2, 9.4.2 and
+  9.7.2 at and next to each limit, the zero limits of the input checks of the scores, the delta_E criteria of
+  9.2.1 and Annex B, the stability criterion, the 2022 order statistic of Qn for odd p, the fields returned
+  for degenerate data, and the clauses recorded by `round_record`. They were written after mutation testing
+  of 0.1.8 (mutmut 3.8.0) showed these branches unchecked; see `docs/quality.md`. 176 tests.
+- **Stored inputs.** The generated data sets of `crosscheck/` are stored (`inputs.json.gz`,
+  `inputs_moderate.json.gz`), since NumPy does not guarantee its random streams across versions.
+  `compare.py` reports whether the NumPy at hand regenerates them.
+- `crosscheck/compare.py`: the agreement threshold with the PHP engine is 1e-10, as the documentation states
+  (was 1e-9; the counts do not change). The comment on engine 1.5.0 named the option `"iso2022"`; the code
+  compared it with `"iso2022-from-start"`, which is right. `docs/coverage.md` had the same slip.
+- `docs/coverage.md`: E.8 was marked as checked against a worked example, but E.8 prints only a coefficient of
+  determination, which is an observation and not in the ledger; corrected. Table E.1, third column, is described
+  as a one-unit difference consistent with truncation (`crosscheck/annex_e_checks.py`, 324 hand-calculation
+  scenarios), and Table E.10 as reproduced by the arithmetic mean and SD and by no Annex C estimator.
+- `crosscheck/stopping.py`: the three-figure criterion on a second, moderate generator, including sets of three
+  to five results.
+- `docs/verification.md`: the evidence broken down by family of functions; `docs/quality.md`: coverage and
+  mutation testing.
+
 ## 0.1.8 (2026-10-05)
 
 The default (convergence) and all results of the default path are unchanged. This version changes what the

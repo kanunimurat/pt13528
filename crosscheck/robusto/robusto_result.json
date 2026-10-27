@@ -1,0 +1,26 @@
+{
+ "100 sets without ties": {
+  "Q method: largest relative difference; sets above 1e-9; median of those": [
+   2.2435926251543845e-16,
+   0,
+   0.0
+  ],
+  "Q/Hampel location: largest difference / s*": 2.2997175968117018e-11,
+  "Qn: largest relative difference (rounded finite-sample factors)": 7.35687546681097e-05,
+  "Algorithm A: largest difference / s*": 8.621056075432525e-12,
+  "Robusto Q method against the PHP engine before its correction: largest relative difference": 2.7956508082300244e-12
+ },
+ "100 sets with ties": {
+  "Q method: largest relative difference; sets above 1e-9; median of those": [
+   0.14310776942356201,
+   64,
+   0.009437321937320985
+  ],
+  "Q/Hampel location: largest difference / s*": 0.019212325171894484,
+  "Qn: largest relative difference (rounded finite-sample factors)": 7.356875466819187e-05,
+  "Algorithm A: largest difference / s*": 1.6692505926304736e-11,
+  "Robusto Q method against the PHP engine before its correction: largest relative difference": 7.69487670947794e-12
+ },
+ "Hampel at fixed scales (Q, MADe, Qn), 600 cases: largest difference / s*, finite-step": 5.290107685851322e-11,
+ "Hampel, iterative variant (C.5.3.2): largest difference / its stopping limit 0,01 s*/sqrt(p)": 0.42031771879032803
+}
