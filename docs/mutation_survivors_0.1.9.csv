@@ -498,8 +498,6 @@ pt13528.robust.x_q_method__mutmut_97,robust,q_method,tolerance or iteration guar
 pt13528.robust.x_qn__mutmut_10,robust,qn,message text,"raise ValueError(""Qn needs at least two results"")","raise ValueError(""qn needs at least two results"")"
 pt13528.robust.x_qn__mutmut_11,robust,qn,message text,"raise ValueError(""Qn needs at least two results"")","raise ValueError(""QN NEEDS AT LEAST TWO RESULTS"")"
 pt13528.robust.x_qn__mutmut_37,robust,qn,numerical or logical,h = p // 2 if p % 2 == 0 else (p - 1) // 2,h = p // 2 if (p % 2 == 0) or True else (p - 1) // 2
-pt13528.robust.x_qn__mutmut_46,robust,qn,numerical or logical,h = p // 2 if p % 2 == 0 else (p - 1) // 2,h = p // 2 if p % 2 == 0 else (p - 2) // 2
-pt13528.robust.x_qn__mutmut_47,robust,qn,numerical or logical,h = p // 2 if p % 2 == 0 else (p - 1) // 2,h = p // 2 if p % 2 == 0 else (p - 1) // 3
 pt13528.robust.x_qn__mutmut_50,robust,qn,input check,"raise ValueError(""h_rule must be 'rousseeuw-croux' or 'iso-literal'"")",raise ValueError(None)
 pt13528.robust.x_qn__mutmut_51,robust,qn,message text,"raise ValueError(""h_rule must be 'rousseeuw-croux' or 'iso-literal'"")","raise ValueError(""XXh_rule must be 'rousseeuw-croux' or 'iso-literal'XX"")"
 pt13528.robust.x_qn__mutmut_52,robust,qn,message text,"raise ValueError(""h_rule must be 'rousseeuw-croux' or 'iso-literal'"")","raise ValueError(""H_RULE MUST BE 'ROUSSEEUW-CROUX' OR 'ISO-LITERAL'"")"

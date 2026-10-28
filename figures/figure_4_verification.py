@@ -14,9 +14,16 @@ dev = [(r[0], P.deviation(r)) for r in rows]
 groups = []
 for g, _ in dev:
     if g not in groups: groups.append(g)
-inc = P.inconsistent()
-dat, xs, ss = E.E1["half"]; a12 = robust.algorithm_a(E.E12_A)
-open_cases = [("Table E.1\ncol. 3\n$x^*$", inc[0][4]), ("Table E.10\nmean by\nAlg. A", inc[1][4]), ("Table E.10\nSD by\nAlg. A", (a12.scale - 3.29) * 100)]
+# Orange: printed results that do not follow from the text. Table E.1, third column, x*: the library
+# default (convergence) is plotted; the three-figure criterion gives +1.0. Table E.10 (example E.12):
+# the printed mean and SD of both allergens against Algorithm A, which the text names (computed here,
+# not by P.inconsistent(), which lists the item but not the four deviations).
+dat, xs, ss = E.E1["half"]
+e1 = robust.algorithm_a(dat)
+aA, aB = robust.algorithm_a(E.E12_A), robust.algorithm_a(E.E12_B)
+open_cases = [("Table E.1\ncol. 3\n$x^*$", (e1.location - xs) * 100),
+              ("E.10 A\nmean", (aA.location - 11.54) * 100), ("E.10 A\nSD", (aA.scale - 3.29) * 100),
+              ("E.10 B\nmean", (aB.location - 7.66) * 100), ("E.10 B\nSD", (aB.scale - 2.90) * 100)]
 print(len(rows), "comparisons; max |dev| =", max(abs(v) for _, v in dev)); print(open_cases)
 
 # ---------- (b) Python against PHP ----------
@@ -35,7 +42,7 @@ def clean(ax):
     for s in ("left", "bottom"): ax.spines[s].set_color(MID)
     ax.tick_params(labelsize=7, length=2, width=0.5, colors=MID, pad=1.5)
 
-ptitle(2, 97.3, "a", "Printed in the standard against computed", f"{len(rows)} printed values; difference in units of the last printed digit; band: ± 0.5 unit")
+ptitle(2, 97.3, "a", "Printed in the standard against computed", f"blue: the {len(rows)} printed values reproduced; orange: printed results that do not follow from the text; units of the last printed digit")
 ax = fig.add_axes([0.085, 0.655, 0.89, 0.255])
 ax.axhspan(-0.5, 0.5, color=BLUE, alpha=0.14, lw=0); ax.axhline(0, color=DARK, lw=0.6)
 rj = np.random.default_rng(3)
@@ -47,17 +54,18 @@ x0 = len(groups) + 0.4
 ax.axvline(x0 - 0.7, color="#BDBDBD", lw=0.7, ls=(0, (2, 2)))
 lim = 3.0
 for i, (lab_, v) in enumerate(open_cases):
-    xx = x0 + i * 1.5; vv = float(np.clip(v, -lim + 0.25, lim - 0.25))
+    xx = x0 + i * 1.1; vv = float(np.clip(v, -lim + 0.25, lim - 0.25))
     ax.plot(xx, vv, marker="o" if abs(v) < lim else ("v" if v < 0 else "^"), ms=5, mfc=ORANGE, mec="white", mew=0.4, ls="none")
     ax.text(xx, vv + (0.42 if (v > 0 or abs(v) >= lim) else -0.42), (f"{v:+.1f}" if abs(v) < lim else f"{v:+.0f}").replace("-", "−"), fontsize=6.8, color=ORANGE, ha="center", va="center", fontweight="bold")
-ax.text(x0 + 2.25, 3.25, "do not follow from the text", fontsize=6.6, color=ORANGE, ha="center")
-ax.set_xticks(list(range(len(groups))) + [x0 + i * 1.5 for i in range(len(open_cases))])
+ax.text(x0, 3.25, "1 digit", fontsize=6.6, color=ORANGE, ha="center")
+ax.text(x0 + 2.75, 3.25, "Table E.10 by Algorithm A", fontsize=6.6, color=ORANGE, ha="center")
+ax.set_xticks(list(range(len(groups))) + [x0 + i * 1.1 for i in range(len(open_cases))])
 ax.set_xticklabels([g.replace("Table ", "Table\n") for g in groups] + [c[0] for c in open_cases], fontsize=6.2)
-ax.set_ylim(-lim, 3.7); ax.set_xlim(-0.6, x0 + 5.2); ax.set_yticks([-2, -1, -0.5, 0, 0.5, 1, 2]); ax.set_yticklabels(["−2", "−1", "−0.5", "0", "0.5", "1", "2"])
+ax.set_ylim(-lim, 3.7); ax.set_xlim(-0.6, x0 + 4.9); ax.set_yticks([-2, -1, -0.5, 0, 0.5, 1, 2]); ax.set_yticklabels(["−2", "−1", "−0.5", "0", "0.5", "1", "2"])
 ax.set_ylabel("computed − printed", fontsize=7.6, color=MID, labelpad=2); clean(ax)
 ax.text((len(groups) - 2) / 2, -4.25, "worked example of Annex E", fontsize=6.8, color=MID, ha="center", va="center")
 
-ptitle(2, 57.5, "b", "Python library against the PHP engine", "16 quantities; largest absolute difference in 100 generated sets without ties and in 100 with ties")
+ptitle(2, 57.5, "b", "Python library against the PHP engine of the same group (regression check, not independent)", "16 quantities; largest absolute difference in 100 generated sets without ties and in 100 with ties")
 ax = fig.add_axes([0.20, 0.335, 0.775, 0.185])
 mx0 = {k: max(abs(x[k] - y[k]) for x, y in zip(A[0::2], B[0::2])) for k in keys}
 mx1 = {k: max(abs(x[k] - y[k]) for x, y in zip(A[1::2], B[1::2])) for k in keys}
@@ -79,9 +87,9 @@ ax.text(xa - 0.75, 6e-1, f"Algorithm A agrees in all 5200 sets when both iterate
 ax.set_xlim(-0.7, xa + len(ties_) - 0.3); ax.set_ylabel("largest |difference|", fontsize=7.6, color=MID, labelpad=2); clean(ax)
 
 ptitle(2, 26.3, "c", "Printed results that do not follow from the text, and the 2026 amendment", "status after ISO 13528:2022/Amd 1:2026")
-tab = [("Table E.1, third column, $x^*$", "printed 23.95; criterion and convergence give 23.96", "open", ORANGE),
-       ("Table E.10, $z$ scores", "text names Algorithm A, numbers are arithmetic", "open", ORANGE),
-       ("Table E.6, flags", "limits not stated; those of Clause 9.8 fit for $U$, not for $u$", "unclear", "#8A8A8A"),
+tab = [("Table E.1, third column, $x^*$", "printed 23.95; 23.9585 or 23.9601 computed; consistent with truncation", "1 digit", ORANGE),
+       ("Table E.10 (ex. E.12), $z$", "text names robust estimates; rows follow mean and SD", "not from text", ORANGE),
+       ("Table E.6 (ex. E.4), flags", "limits of the flags not stated; the flags do not identify them", "ambiguity", "#8A8A8A"),
        ("Formula (C.18), $h$", "undefined for $p$ = 2, 3; now $\\lfloor p/2 \\rfloor + 1$", "corrected", GREEN),
        ("Formula (C.19), factor", "2.2219; now 2.2191", "corrected", GREEN),
        ("Table E.12 (example E.14)", "one assigned value corrected; footnote on rounding added", "corrected", GREEN)]

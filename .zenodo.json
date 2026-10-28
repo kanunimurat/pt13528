@@ -1,5 +1,5 @@
 {
-  "title": "pt13528: A Python library for proficiency testing statistics according to ISO 13528",
+  "title": "pt13528: An open-source Python library for proficiency testing statistics according to ISO 13528",
   "upload_type": "software",
   "description": "Framework-independent Python implementation of the statistical methods of ISO 13528:2022 with Amd 1:2026 (assigned value, standard deviation for proficiency assessment, performance scores, homogeneity and stability checks, robust estimators, result record), verified against the worked examples of Annex E of the standard.",
   "creators": [

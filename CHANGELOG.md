@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.1.9 (unreleased)
+## 0.1.9 (2026-10-28)
 
 No change to the results of the library. This version adds verification evidence requested by the reviewers of
 the article describing the library, corrects two statements of the documentation, and adds tests.
@@ -9,6 +9,9 @@ the article describing the library, corrects two statements of the documentation
   (`crosscheck/robusto/`, Robusto 0.2.0, Go). Without ties the Q method agrees to machine precision and the
   Hampel estimator to 1e-10 s*. With ties Robusto equals the PHP engine before its correction of October 2026:
   an independent implementation repeats the defect described in `docs/coverage.md`.
+- **Figure 4** (`figures/figure_4_verification.py`): panel a plots x* of Table E.1, third column, with the
+  default convergence and the mean and SD of both allergens of Table E.10 recomputed with Algorithm A; panel b
+  is labelled as a regression check of the same group; panel c uses the classification of the article.
 - **Versioning policy** (`docs/versioning.md`): patch versions change no result; a change of a result, a default
   or a signature needs a new minor version and is marked "Changes results" in this file.
 - **Stored inputs of the figures** (`figures/simulated_inputs.json`, written by `figures/store_inputs.py`): seeds,

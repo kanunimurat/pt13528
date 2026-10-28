@@ -15,14 +15,14 @@ pytest-cov, branch coverage on, all tests.
 
 ## Mutation testing
 
-mutmut 3.8.0 (Python 3.13, NumPy 2.5.3, SciPy at the version of the test environment), all of `src/pt13528`,
+mutmut 3.8.0 (final run of 0.1.9 on 28 October 2026; Python 3.13, NumPy 2.5.3, SciPy at the version of the test environment), all of `src/pt13528`,
 the complete test suite. A mutant is a small change of the code (an operator, a constant, a comparison, an
 argument); it is killed when at least one test fails.
 
 | Version | Mutants | Killed | Survived |
 |---|---|---|---|
 | 0.1.8 | 2885 | 2108 (73,1 %) | 777 |
-| 0.1.9 | 2885 | 2267 (78,6 %) | 618 |
+| 0.1.9 | 2885 | 2269 (78,6 %) | 616 |
 
 The survivors were classified automatically from their diffs and the numerical and logical ones were read one
 by one:
@@ -31,7 +31,7 @@ by one:
 |---|---|---|---|
 | message text | 267 | 239 | only the text of an error message changes; the tests check the exception, not its message |
 | input check | 187 | 176 | one condition of the rejection of invalid input |
-| numerical or logical | 175 | 88 | see below |
+| numerical or logical | 175 | 86 | see below |
 | tolerance or iteration guard | 67 | 67 | stopping tolerance, iteration limit, collapse threshold |
 | unchecked result field | 52 | 28 | a field of a returned record (label, count, flag) |
 | boundary (< or <=) | 18 | 9 | differs only when two values are exactly equal |
@@ -54,7 +54,7 @@ result: the tests added in 0.1.9 (`tests/test_boundaries.py`) pass on the unchan
 
 ### What survives in 0.1.9
 
-Of the 88 numerical or logical survivors, 73 are in `robust.py`. Most are equivalent or concern paths that the
+Of the 86 numerical or logical survivors, 71 are in `robust.py`. Most are equivalent or concern paths that the
 data of a proficiency test do not reach:
 
 - equivalent: `1.5 * sign(q)` and `1.5 / sign(q)` in the psi function (sign is +1 or -1); `p // 2` and
