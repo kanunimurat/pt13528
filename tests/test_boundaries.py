@@ -236,7 +236,8 @@ def test_graphics_edges():
         graphics.bandwidth(10, robust_sd=0.0)
     g, d = graphics.kernel_density([1.0, 2.0, 4.0], 0.5, grid=2001, cut=3.0)
     assert g[0] == pytest.approx(1.0 - 1.5) and g[-1] == pytest.approx(4.0 + 1.5) and g.size == 2001
-    assert np.trapezoid(d, g) == pytest.approx(1.0, abs=2e-3)                    # unit area (10.3.1)
+    area = float(np.sum((d[1:] + d[:-1]) * np.diff(g)) / 2)                     # trapezoidal rule, any NumPy
+    assert area == pytest.approx(1.0, abs=2e-3)                                  # unit area (10.3.1)
     assert graphics.repeatability_statistic(10.0, 1.0, 10.0, 1.0, 4) == 0.0
     assert graphics.repeatability_statistic(11.0, 1.0, 10.0, 1.0, 4) == 4.0
     for sd_i, w in ((0.0, 1.0), (1.0, 0.0)):
