@@ -9,6 +9,10 @@ the article describing the library, corrects two statements of the documentation
   (`crosscheck/robusto/`, Robusto 0.2.0, Go). Without ties the Q method agrees to machine precision and the
   Hampel estimator to 1e-10 s*. With ties Robusto equals the PHP engine before its correction of October 2026:
   an independent implementation repeats the defect described in `docs/coverage.md`.
+- **Versioning policy** (`docs/versioning.md`): patch versions change no result; a change of a result, a default
+  or a signature needs a new minor version and is marked "Changes results" in this file.
+- **Stored inputs of the figures** (`figures/simulated_inputs.json`, written by `figures/store_inputs.py`): seeds,
+  generating parameters and generated values of the simulated rounds of Figs. 2, 5 and 6.
 - **Tests at the boundaries** (`tests/test_boundaries.py`, 36 tests): the signal limits of 9.3.2, 9.4.2 and
   9.7.2 at and next to each limit, the zero limits of the input checks of the scores, the delta_E criteria of
   9.2.1 and Annex B, the stability criterion, the 2022 order statistic of Qn for odd p, the fields returned

@@ -12,3 +12,6 @@ themselves.
 | `figure_6_scores_with_uncertainty.py` | Fig. 6 | simulated, seed in the script |
 
 Figs. 1 and 3 are diagrams without data.
+
+NumPy does not guarantee its random streams across versions. `store_inputs.py` writes the simulated
+inputs of Figs. 2, 5 and 6, their seeds and generating parameters to `simulated_inputs.json`.

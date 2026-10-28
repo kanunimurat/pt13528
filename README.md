@@ -23,7 +23,8 @@ framework-independent Python library.
 
 `docs/coverage.md` lists every formula of the standard and whether it is
 implemented, and records the printed results of Annex E that do not follow
-from the text of the standard.
+from the text of the standard. `docs/verification.md` and `docs/quality.md` report the
+verification evidence and the quality of the code, and `docs/versioning.md` states the versioning policy.
 
 ## Example
 
