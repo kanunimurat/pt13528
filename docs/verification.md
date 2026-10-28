@@ -92,7 +92,7 @@ as transcribed, not that the transcription of the formula is right.
 
 ## Test suite
 
-Version 0.1.9: 176 tests. Coverage (pytest-cov, branch coverage on): see `docs/quality.md`.
+Versions 0.1.9 to 0.1.11: 176 tests (0.1.10 and 0.1.11 change no test result). Coverage (pytest-cov, branch coverage on): see `docs/quality.md`.
 Mutation testing (mutmut 3.8.0) on 0.1.8 and 0.1.9: see `docs/quality.md`.
 
 ## Generated inputs

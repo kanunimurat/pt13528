@@ -99,7 +99,7 @@ def deviation(row):
 
 
 def inconsistent():
-    """Printed items that do not follow from the accompanying text (after Amd 1:2026).
+    """Printed items that could not be reproduced from the accompanying text as printed (after Amd 1:2026).
 
     Each entry: (item, kind, what the text gives, what is printed, deviation in
     units of the last printed digit or None). ``kind`` is "not reproduced"

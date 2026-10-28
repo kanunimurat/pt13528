@@ -14,7 +14,7 @@ dev = [(r[0], P.deviation(r)) for r in rows]
 groups = []
 for g, _ in dev:
     if g not in groups: groups.append(g)
-# Orange: printed results that do not follow from the text. Table E.1, third column, x*: the library
+# Orange: printed results that could not be reproduced from the text as printed. Table E.1, third column, x*: the library
 # default (convergence) is plotted; the three-figure criterion gives +1.0. Table E.10 (example E.12):
 # the printed mean and SD of both allergens against Algorithm A, which the text names (computed here,
 # not by P.inconsistent(), which lists the item but not the four deviations).
@@ -42,7 +42,7 @@ def clean(ax):
     for s in ("left", "bottom"): ax.spines[s].set_color(MID)
     ax.tick_params(labelsize=7, length=2, width=0.5, colors=MID, pad=1.5)
 
-ptitle(2, 97.3, "a", "Printed in the standard against computed", f"blue: the {len(rows)} printed values reproduced; orange: printed results that do not follow from the text; units of the last printed digit")
+ptitle(2, 97.3, "a", "Printed in the standard against computed", f"blue: the {len(rows)} printed values reproduced; orange: printed results not reproduced from the text as printed; units of the last printed digit")
 ax = fig.add_axes([0.085, 0.655, 0.89, 0.255])
 ax.axhspan(-0.5, 0.5, color=BLUE, alpha=0.14, lw=0); ax.axhline(0, color=DARK, lw=0.6)
 rj = np.random.default_rng(3)
@@ -86,9 +86,9 @@ nq = sum(abs(x["Q method"] - y["Q method"]) > 1e-9 * x["Q method"] for x, y in z
 ax.text(xa - 0.75, 6e-1, f"Algorithm A agrees in all 5200 sets when both iterate to convergence.\nBefore tied differences were merged in both,\nthe Q method differed in {nq} of 100 sets with ties", fontsize=6.6, color=ORANGE, ha="right", va="top", linespacing=1.25)
 ax.set_xlim(-0.7, xa + len(ties_) - 0.3); ax.set_ylabel("largest |difference|", fontsize=7.6, color=MID, labelpad=2); clean(ax)
 
-ptitle(2, 26.3, "c", "Printed results that do not follow from the text, and the 2026 amendment", "status after ISO 13528:2022/Amd 1:2026")
-tab = [("Table E.1, third column, $x^*$", "printed 23.95; 23.9585 or 23.9601 computed; consistent with truncation", "1 digit", ORANGE),
-       ("Table E.10 (ex. E.12), $z$", "text names robust estimates; rows follow mean and SD", "not from text", ORANGE),
+ptitle(2, 26.3, "c", "Printed results not reproduced from the text as printed, and the 2026 amendment", "status after ISO 13528:2022/Amd 1:2026")
+tab = [("Table E.1, third column, $x^*$", "printed 23.95; 23.9585 or 23.9601 computed; truncated $x^*$", "1 digit", ORANGE),
+       ("Table E.10 (ex. E.12), $z$", "text names robust estimates; rows follow mean and SD", "not reproduced", ORANGE),
        ("Table E.6 (ex. E.4), flags", "limits of the flags not stated; the flags do not identify them", "ambiguity", "#8A8A8A"),
        ("Formula (C.18), $h$", "undefined for $p$ = 2, 3; now $\\lfloor p/2 \\rfloor + 1$", "corrected", GREEN),
        ("Formula (C.19), factor", "2.2219; now 2.2191", "corrected", GREEN),
@@ -96,7 +96,7 @@ tab = [("Table E.1, third column, $x^*$", "printed 23.95; 23.9585 or 23.9601 com
 y = 20.3
 for nm, why, stt, col in tab:
     bg.add_patch(FancyBboxPatch((2.5, y - 0.95), 11.5, 1.9, boxstyle="round,pad=0,rounding_size=0.5", fc=col, ec="none"))
-    bg.text(8.25, y, stt, fontsize=7, color="white", ha="center", va="center", fontweight="bold")
+    bg.text(8.25, y, stt, fontsize=7 if len(stt) <= 12 else 6.2, color="white", ha="center", va="center", fontweight="bold")
     bg.text(16, y, nm, fontsize=7.8, color=DARK, va="center", fontweight="bold")
     bg.text(46, y, why, fontsize=7.6, color=DARK, va="center")
     y -= 3.2

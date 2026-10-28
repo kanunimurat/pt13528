@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.1.11 (2026-10-28)
+
+No change to the library or to any result. Documentation and figure scripts only.
+
+- `docs/coverage.md`, Table E.1, third column: the printed x* (23,95) is the converged x* cut after the second
+  decimal; the printed s* (8,60) is the converged s* (8,5960) rounded, not cut. 0.1.9 and 0.1.10 said that the
+  printed pair equals the converged values cut, which holds for x* only. Found in a review before resubmission.
+- The printed results of Annex E that were described as "not following from the text" are now described as
+  "not reproduced from the text as printed" (README, `tests/printed_values.py`, Figure 4), as in the article.
+- Figure 4, panel c: the Table E.1 row says that the printed value is consistent with truncating x*.
+- `docs/verification.md`: 176 tests in 0.1.9 to 0.1.11.
+
 ## 0.1.10 (2026-10-28)
 
 No change to the library. One test of 0.1.9 (`test_graphics_edges` in `tests/test_boundaries.py`) called

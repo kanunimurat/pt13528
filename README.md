@@ -22,8 +22,8 @@ framework-independent Python library.
 | `record` | result record of one measurand: assigned value, u(x_pt), sigma_pt, criterion of 9.2.1, statistic, score and signal of every participant, each with its clause | 7 to 9 |
 
 `docs/coverage.md` lists every formula of the standard and whether it is
-implemented, and records the printed results of Annex E that do not follow
-from the text of the standard. `docs/verification.md` and `docs/quality.md` report the
+implemented, and records the printed results of Annex E that could not be reproduced
+from the text of the standard as printed. `docs/verification.md` and `docs/quality.md` report the
 verification evidence and the quality of the code, and `docs/versioning.md` states the versioning policy.
 
 ## Example
@@ -73,7 +73,7 @@ pytest
 - `tests/printed_values.py` lists 255 values printed in ISO 13528:2022 (227
   from the worked examples of Annex E, 28 from Table B.1) that the functions
   of the library reproduce to half a unit of the last printed digit, the two
-  printed items that do not follow from the text, and four further observations.
+  printed items that could not be reproduced from the text as printed, and four further observations.
   131 of these values belong to a published round (IMEP-111, examples E.4 and E.7:
   Algorithm A, its uncertainty, the comparison with the reference value and the
   scores of 21 participants).

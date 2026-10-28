@@ -100,16 +100,17 @@ Two items remain after Amd 1:2026 (`inconsistent()` in the same file).
    The three-figure criterion of C.3.1 stops at 23,9601 and full convergence
    gives 23,9585; both round to 23,96. The iterates of x* fall monotonically
    from 24,375 to 23,9585, so no stopping point gives 23,95. The difference is
-   one unit of the last digit, and the printed pair (23,95; 8,60) equals the
-   converged values cut after the second decimal. `crosscheck/annex_e_checks.py`
+   one unit of the last digit: the printed x* equals the converged x* cut after
+   the second decimal, and the printed s* equals the converged s* (8,5960)
+   rounded, not cut (cutting gives 8,59). `crosscheck/annex_e_checks.py`
    tries 324 hand-calculation scenarios (starting values median/MADe,
    median/nIQR or mean/SD; MADe factor 1,483 or 1,4826; consistency factor
    1,134, 1,13339 or 1; x* and s* rounded at every iteration to 1 to 4
    decimals or 3 significant figures, or not; three stopping rules). None gives
    the printed pair by rounding. Six give x* = 23,95 (start from mean and SD,
    rounding to two decimals at every iteration), but then s* = 8,61. This item
-   is a one-unit difference consistent with truncation, not a contradiction of
-   the text; it is kept apart from item 2.
+   is a one-unit difference in x* consistent with truncation, not a
+   contradiction of the text; it is kept apart from item 2.
 2. **E.12, Table E.10.** The text states that the z scores use the robust
    mean and standard deviation of Algorithm A, and NOTE 2 of the table speaks
    of robust averages and standard deviations. The printed z scores and the
