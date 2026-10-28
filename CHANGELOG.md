@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.10 (2026-10-28)
+
+No change to the library. One test of 0.1.9 (`test_graphics_edges` in `tests/test_boundaries.py`) called
+`numpy.trapezoid`, which exists only from NumPy 2.0, and therefore failed in the continuous integration job with the
+lowest supported versions (NumPy 1.24, SciPy 1.11). The test now computes the trapezoidal rule itself. With
+0.1.10 all 176 tests pass on Python 3.10, 3.12 and 3.13 and with NumPy 1.24 and SciPy 1.11. The library code of
+0.1.9 and 0.1.10 is identical apart from the version number.
+
 ## 0.1.9 (2026-10-28)
 
 No change to the results of the library. This version adds verification evidence requested by the reviewers of
