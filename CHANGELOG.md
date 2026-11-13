@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.1.12 (2026-11-14)
+
+No change to the library or to any result. Citation metadata only.
+
+- The article describing the library is published: Sert M, Yağan MK, Aydın A, Heidarizadeh M, Tilki E, Selek AE,
+  Mete Sert A. pt13528: An open-source Python library for proficiency testing statistics according to ISO 13528.
+  SoftwareX 2026;36:103224. https://doi.org/10.1016/j.softx.2026.103224 (open access, CC BY 4.0). It describes 0.1.11.
+- `CITATION.cff`: `preferred-citation` points to the article. ORCID iDs of M.K. Yağan, E. Tilki and A.E. Selek added.
+- `.zenodo.json`: the same ORCID iDs, and the article as a related identifier (`isDocumentedBy`).
+- `README.md`: article badge and link, "How to cite" gives the article first and the Zenodo record second,
+  subtitle as in the article title.
+- `pyproject.toml`: `Article` link in the project URLs (shown on PyPI).
+
 ## 0.1.11 (2026-10-28)
 
 No change to the library or to any result. Documentation and figure scripts only.

@@ -10,7 +10,8 @@
     },
     {
       "name": "Yağan, Mustafa Kemal",
-      "affiliation": "Kombobit Yazılım Madencilik LTD. ŞTİ."
+      "affiliation": "Kombobit Yazılım Madencilik LTD. ŞTİ.",
+      "orcid": "0000-0001-7499-6574"
     },
     {
       "name": "Aydın, Ali",
@@ -22,11 +23,13 @@
     },
     {
       "name": "Tilki, Eyüphan",
-      "affiliation": "Kombobit Yazılım Madencilik LTD. ŞTİ."
+      "affiliation": "Kombobit Yazılım Madencilik LTD. ŞTİ.",
+      "orcid": "0009-0001-7196-817X"
     },
     {
       "name": "Selek, Ahmet Enes",
-      "affiliation": "Kombobit Yazılım Madencilik LTD. ŞTİ."
+      "affiliation": "Kombobit Yazılım Madencilik LTD. ŞTİ.",
+      "orcid": "0009-0003-7673-3745"
     },
     {
       "name": "Mete Sert, Aliye",
@@ -41,5 +44,13 @@
     "metrology"
   ],
   "license": "lgpl-3.0-or-later",
-  "access_right": "open"
+  "access_right": "open",
+  "related_identifiers": [
+    {
+      "identifier": "10.1016/j.softx.2026.103224",
+      "relation": "isDocumentedBy",
+      "scheme": "doi",
+      "resource_type": "publication-article"
+    }
+  ]
 }

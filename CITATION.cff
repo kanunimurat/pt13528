@@ -3,8 +3,8 @@ message: "If you use this software, please cite it as below."
 title: "pt13528: An open-source Python library for proficiency testing statistics according to ISO 13528"
 type: software
 license: LGPL-3.0-or-later
-version: 0.1.11
-date-released: 2026-10-28
+version: 0.1.12
+date-released: 2026-11-14
 doi: 10.5281/zenodo.23135796
 repository-code: "https://github.com/kanunimurat/pt13528"
 authors:
@@ -15,6 +15,7 @@ authors:
     affiliation: "Afyon Kocatepe University, Marble and Natural Stone Technologies Application and Research Center; Department of Mining Engineering; Kombobit Yazılım Madencilik LTD. ŞTİ."
   - family-names: "Yağan"
     given-names: "Mustafa Kemal"
+    orcid: "https://orcid.org/0000-0001-7499-6574"
     affiliation: "Kombobit Yazılım Madencilik LTD. ŞTİ."
   - family-names: "Aydın"
     given-names: "Ali"
@@ -24,9 +25,11 @@ authors:
     affiliation: "Kombobit Yazılım Madencilik LTD. ŞTİ."
   - family-names: "Tilki"
     given-names: "Eyüphan"
+    orcid: "https://orcid.org/0009-0001-7196-817X"
     affiliation: "Kombobit Yazılım Madencilik LTD. ŞTİ."
   - family-names: "Selek"
     given-names: "Ahmet Enes"
+    orcid: "https://orcid.org/0009-0003-7673-3745"
     affiliation: "Kombobit Yazılım Madencilik LTD. ŞTİ."
   - family-names: "Mete Sert"
     given-names: "Aliye"
@@ -36,3 +39,32 @@ keywords:
   - ISO 13528
   - interlaboratory comparison
   - robust statistics
+preferred-citation:
+  type: article
+  title: "pt13528: An open-source Python library for proficiency testing statistics according to ISO 13528"
+  journal: "SoftwareX"
+  volume: 36
+  start: 103224
+  year: 2026
+  month: 12
+  doi: 10.1016/j.softx.2026.103224
+  url: "https://doi.org/10.1016/j.softx.2026.103224"
+  authors:
+    - family-names: "Sert"
+      given-names: "Murat"
+      orcid: "https://orcid.org/0000-0001-6595-1681"
+    - family-names: "Yağan"
+      given-names: "Mustafa Kemal"
+      orcid: "https://orcid.org/0000-0001-7499-6574"
+    - family-names: "Aydın"
+      given-names: "Ali"
+    - family-names: "Heidarizadeh"
+      given-names: "Matin"
+    - family-names: "Tilki"
+      given-names: "Eyüphan"
+      orcid: "https://orcid.org/0009-0001-7196-817X"
+    - family-names: "Selek"
+      given-names: "Ahmet Enes"
+      orcid: "https://orcid.org/0009-0003-7673-3745"
+    - family-names: "Mete Sert"
+      given-names: "Aliye"

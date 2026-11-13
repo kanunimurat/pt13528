@@ -1,8 +1,11 @@
 # pt13528
 
-*A Python library for proficiency testing statistics according to ISO 13528*
+*An open-source Python library for proficiency testing statistics according to ISO 13528*
 
+[![Article](https://img.shields.io/badge/SoftwareX-10.1016%2Fj.softx.2026.103224-blue)](https://doi.org/10.1016/j.softx.2026.103224)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23135796.svg)](https://doi.org/10.5281/zenodo.23135796)
+
+Described in *SoftwareX* 36 (2026) 103224 (open access): https://doi.org/10.1016/j.softx.2026.103224
 
 Statistical methods of **ISO 13528:2022 with Amd 1:2026** (*Statistical methods for use in
 proficiency testing by interlaboratory comparison*) as a small,
@@ -114,9 +117,15 @@ responsibility of the proficiency testing provider (ISO/IEC 17043).
 
 ## How to cite
 
+Please cite the article:
+
 Sert M, Yağan MK, Aydın A, Heidarizadeh M, Tilki E, Selek AE, Mete Sert A.
-pt13528: A Python library for proficiency testing statistics according to ISO 13528.
-Zenodo; 2026. https://doi.org/10.5281/zenodo.23135796 (this DOI always resolves to the latest version; each version has its own DOI on the Zenodo page).
+pt13528: An open-source Python library for proficiency testing statistics according to ISO 13528.
+*SoftwareX* 2026;36:103224. https://doi.org/10.1016/j.softx.2026.103224
+
+To refer to the software itself, or to the exact version you used, cite the Zenodo record:
+https://doi.org/10.5281/zenodo.23135796 (this DOI always resolves to the latest version; each version has its own DOI on the Zenodo page).
+The article describes version 0.1.11.
 
 ## Licence
 
